@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.openthos.launcher.openthoslauncher.R;
-import com.openthos.launcher.openthoslauncher.entity.Consts;
+import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
@@ -106,7 +106,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if ((Boolean) data.get(getAdapterPosition()).get("null") != true) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
-                        < Consts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())) {
+                        < OtoConsts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())) {
                        PackageManager packageManager = item.getContext().getPackageManager();
                        Intent intent = packageManager.getLaunchIntentForPackage(
                                                                     "com.cyanogenmod.filemanager");

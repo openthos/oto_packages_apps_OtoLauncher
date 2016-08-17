@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.openthos.launcher.openthoslauncher.R;
 import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.Consts;
+import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
 
 /**
  * Created by xu on 2016/8/11.
@@ -102,9 +102,9 @@ public class MenuDialog extends Dialog {
         if (y > (d.getHeight() - dialogWindow.getAttributes().height)) {
             lp.y = d.getHeight() - dialogWindow.getAttributes().height;
         } else {
-            lp.y = y - Consts.FIX_Y;
+            lp.y = y - OtoConsts.FIX_Y;
         }
-        lp.alpha = Consts.FIX_ALPHA;
+        lp.alpha = OtoConsts.FIX_ALPHA;
         dialogWindow.setAttributes(lp);
     }
 }

@@ -14,7 +14,7 @@ import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 import com.openthos.launcher.openthoslauncher.adapter.ItemCallBack;
 import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.Consts;
+import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,11 +74,11 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
                 map.put("icon", R.drawable.ic_app_text);
                 map.put("type", Type.file);
             }
-            if (mDatas.size() < Consts.MAX_ICON) {
+            if (mDatas.size() < OtoConsts.MAX_ICON) {
                 mDatas.add(map);
             }
         }
-        while (mDatas.size() < Consts.MAX_ICON) {
+        while (mDatas.size() < OtoConsts.MAX_ICON) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", "");
             map.put("isChecked", false);
@@ -92,7 +92,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
 
     private void init() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(Consts.MAX_LINE,
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(OtoConsts.MAX_LINE,
                 StaggeredGridLayoutManager.HORIZONTAL));
         mAdapter = new HomeAdapter(mDatas, this);
 
