@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <add-resource type="color" name="colorPrimary" />
+    <add-resource type="color" name="colorPrimaryDark" />
+    <add-resource type="color" name="colorAccent" />
+    <add-resource type="color" name="white" />
+    <add-resource type="color" name="black" />
+    <add-resource type="color" name="icon_background" />
+    <add-resource type="color" name="transparent" />
+    <add-resource type="color" name="menu_background" />
+    <add-resource type="color" name="item_hover_background" />
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!-- icon color -->
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="icon_background">#7f251a4b</color>
+    <color name="transparent">#00000000</color>
+    <color name="menu_background">#33000000</color>
+    <color name="item_hover_background">#5b41a2</color>
+</resources>

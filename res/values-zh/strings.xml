@@ -1,0 +1,43 @@
+<resources>
+    <add-resource type="string" name="app_name" />
+    <add-resource type="string" name="my_computer" />
+    <add-resource type="string" name="recycle" />
+    <add-resource type="string" name="paste" />
+    <add-resource type="string" name="sort" />
+    <add-resource type="string" name="new_folder" />
+    <add-resource type="string" name="display_settings" />
+    <add-resource type="string" name="change_wallpaper" />
+    <add-resource type="string" name="open" />
+    <add-resource type="string" name="about_computer" />
+    <add-resource type="string" name="open_way" />
+    <add-resource type="string" name="compress" />
+    <add-resource type="string" name="decompression" />
+    <add-resource type="string" name="crop" />
+    <add-resource type="string" name="copy" />
+    <add-resource type="string" name="delete" />
+    <add-resource type="string" name="rename" />
+    <add-resource type="string" name="property" />
+    <add-resource type="string" name="clean_recycle" />
+
+    <string name="app_name">桌面</string>
+    <!-- 桌面基本图标 -->
+    <string name="my_computer">我的电脑</string>
+    <string name="recycle">回收站</string>
+    <!-- 右键菜单 -->
+    <string name="paste">粘贴</string>
+    <string name="sort">排序</string>
+    <string name="new_folder">新建文件夹</string>
+    <string name="display_settings">显示设置</string>
+    <string name="change_wallpaper">更改壁纸</string>
+    <string name="open">打开</string>
+    <string name="about_computer">关于本机</string>
+    <string name="open_way">打开方式</string>
+    <string name="compress">压缩</string>
+    <string name="decompression">解压</string>
+    <string name="crop">剪切</string>
+    <string name="copy">复制</string>
+    <string name="delete">删除</string>
+    <string name="rename">重命名</string>
+    <string name="property">属性</string>
+    <string name="clean_recycle">清空回收站</string>
+</resources>

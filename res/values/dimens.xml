@@ -1,0 +1,18 @@
+<resources>
+    <add-resource type="dimen" name="activity_horizontal_margin" />
+    <add-resource type="dimen" name="activity_vertical_margin" />
+    <add-resource type="dimen" name="icon_image_size" />
+    <add-resource type="dimen" name="icon_font_size" />
+    <add-resource type="dimen" name="icon_diver_size" />
+    <add-resource type="dimen" name="icon_size" />
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- icon size -->
+    <dimen name="icon_image_size">64dp</dimen>
+    <dimen name="icon_font_size">12sp</dimen>
+    <dimen name="icon_diver_size">16dp</dimen>
+    <dimen name="icon_size">128dp</dimen>
+</resources>

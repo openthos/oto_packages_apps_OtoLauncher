@@ -1,0 +1,42 @@
+<resources>
+    <add-resource type="string" name="app_name" />
+    <add-resource type="string" name="my_computer" />
+    <add-resource type="string" name="recycle" />
+    <add-resource type="string" name="paste" />
+    <add-resource type="string" name="sort" />
+    <add-resource type="string" name="new_folder" />
+    <add-resource type="string" name="display_settings" />
+    <add-resource type="string" name="change_wallpaper" />
+    <add-resource type="string" name="open" />
+    <add-resource type="string" name="about_computer" />
+    <add-resource type="string" name="open_way" />
+    <add-resource type="string" name="compress" />
+    <add-resource type="string" name="decompression" />
+    <add-resource type="string" name="crop" />
+    <add-resource type="string" name="copy" />
+    <add-resource type="string" name="delete" />
+    <add-resource type="string" name="rename" />
+    <add-resource type="string" name="property" />
+    <add-resource type="string" name="clean_recycle" />
+
+
+    <string name="app_name">OpenthosLauncher</string>
+    <string name="my_computer">My Computer</string>
+    <string name="recycle">Recycle</string>
+    <string name="paste">Paste</string>
+    <string name="sort">Sort</string>
+    <string name="new_folder">New Folder</string>
+    <string name="display_settings">Display Settings</string>
+    <string name="change_wallpaper">Change Wallpaper</string>
+    <string name="open">Open</string>
+    <string name="about_computer">About Computer</string>
+    <string name="open_way">Open Way</string>
+    <string name="compress">Compress</string>
+    <string name="decompression">Decompression</string>
+    <string name="crop">Crop</string>
+    <string name="copy">Copy</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="property">Property</string>
+    <string name="clean_recycle">Clean Recycle</string>
+</resources>

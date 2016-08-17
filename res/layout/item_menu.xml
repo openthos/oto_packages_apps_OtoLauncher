@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="144dp"
+    android:layout_height="32dp"
+    android:background="@drawable/menu_item_selector"
+    >
+
+    <TextView
+        android:paddingLeft="16dp"
+        android:id="@+id/text"
+        android:layout_width="144dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:textColor="@drawable/menu_text_selector"
+        android:textSize="14sp"
+        />
+
+</LinearLayout>
