@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -81,11 +82,14 @@ public class MenuDialog extends Dialog {
             View mv = View.inflate(context, R.layout.item_menu, null);
             TextView tv = (TextView) mv.findViewById(R.id.text);
             tv.setText(s[i]);
+            tv.setOnHoverListener(hoverListener);
+            tv.setOnClickListener(clickListener);
             ll.addView(mv);
         }
+
     }
 
-    public void showDialog(int x, int y, int height, int width) {
+    public void showDialog(int x, int y) {
         show();
         Window dialogWindow = getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
@@ -99,12 +103,38 @@ public class MenuDialog extends Dialog {
         } else {
             lp.x = x;
         }
-        if (y > (d.getHeight() - dialogWindow.getAttributes().height)) {
-            lp.y = d.getHeight() - dialogWindow.getAttributes().height;
+        if (y > (d.getHeight() - dialogWindow.getAttributes().height-OtoConsts.BAR_Y)) {
+            lp.y = y - dialogWindow.getAttributes().height;
+            //lp.y = d.getHeight() - dialogWindow.getAttributes().height;
         } else {
             lp.y = y - OtoConsts.FIX_Y;
         }
         lp.alpha = OtoConsts.FIX_ALPHA;
         dialogWindow.setAttributes(lp);
     }
+
+    View.OnHoverListener hoverListener = new View.OnHoverListener() {
+
+        public boolean onHover(View v, MotionEvent event) {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_HOVER_ENTER:
+                    v.setBackgroundResource(R.color.item_hover_background);
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    v.setBackgroundResource(R.color.transparent);
+                    break;
+            }
+            return false;
+        }
+    };
+
+    View.OnClickListener clickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            String text= ((TextView)v).getText().toString();
+            dismiss();
+        }
+    };
 }

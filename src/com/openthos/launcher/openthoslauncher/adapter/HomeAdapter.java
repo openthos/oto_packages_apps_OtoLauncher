@@ -33,6 +33,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public int pos = -1;
     private int mLastClickId = -1;
     private long mLastClickTime = 0;
+    private boolean isExistMene = false;
+    private boolean isClicked = false;
 
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
@@ -93,6 +95,28 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             nullnull = (CheckBox) view.findViewById(R.id.nullnull);
             item.setOnTouchListener(this);
             this.mClick = click;
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                        if (isExistMene == false) {
+                            MenuDialog dialog = new MenuDialog(itemView.getContext(), Type.blank);
+                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        } else {
+                            isExistMene = false;
+                        }
+                    }
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if (isClicked != true && pos != -1) {
+                            data.get(pos).put("isChecked", false);
+                            pos = -1;
+                            notifyDataSetChanged();
+                        }
+                        isClicked = false;
+                    }
+                    return false;
+                }
+            });
         }
 
         @Override
@@ -100,13 +124,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                 MenuDialog dialog = new MenuDialog(item.getContext(),
                                                 (Type) data.get(getAdapterPosition()).get("type"));
-                dialog.showDialog((int) event.getRawX(), (int) event.getRawY(), 0, 0);
-                LayoutInflater mLayoutInflater = ((Activity) item.getContext()).getLayoutInflater();
+                dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                isExistMene = true;
             }
             if ((Boolean) data.get(getAdapterPosition()).get("null") != true) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    isClicked = true;
                     if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
-                        < OtoConsts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())) {
+                            < OtoConsts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())
+                        && (event.getButtonState() != MotionEvent.BUTTON_SECONDARY)) {
                        PackageManager packageManager = item.getContext().getPackageManager();
                        Intent intent = packageManager.getLaunchIntentForPackage(
                                                                     "com.cyanogenmod.filemanager");
@@ -118,11 +144,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         if ((Boolean) data.get(getAdapterPosition()).get("isChecked") == false) {
                             if (pos != -1 && pos != getAdapterPosition()
                                 && (Boolean) data.get(pos).get("isChecked") == true) {
-                                data.get(pos).put("isChecked",
-                                                  !(Boolean) data.get(pos).get("isChecked"));
+                                data.get(pos).put("isChecked", false);
                             }
-                            data.get(getAdapterPosition()).put("isChecked",
-                                     !(Boolean) data.get(getAdapterPosition()).get("isChecked"));
+                            data.get(getAdapterPosition()).put("isChecked",true);
                             if (pos != getAdapterPosition()) {
                                 pos = getAdapterPosition();
                             } else {
@@ -134,6 +158,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         mLastClickId = pos;
                     }
                 }
+            } else {
+                if (pos != -1 && pos != getAdapterPosition()
+                                && (Boolean) data.get(pos).get("isChecked") == true) {
+                    data.get(pos).put("isChecked", false);
+                }
+                pos = -1;
+                notifyDataSetChanged();
             }
             return false;
         }
