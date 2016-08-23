@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -132,6 +133,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
     }
 
     private void initDesktop() {
+        int num = getNum();
         File dir = DiskUtils.getRoot();
         if (!dir.exists()) {
             dir.mkdir();
@@ -155,11 +157,11 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
                 map.put("icon", R.drawable.ic_app_text);
                 map.put("type", Type.file);
             }
-            if (mDatas.size() < OtoConsts.MAX_ICON) {
+            if (mDatas.size() < num) {
                 mDatas.add(map);
             }
         }
-        while (mDatas.size() < OtoConsts.MAX_ICON) {
+        while (mDatas.size() < num) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", "");
             map.put("isChecked", false);
@@ -169,6 +171,16 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
             map.put("type", Type.blank);
             mDatas.add(map);
         }
+    }
+
+    int heightNum = OtoConsts.MAX_LINE;
+    private int getNum() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int widthPixels = dm.widthPixels;
+        float density = dm.density;
+        int widthNum = widthPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
+        return widthNum * heightNum;
     }
 
     private void init() {
