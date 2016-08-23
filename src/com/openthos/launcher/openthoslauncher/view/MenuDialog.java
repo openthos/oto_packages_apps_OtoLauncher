@@ -237,6 +237,7 @@ public class MenuDialog extends Dialog {
                                 }).show();
             } else if (text.equals(all_menu[OtoConsts.INDEX_RENAME])) {
                 //rename
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.RENAME);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CLEAN_RECYCLE])) {
                 //clean_recycle
                 new Thread() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.openthos.launcher.openthoslauncher.R;
+import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
@@ -35,6 +37,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private long mLastClickTime = 0;
     private boolean isExistMene = false;
     private boolean isClicked = false;
+    public boolean isRename = false;
 
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
@@ -76,12 +79,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }
+        if (isRename == true && position == pos) {
+            holder.tv.setFocusable(true);
+            holder.tv.setFocusableInTouchMode(true);
+            holder.tv.requestFocus();
+        } else {
+            holder.tv.setFocusable(false);
+            holder.tv.clearFocus();
+        }
     }
 
     public class HomeViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
         RelativeLayout item;
         ImageView iv;
-        TextView tv;
+        EditText tv;
         CheckBox checkBox;
         CheckBox nullnull;
         private RecycleCallBack mClick;
@@ -90,7 +101,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             super(view);
             item = (RelativeLayout) view.findViewById(R.id.item);
             iv = (ImageView) view.findViewById(R.id.icon);
-            tv = (TextView) view.findViewById(R.id.texts);
+            tv = (EditText) view.findViewById(R.id.texts);
+            tv.setOnKeyListener(keyListener);
+            tv.setOnFocusChangeListener(focusChangeListener);
             checkBox = (CheckBox) view.findViewById(R.id.check);
             nullnull = (CheckBox) view.findViewById(R.id.nullnull);
             item.setOnTouchListener(this);
@@ -114,6 +127,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             notifyDataSetChanged();
                         }
                         isClicked = false;
+                        if (isRename == true) {
+                            isRename = false;
+                            notifyDataSetChanged();
+                        }
                     }
                     return false;
                 }
@@ -171,4 +188,38 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             return false;
         }
     }
+
+    View.OnKeyListener keyListener = new View.OnKeyListener() {
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                HashMap current = data.get(pos);
+                current.put("name",((EditText)v).getText());
+                data.set(pos,current);
+                v.setFocusable(false);
+                v.clearFocus();
+                notifyDataSetChanged();
+                HashMap mCurrent = ((MainActivity)mRecycleClick).mDatas.get(pos);
+                mCurrent.put("name",((EditText)v).getText());
+                ((MainActivity)mRecycleClick).mDatas.set(pos,mCurrent);
+                isRename = false;
+                return true;
+            }
+            return false;
+        }
+    };
+
+    View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) { // TODO: will add code, next.
+            } else {
+                v.setFocusable(false);
+                v.clearFocus();
+                isRename = false;
+            }
+        }
+    };
 }

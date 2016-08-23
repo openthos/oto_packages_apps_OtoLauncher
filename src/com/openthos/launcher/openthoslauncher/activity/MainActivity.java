@@ -27,7 +27,7 @@ import java.util.List;
 
 public class MainActivity extends BasicActivity implements RecycleCallBack {
     private RecyclerView mRecyclerView;
-    private List<HashMap<String, Object>> mDatas;
+    public List<HashMap<String, Object>> mDatas;
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
@@ -96,6 +96,10 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
                             }
                         }
                         mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    case OtoConsts.RENAME:
+                        mAdapter.isRename = true;
                         mAdapter.notifyDataSetChanged();
                         break;
                 }
