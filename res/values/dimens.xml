@@ -11,8 +11,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- icon size -->
-    <dimen name="icon_image_size">64dp</dimen>
-    <dimen name="icon_font_size">12sp</dimen>
-    <dimen name="icon_diver_size">16dp</dimen>
-    <dimen name="icon_size">128dp</dimen>
+    <dimen name="icon_image_size">32dp</dimen>
+    <dimen name="icon_font_size">6sp</dimen>
+    <dimen name="icon_diver_size">8dp</dimen>
+    <dimen name="icon_size">64dp</dimen>
 </resources>

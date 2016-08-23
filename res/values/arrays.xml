@@ -8,6 +8,7 @@
     <add-resource type="array" name="menu_blank" />
     <add-resource type="array" name="menu_file" />
     <add-resource type="array" name="menu_recycle" />
+    <add-resource type="array" name="all_menu" />
 
     <array name="default_icon_name">
         <item>@string/my_computer</item>
@@ -25,7 +26,6 @@
         <item>false</item>
         <item>false</item>
     </array>
-
     <array name="menu_computer">
         <item>@string/open</item>
         <item>@string/about_computer</item>
@@ -37,10 +37,8 @@
         <item>@string/display_settings</item>
         <item>@string/change_wallpaper</item>
     </array>
-
     <array name="menu_file">
         <item>@string/open</item>
-        <item>@string/open_way</item>
         <item>@string/compress</item>
         <item>@string/decompression</item>
         <item>@string/crop</item>
@@ -52,5 +50,22 @@
     <array name="menu_recycle">
         <item>@string/open</item>
         <item>@string/clean_recycle</item>
+    </array>
+    <array name="all_menu">
+        <item>@string/open</item>
+        <item>@string/about_computer</item>
+        <item>@string/compress</item>
+        <item>@string/decompression</item>
+        <item>@string/crop</item>
+        <item>@string/copy</item>
+        <item>@string/paste</item>
+        <item>@string/sort</item>
+        <item>@string/new_folder</item>
+        <item>@string/display_settings</item>
+        <item>@string/change_wallpaper</item>
+        <item>@string/delete</item>
+        <item>@string/rename</item>
+        <item>@string/clean_recycle</item>
+        <item>@string/property</item>
     </array>
 </resources>

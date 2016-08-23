@@ -1,10 +1,16 @@
 package com.openthos.launcher.openthoslauncher.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -12,30 +18,34 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.openthos.launcher.openthoslauncher.R;
+import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.FileUtils;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
+import java.io.File;
 /**
  * Created by xu on 2016/8/11.
  */
 public class MenuDialog extends Dialog {
-    private ListView listView;
     private Context context;
     private Type type;
+    private String path;
 
     public MenuDialog(Context context) {
         super(context);
         this.context = context;
     }
 
-    public MenuDialog(Context context, Type type) {
+    public MenuDialog(Context context, Type type, String path) {
         super(context);
         this.context = context;
         this.type = type;
+        this.path = path;
     }
 
     public MenuDialog(Context context, int themeResId) {
@@ -57,6 +67,7 @@ public class MenuDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_menu);
         getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.color.transparent));
+        android.widget.Toast.makeText(getContext(),path,android.widget.Toast.LENGTH_LONG).show();
         String[] s = {};
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
         switch (type) {
@@ -82,6 +93,7 @@ public class MenuDialog extends Dialog {
             View mv = View.inflate(context, R.layout.item_menu, null);
             TextView tv = (TextView) mv.findViewById(R.id.text);
             tv.setText(s[i]);
+            tv.setTag(s[i]);
             tv.setOnHoverListener(hoverListener);
             tv.setOnClickListener(clickListener);
             ll.addView(mv);
@@ -130,10 +142,117 @@ public class MenuDialog extends Dialog {
     };
 
     View.OnClickListener clickListener = new View.OnClickListener() {
-
         @Override
         public void onClick(View v) {
-            String text= ((TextView)v).getText().toString();
+            String text = (String) v.getTag();
+            String[] all_menu = context.getResources().getStringArray(R.array.all_menu);
+            if (text.equals(all_menu[OtoConsts.INDEX_OPEN])) {
+                //open
+                switch (type) {
+                    case computer:
+                    case recycle:
+                    case directory:
+                        PackageManager packageManager = getContext().getPackageManager();
+                        Intent openDir = packageManager.getLaunchIntentForPackage(
+                                                              OtoConsts.FILEMANAGER_PACKAGE);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("path",path);
+                        openDir.putExtras(bundle);
+                        getContext().startActivity(openDir);
+                        break;
+                    case file:
+                        Intent openFile = new Intent();
+                        openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        openFile.setAction(Intent.ACTION_VIEW);
+                        String fileType = FileUtils.getMIMEType(new File(path));
+                        openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                        getContext().startActivity(openFile);
+                        break;
+                }
+            } else if (text.equals(all_menu[OtoConsts.INDEX_ABOUT_COMPUTER])) {
+                //about_computer
+                PackageManager packageManager = getContext().getPackageManager();
+                Intent about = packageManager.getLaunchIntentForPackage(
+                                                             OtoConsts.SETTINGS_PACKAGE);
+                about.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(about);
+            } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
+                //compress
+            } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
+                //decompression
+            } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
+                //crop
+            } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
+                //copy
+            } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
+                //paste
+            } else if (text.equals(all_menu[OtoConsts.INDEX_SORT])) {
+                //sort
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.SORT);
+            } else if (text.equals(all_menu[OtoConsts.INDEX_NEW_FOLDER])) {
+                //new_folder
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.NEWFOLDER);
+            }else if (text.equals(all_menu[OtoConsts.INDEX_DISPLAY_SETTINGS])) {
+                //display_settings
+                Intent display = new Intent();
+                ComponentName compDisplay = new ComponentName(OtoConsts.SETTINGS_PACKAGE,
+                                                              OtoConsts.DISPLAY_SETTINGS);
+                display.setComponent(compDisplay);
+                display.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(display);
+            } else if (text.equals(all_menu[OtoConsts.INDEX_CHANGE_WALLPAPER])) {
+                //change_wallpaper
+            } else if (text.equals(all_menu[OtoConsts.INDEX_DELETE])) {
+                //delete
+                new AlertDialog.Builder(getContext())
+                        .setMessage(getContext().getResources().getString(
+                                                              R.string.dialog_delete_text))
+                       .setPositiveButton(getContext().getResources().getString(
+                                                              R.string.dialog_delete_yes),
+                                new android.content.DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                super.run();
+                                                DiskUtils.moveDirectory(path,
+                                                              OtoConsts.RECYCLE_PATH);
+                                                Message deleteFile = new Message();
+                                                deleteFile.obj = path;
+                                                deleteFile.what = OtoConsts.DELETE;
+                                                MainActivity.mHandler.sendMessage(deleteFile);
+                                            }
+                                        }.start();
+                                        dialog.cancel();
+                                    }
+                                })
+                        .setNegativeButton(getContext().getResources().getString(
+                                                             R.string.dialog_delete_no),
+                                new android.content.DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
+            } else if (text.equals(all_menu[OtoConsts.INDEX_RENAME])) {
+                //rename
+            } else if (text.equals(all_menu[OtoConsts.INDEX_CLEAN_RECYCLE])) {
+                //clean_recycle
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        File recycle = new File(path);
+                        DiskUtils.delete(recycle);
+                        if (!recycle.exists()) {
+                            recycle.mkdir();
+                        }
+                    }
+                }.start();
+            } else if (text.equals(all_menu[OtoConsts.INDEX_PROPERTY])) {
+                //property
+            }
             dismiss();
         }
     };

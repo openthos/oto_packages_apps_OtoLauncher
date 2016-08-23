@@ -18,6 +18,9 @@
     <add-resource type="string" name="rename" />
     <add-resource type="string" name="property" />
     <add-resource type="string" name="clean_recycle" />
+    <add-resource type="string" name="dialog_delete_text" />
+    <add-resource type="string" name="dialog_delete_yes" />
+    <add-resource type="string" name="dialog_delete_no" />
 
 
     <string name="app_name">OpenthosLauncher</string>
@@ -39,4 +42,8 @@
     <string name="rename">Rename</string>
     <string name="property">Property</string>
     <string name="clean_recycle">Clean Recycle</string>
+    <!-- About Delete file -->
+    <string name="dialog_delete_text">Are you sure you want to move this file to the Recycle?</string>
+    <string name="dialog_delete_yes">Yes</string>
+    <string name="dialog_delete_no">No</string>
 </resources>

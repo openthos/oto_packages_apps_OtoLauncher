@@ -2,7 +2,8 @@ package com.openthos.launcher.openthoslauncher.activity;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -14,7 +15,8 @@ import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 import com.openthos.launcher.openthoslauncher.adapter.ItemCallBack;
 import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
     private List<HashMap<String, Object>> mDatas;
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
+    public static Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +37,91 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
         setContentView(R.layout.activity_main);
         initData();
         init();
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case OtoConsts.REFRESH:
+                        File doc = DiskUtils.getRoot();
+                        File[] files = doc.listFiles();
+                        break;
+                    case OtoConsts.SORT:
+                        mDatas.clear();
+                        initData();
+                        mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    case OtoConsts.DELETE:
+                        inner:
+                        for (int i = 0; i < mDatas.size(); i++) {
+                            if ((mDatas.get(i).get("path")).equals(msg.obj)) {
+                                HashMap<String, Object> nullmap = new HashMap<>();
+                                nullmap.put("name", "");
+                                nullmap.put("isChecked", false);
+                                nullmap.put("icon", -1);
+                                nullmap.put("null", true);
+                                nullmap.put("path", "");
+                                nullmap.put("type", Type.blank);
+                                mDatas.set(i, nullmap);
+                                break inner;
+                            }
+                        }
+                        mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    case OtoConsts.NEWFOLDER:
+                        inner:
+                        for (int i = 0; i < mDatas.size(); i++) {
+                            if ((mDatas.get(i).get("path")).equals("")) {
+                                File root = DiskUtils.getRoot();
+                                for (int j = 1; ; j++) {
+                                    File file = new File(root,
+                                                        MainActivity.this.getResources()
+                                                        .getString(R.string.new_folder) + j);
+                                    if (!file.exists()) {
+                                        file.mkdir();
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("name", file.getName());
+                                        map.put("path", file.getAbsolutePath());
+                                        map.put("isChecked", false);
+                                        map.put("null", false);
+                                        map.put("icon", R.drawable.ic_app_file);
+                                        map.put("type", Type.directory);
+                                        mDatas.set(i, map);
+                                        break inner;
+                                    }
+                                }
+                            }
+                        }
+                        mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        };
     }
 
     private void initData() {
         String[] defaultName = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcon = getResources().obtainTypedArray(R.array.default_icon);
+        String[] paths = {"/", DiskUtils.getRecycle().getAbsolutePath()};
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                File recycle = DiskUtils.getRecycle();
+                if (!recycle.exists()) {
+                    recycle.mkdir();
+                }
+            }
+        }.start();
         Type[] defaultType = {Type.computer, Type.recycle};
         mDatas = new ArrayList<>();
         for (int i = 0; i < defaultName.length; i++) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", defaultName[i]);
+            map.put("path", paths[i]);
             map.put("isChecked", false);
             map.put("null", false);
             map.put("icon", defaultIcon.getResourceId(i, R.mipmap.ic_launcher));
@@ -54,7 +132,10 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
     }
 
     private void initDesktop() {
-        File dir = Environment.getExternalStorageDirectory();
+        File dir = DiskUtils.getRoot();
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
         File[] files = dir.listFiles();
         for (int i = 0; i < files.length; i++) {
             HashMap<String, Object> map = new HashMap<>();

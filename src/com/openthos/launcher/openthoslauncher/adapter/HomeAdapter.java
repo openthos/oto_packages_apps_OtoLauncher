@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.openthos.launcher.openthoslauncher.R;
-import com.openthos.launcher.openthoslauncher.entity.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
@@ -100,7 +100,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                         if (isExistMene == false) {
-                            MenuDialog dialog = new MenuDialog(itemView.getContext(), Type.blank);
+                            MenuDialog dialog = new MenuDialog(itemView.getContext(),
+                                                               Type.blank, "/");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                         } else {
                             isExistMene = false;
@@ -123,12 +124,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                 MenuDialog dialog = new MenuDialog(item.getContext(),
-                                                (Type) data.get(getAdapterPosition()).get("type"));
+                                              (Type) data.get(getAdapterPosition()).get("type"),
+                                              (String)data.get(getAdapterPosition()).get("path"));
                 dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                 isExistMene = true;
             }
-            if ((Boolean) data.get(getAdapterPosition()).get("null") != true) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if ((Boolean) data.get(getAdapterPosition()).get("null") != true) {
                     isClicked = true;
                     if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
                             < OtoConsts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())
