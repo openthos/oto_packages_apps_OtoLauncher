@@ -45,7 +45,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case OtoConsts.REFRESH:
-                        File doc = DiskUtils.getRoot();
+                        File doc = new File(OtoConsts.DESKTOP_PATH);
                         File[] files = doc.listFiles();
                         break;
                     case OtoConsts.SORT:
@@ -76,7 +76,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         inner:
                         for (int i = 0; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals("")) {
-                                File root = DiskUtils.getRoot();
+                                File root = new File(OtoConsts.DESKTOP_PATH);
                                 for (int j = 1; ; j++) {
                                     File file = new File(root,
                                                         MainActivity.this.getResources()
@@ -111,7 +111,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private void initData() {
         String[] defaultName = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcon = getResources().obtainTypedArray(R.array.default_icon);
-        String[] paths = {"/", DiskUtils.getRecycle().getAbsolutePath()};
+        String[] paths = {"/", OtoConsts.RECYCLE_PATH};
         new Thread() {
             @Override
             public void run() {
@@ -139,7 +139,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void initDesktop() {
         int num = getNum();
-        File dir = DiskUtils.getRoot();
+        File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
             dir.mkdir();
         }

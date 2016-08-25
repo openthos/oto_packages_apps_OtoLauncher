@@ -15,7 +15,8 @@ public class OtoConsts {
     public static final String FILEMANAGER_PACKAGE = "com.cyanogenmod.filemanager";
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
-    public static final String RECYCLE_PATH = DiskUtils.getRoot().getAbsolutePath()+"/Recycle";
+    public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
+    public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
     //MainActivity Handler Message'what
     public static final int REFRESH = 0x0000001;
     public static final int SORT = 0x0000002;

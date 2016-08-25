@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class DiskUtils {
 
-    public static File getRoot() {
+    public static File getDesktop() {
         File dir = Environment.getExternalStorageDirectory();
         return new File(dir, "Desktop");
     }
