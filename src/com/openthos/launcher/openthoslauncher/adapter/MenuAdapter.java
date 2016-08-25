@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.R;
 
 /**
  * Created by xu on 2016/8/11.

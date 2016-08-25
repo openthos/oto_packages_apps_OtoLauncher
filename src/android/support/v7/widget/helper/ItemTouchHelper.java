@@ -41,7 +41,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.animation.Interpolator;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.R;
 
 import java.util.ArrayList;
 import java.util.List;

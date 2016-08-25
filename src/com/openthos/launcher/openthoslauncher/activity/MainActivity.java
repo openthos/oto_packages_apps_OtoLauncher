@@ -11,7 +11,8 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 import com.openthos.launcher.openthoslauncher.adapter.ItemCallBack;
 import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends BasicActivity implements RecycleCallBack {
+public class MainActivity extends Launcher implements RecycleCallBack {
     private RecyclerView mRecyclerView;
     public List<HashMap<String, Object>> mDatas;
     public HomeAdapter mAdapter;
@@ -35,7 +36,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setOtoContentView(R.layout.activity_main);
         initData();
         init();
         mHandler = new Handler() {
@@ -143,6 +144,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
             dir.mkdir();
         }
         File[] files = dir.listFiles();
+        if(files != null){
         for (int i = 0; i < files.length; i++) {
             HashMap<String, Object> map = new HashMap<>();
             if (files[i].isDirectory()) {
@@ -164,7 +166,7 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
             if (mDatas.size() < num) {
                 mDatas.add(map);
             }
-        }
+        }}
         while (mDatas.size() < num) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", "");
@@ -182,14 +184,13 @@ public class MainActivity extends BasicActivity implements RecycleCallBack {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int widthPixels = dm.widthPixels;
-        float density = dm.density;
         int widthNum = widthPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
         return widthNum * heightNum;
     }
 
     private void init() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(OtoConsts.MAX_LINE,
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(heightNum,
                 StaggeredGridLayoutManager.HORIZONTAL));
         mAdapter = new HomeAdapter(mDatas, this);
 

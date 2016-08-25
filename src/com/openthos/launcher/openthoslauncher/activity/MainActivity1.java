@@ -15,7 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.adapter.MenuAdapter;
 import com.openthos.launcher.openthoslauncher.view.WindowsLayout;
 

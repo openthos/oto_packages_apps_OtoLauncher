@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 
 /**
  * Created by xu on 2016/8/4.
  */
-public class BasicActivity extends Activity {
+public class BasicActivity extends Launcher {
 
     public FrameLayout viewContainer;
     public ImageView backgroundImage;
@@ -26,8 +26,6 @@ public class BasicActivity extends Activity {
         super.setContentView(v);
 
         viewContainer = (FrameLayout)v.findViewById(R.id.content);
-        backgroundImage= (ImageView)v.findViewById(R.id.background);
-        backgroundImage.setImageDrawable(getResources().getDrawable(R.drawable.system));
     }
 
     @Override

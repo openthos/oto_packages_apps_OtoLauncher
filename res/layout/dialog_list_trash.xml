@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_for_th"
+    style="@style/DialogWrapper">
+    <TextView
+        android:id="@+id/dialog_open_trash"
+        style="@style/dialogContent"
+        android:text="@string/dialog_open" />
+
+    <TextView
+        android:id="@+id/dialog_empty"
+        style="@style/dialogContent"
+        android:text="@string/dialog_about" />
+</LinearLayout>

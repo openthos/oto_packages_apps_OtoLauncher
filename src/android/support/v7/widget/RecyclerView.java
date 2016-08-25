@@ -59,7 +59,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.R;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

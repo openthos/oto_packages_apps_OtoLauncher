@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_for_nm"
+    style="@style/DialogWrapper">
+
+    <TextView
+        android:id="@+id/dialog_open_normal"
+        style="@style/dialogContent"
+        android:text="@string/dialog_open" />
+
+    <TextView
+        android:id="@+id/dialog_open_with"
+        style="@style/dialogContent"
+        android:text="@string/dialog_open_with" />
+
+    <TextView
+        android:id="@+id/dialog_compress"
+        style="@style/dialogContent"
+        android:text="@string/dialog_compress" />
+
+    <TextView
+        android:id="@+id/dialog_uncompress"
+        style="@style/dialogContent"
+        android:text="@string/dialog_uncompress" />
+
+    <TextView
+        android:id="@+id/dialog_cut"
+        style="@style/dialogContent"
+        android:text="@string/dialog_cut" />
+
+    <TextView
+        android:id="@+id/dialog_copy"
+        style="@style/dialogContent"
+        android:text="@string/dialog_copy" />
+
+    <TextView
+        android:id="@+id/dialog_del"
+        style="@style/dialogContent"
+        android:text="@string/dialog_delete" />
+
+    <TextView
+        android:id="@+id/dialog_rename"
+        style="@style/dialogContent"
+        android:text="@string/dialog_rename" />
+    <TextView
+        android:id="@+id/dialog_property"
+        style="@style/dialogContent"
+        android:text="@string/dialog_property" />
+
+</LinearLayout>

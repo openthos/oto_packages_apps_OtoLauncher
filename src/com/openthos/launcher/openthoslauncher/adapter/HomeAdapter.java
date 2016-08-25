@@ -1,6 +1,5 @@
 package com.openthos.launcher.openthoslauncher.adapter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -15,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.EditText;
 
-import com.openthos.launcher.openthoslauncher.R;
+import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.entity.Type;
@@ -147,6 +146,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 isExistMene = true;
             }
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (getAdapterPosition() != -1){
                 if ((Boolean) data.get(getAdapterPosition()).get("null") != true) {
                     isClicked = true;
                     if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
@@ -154,7 +154,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         && (event.getButtonState() != MotionEvent.BUTTON_SECONDARY)) {
                        PackageManager packageManager = item.getContext().getPackageManager();
                        Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                    "com.cyanogenmod.filemanager");
+                                                                    OtoConsts.FILEMANAGER_PACKAGE);
                        item.getContext().startActivity(intent);
                     } else {
                         if (null != mClick) {
@@ -176,7 +176,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         mLastClickTime = System.currentTimeMillis();
                         mLastClickId = pos;
                     }
-                }
+                }}
             } else {
                 if (pos != -1 && pos != getAdapterPosition()
                                 && (Boolean) data.get(pos).get("isChecked") == true) {

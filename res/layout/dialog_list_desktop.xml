@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_for_dk"
+    style="@style/DialogWrapper">
+
+    <TextView
+        android:id="@+id/dialog_paste"
+        style="@style/dialogContent"
+        android:text="@string/dialog_paste" />
+
+    <TextView
+        android:id="@+id/dialog_sort"
+        style="@style/dialogContent"
+        android:text="@string/dialog_sort" />
+    <TextView
+        android:id="@+id/dialog_new_folder"
+        style="@style/dialogContent"
+        android:text="@string/dialog_new_folder" />
+
+    <TextView
+        android:id="@+id/dialog_display_settings"
+        style="@style/dialogContent"
+        android:text="@string/dialog_dis_setting" />
+
+    <TextView
+        android:id="@+id/dialog_change_pix"
+        style="@style/dialogContent"
+        android:text="@string/dialog_change_bgp" />
+
+</LinearLayout>
