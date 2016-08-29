@@ -15,6 +15,7 @@ public class OtoConsts {
     public static final String FILEMANAGER_PACKAGE = "com.cyanogenmod.filemanager";
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
+    //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
     //MainActivity Handler Message'what
@@ -23,6 +24,7 @@ public class OtoConsts {
     public static final int DELETE = 0x0000003;
     public static final int NEWFOLDER = 0x0000004;
     public static final int RENAME = 0x00000005;
+    public static final int PROPERTY = 0x00000006;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;

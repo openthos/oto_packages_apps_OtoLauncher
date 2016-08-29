@@ -471,7 +471,25 @@ s -->
     <add-resource type="string" name="dialog_delete_text" />
     <add-resource type="string" name="dialog_delete_yes" />
     <add-resource type="string" name="dialog_delete_no" />
-
+    <add-resource type="string" name="dialog_property_title" />
+    <add-resource type="string" name="dialog_property_file_type" />
+    <add-resource type="string" name="dialog_property_open_way" />
+    <add-resource type="string" name="dialog_property_location" />
+    <add-resource type="string" name="dialog_property_size" />
+    <add-resource type="string" name="dialog_property_space_usage" />
+    <add-resource type="string" name="dialog_property_creation_time" />
+    <add-resource type="string" name="dialog_property_modification_time" />
+    <add-resource type="string" name="dialog_property_access_time" />
+    <add-resource type="string" name="dialog_property_limits_of_authority" />
+    <add-resource type="string" name="dialog_property_user" />
+    <add-resource type="string" name="dialog_property_group" />
+    <add-resource type="string" name="dialog_property_other" />
+    <add-resource type="string" name="dialog_property_read" />
+    <add-resource type="string" name="dialog_property_write" />
+    <add-resource type="string" name="dialog_property_execute" />
+    <add-resource type="string" name="dialog_property_confirm" />
+    <add-resource type="string" name="dialog_property_cancel" />
+    <add-resource type="string" name="dialog_property_apply" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -496,6 +514,26 @@ s -->
     <string name="dialog_delete_text">Are you sure you want to move this file to the Recycle?</string>
     <string name="dialog_delete_yes">Yes</string>
     <string name="dialog_delete_no">No</string>
+    <!-- About Dialog property -->
+    <string name="dialog_property_title">Propertys</string>
+    <string name="dialog_property_file_type">Type of file:</string>
+    <string name="dialog_property_open_way">Description:</string>
+    <string name="dialog_property_location">Location:</string>
+    <string name="dialog_property_size">Size:</string>
+    <string name="dialog_property_space_usage">Size on deis:</string>
+    <string name="dialog_property_creation_time">Created:</string>
+    <string name="dialog_property_modification_time">Modified:</string>
+    <string name="dialog_property_access_time">Accessed:</string>
+    <string name="dialog_property_limits_of_authority">Limits of authority:</string>
+    <string name="dialog_property_user">User:</string>
+    <string name="dialog_property_group">Group:</string>
+    <string name="dialog_property_other">Other:</string>
+    <string name="dialog_property_read">R</string>
+    <string name="dialog_property_write">W</string>
+    <string name="dialog_property_execute">X</string>
+    <string name="dialog_property_confirm">OK</string>
+    <string name="dialog_property_cancel">Cancel</string>
+    <string name="dialog_property_apply">Apply</string>
 
 
 

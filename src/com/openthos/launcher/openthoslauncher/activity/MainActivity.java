@@ -19,6 +19,7 @@ import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -103,6 +104,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mAdapter.isRename = true;
                         mAdapter.notifyDataSetChanged();
                         break;
+                   case OtoConsts.PROPERTY:
+                       PropertyDialog dialog = new PropertyDialog(MainActivity.this,
+                                                                  (String) msg.obj);
+                       dialog.showDialog();
+                       break;
+
                 }
             }
         };

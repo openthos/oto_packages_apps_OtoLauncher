@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dialog_property_width"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dialog_property_title_height"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/title_image"
+            android:layout_width="@dimen/dialog_property_title_icon_size"
+            android:layout_height="@dimen/dialog_property_title_icon_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dialog_property_padding2x"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/dialog_property_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_property_font_size" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/title_close"
+            android:layout_width="@dimen/dialog_property_title_close_size"
+            android:layout_height="@dimen/dialog_property_title_close_size"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_property_padding3x">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_file_type"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_open_way"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b1b1b1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_location"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_size"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_space_usage"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b1b1b1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_creation_time"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_modification_time"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_access_time"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b1b1b1" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x"
+            android:text="@string/dialog_property_limits_of_authority"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_property_font_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_user"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_read"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x"
+                    android:checked="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_write"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_execute"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_group"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_read"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_write"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_execute"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dialog_property_padding1x"
+            android:paddingTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/dialog_property_other"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_read"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_write"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dialog_property_padding1x" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/dialog_property_execute"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dialog_property_font_size" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dialog_property_padding1x"
+            android:layout_marginTop="@dimen/dialog_property_padding1x">
+
+            <TextView
+                android:id="@+id/apply"
+                android:layout_width="@dimen/dialog_property_button_width"
+                android:layout_height="@dimen/dialog_property_button_height"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="@string/dialog_property_apply"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="@dimen/dialog_property_button_width"
+                android:layout_height="@dimen/dialog_property_button_height"
+                android:layout_marginRight="@dimen/dialog_property_padding1x"
+                android:layout_toLeftOf="@id/apply"
+                android:gravity="center"
+                android:text="@string/dialog_property_cancel"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+            <TextView
+                android:id="@+id/confirm"
+                android:layout_width="@dimen/dialog_property_button_width"
+                android:layout_height="@dimen/dialog_property_button_height"
+                android:layout_marginRight="@dimen/dialog_property_padding1x"
+                android:layout_toLeftOf="@id/cancel"
+                android:gravity="center"
+
+                android:text="@string/dialog_property_confirm"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dialog_property_font_size" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

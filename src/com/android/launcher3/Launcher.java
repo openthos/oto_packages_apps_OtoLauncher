@@ -3262,8 +3262,8 @@ public class Launcher extends Activity
     }
 
     private void setWorkspaceBackground(boolean workspace) {
-        mLauncherView.setBackground(workspace ?
-                mWorkspaceBackgroundDrawable : null);
+        mLauncherView.setBackground(workspace ? null : null);
+        //        mWorkspaceBackgroundDrawable : null);
     }
 
     protected void changeWallpaperVisiblity(boolean visible) {
