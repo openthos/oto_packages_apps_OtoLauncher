@@ -41,4 +41,20 @@ public class OtoConsts {
     public static final int INDEX_RENAME = 12;
     public static final int INDEX_CLEAN_RECYCLE = 13;
     public static final int INDEX_PROPERTY = 14;
+
+    public static final int LIMIT_LENGTH = 10;
+    public static final int LIMIT_OWNER_READ = 1;
+    public static final int LIMIT_OWNER_WRITE = 2;
+    public static final int LIMIT_OWNER_EXECUTE = 3;
+    public static final int LIMIT_GROUP_READ = 4;
+    public static final int LIMIT_GROUP_WRITE = 5;
+    public static final int LIMIT_GROUP_EXECUTE = 6;
+    public static final int LIMIT_OTHER_READ = 7;
+    public static final int LIMIT_OTHER_WRITE = 8;
+    public static final int LIMIT_OTHER_EXECUTE = 9;
+
+    public static final long SIZE_KB = 1024L;
+    public static final long SIZE_MB = 1024L*1024L;
+    public static final long SIZE_GB = 1024L*1024L*1024L;
+    public static final long SIZE_TB = 1024L*1024L*1024L*1024L;
 }

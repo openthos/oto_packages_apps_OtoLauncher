@@ -125,6 +125,7 @@
                 android:textSize="@dimen/dialog_property_font_size" />
 
             <TextView
+                android:id="@+id/location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -150,6 +151,7 @@
                 android:textSize="@dimen/dialog_property_font_size" />
 
             <TextView
+                android:id="@+id/size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -175,6 +177,7 @@
                 android:textSize="@dimen/dialog_property_font_size" />
 
             <TextView
+                android:id="@+id/size_on_disk"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -213,6 +216,7 @@
                 android:textSize="@dimen/dialog_property_font_size" />
 
             <TextView
+                android:id="@+id/created"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -238,6 +242,7 @@
                 android:textSize="@dimen/dialog_property_font_size" />
 
             <TextView
+                android:id="@+id/modified"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -317,6 +322,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/limit_owner_read"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical" />
@@ -330,6 +336,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_owner_write"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -345,6 +352,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_owner_execute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -384,6 +392,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/limit_group_read"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -396,6 +405,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_group_write"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dialog_property_padding1x" />
@@ -409,6 +419,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_group_execute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dialog_property_padding1x" />
@@ -447,6 +458,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/limit_other_read"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -459,6 +471,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_other_write"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dialog_property_padding1x" />
@@ -472,6 +485,7 @@
                     android:textSize="@dimen/dialog_property_font_size" />
 
                 <CheckBox
+                    android:id="@+id/limit_other_execute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dialog_property_padding1x" />
@@ -521,7 +535,6 @@
                 android:layout_marginRight="@dimen/dialog_property_padding1x"
                 android:layout_toLeftOf="@id/cancel"
                 android:gravity="center"
-
                 android:text="@string/dialog_property_confirm"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />

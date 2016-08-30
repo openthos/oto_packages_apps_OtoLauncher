@@ -3,6 +3,8 @@ package com.openthos.launcher.openthoslauncher.utils;
 import android.os.Environment;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 /**
  * Created by xu on 2016/8/22.
@@ -72,5 +74,22 @@ public class DiskUtils {
             destDir.mkdirs();
         }
         return srcFile.renameTo(new File(destDirName + File.separator + srcFile.getName()));
+    }
+
+    public static String formatFileSize(long fileSize) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString = "";
+        if (fileSize < OtoConsts.SIZE_KB) {
+            fileSizeString = df.format((double) fileSize) + "B";
+        } else if (fileSize < OtoConsts.SIZE_MB) {
+            fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_KB) + "K";
+        } else if (fileSize < OtoConsts.SIZE_GB) {
+            fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_MB) + "M";
+        } else if (fileSize < OtoConsts.SIZE_TB){
+            fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_GB) + "G";
+        }else {
+            fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_TB) + "T";
+        }
+        return fileSizeString;
     }
 }
