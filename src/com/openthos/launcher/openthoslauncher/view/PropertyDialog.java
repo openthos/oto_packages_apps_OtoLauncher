@@ -3,6 +3,7 @@ package com.openthos.launcher.openthoslauncher.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -109,19 +110,19 @@ public class PropertyDialog extends Dialog {
         limit_other_read = (CheckBox) findViewById(R.id.limit_other_read);
         limit_other_write = (CheckBox) findViewById(R.id.limit_other_write);
         limit_other_execute = (CheckBox) findViewById(R.id.limit_other_execute);
-
-        String command = "ls -dl " + file.getAbsolutePath();
         Process pro;
         String line = "";
         Runtime runtime = Runtime.getRuntime();
         try {
-            pro = runtime.exec(command);
+            String command = "system/bin/ls";
+            String arg = "-dl";
+            pro = runtime.exec(new String[]{command, arg, mPath});
             BufferedReader in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             line = in.readLine();
         } catch (IOException e) {
         }
         String limit;
-        if (!line.isEmpty()) {
+        if (!TextUtils.isEmpty(line)) {
             limit = line.substring(0, OtoConsts.LIMIT_LENGTH);
             if (limit.charAt(OtoConsts.LIMIT_OWNER_READ) == 'r') {
                 limit_owner_read.setChecked(true);

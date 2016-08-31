@@ -105,8 +105,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.openthos.launcher.openthoslauncher.activity.BasicActivity"/>
-
         <activity
             android:name="com.android.launcher3.Launcher"
             android:launchMode="singleTask"
