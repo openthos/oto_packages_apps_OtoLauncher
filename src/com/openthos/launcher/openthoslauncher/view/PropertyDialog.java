@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by xu on 2016/8/11.
@@ -32,7 +35,7 @@ public class PropertyDialog extends Dialog {
     private File file;
     private ImageView titleImage;
     private TextView titleText;
-    private TextView location, size, sizeOnDisk, created, modified;
+    private TextView location, size, sizeOnDisk, created, modified, accessed;
     private CheckBox limit_owner_read, limit_owner_write, limit_owner_execute;
     private CheckBox limit_group_read, limit_group_write, limit_group_execute;
     private CheckBox limit_other_read, limit_other_write, limit_other_execute;
@@ -67,7 +70,6 @@ public class PropertyDialog extends Dialog {
         getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
         initTitle();
         initBody();
-        initLimit();
         initFoot();
     }
 
@@ -92,15 +94,53 @@ public class PropertyDialog extends Dialog {
         sizeOnDisk = (TextView) findViewById(R.id.size_on_disk);
         created = (TextView) findViewById(R.id.created);
         modified = (TextView) findViewById(R.id.modified);
+        accessed = (TextView) findViewById(R.id.accessed);
 
         location.setText(file.getAbsolutePath());
         size.setText(DiskUtils.formatFileSize(file.length()));
         sizeOnDisk.setText(DiskUtils.formatFileSize(file.length()));
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
-        modified.setText(format.format(file.lastModified()));
+
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        //SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Process pro;
+        String line = "";
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            String command = "/system/xbin/stat";
+            String arg = "";
+            pro = runtime.exec(new String[]{command, arg, mPath});
+            BufferedReader in = new BufferedReader(
+                                new InputStreamReader(pro.getInputStream()));
+            while ((line = in.readLine()) != null) {
+                if (line.contains("Access") && line.contains("Uid")) {
+                    String limit = line.substring(OtoConsts.INDEX_LIMIT_BEGIN,
+                                                  OtoConsts.INDEX_LIMIT_END);
+                    initLimit(limit);
+                }else if (line.contains("Access")) {
+                    String accessTime = line.substring(OtoConsts.INDEX_TIME_BEGIN,
+                                                       OtoConsts.INDEX_TIME_END);
+                    //android.util.Log.i("wwwww","!"+accessTime+"!");
+                    //Date dateTmp = dateFormat.parse(accessTime);
+                    accessed.setText(accessTime);
+                }else if (line.contains("Modify")) {
+                    String modifyTime = line.substring(OtoConsts.INDEX_TIME_BEGIN,
+                                                       OtoConsts.INDEX_TIME_END);
+                    //Date dateTmp = dateFormat.parse(modifyTime);
+                    modified.setText(modifyTime);
+                }else if (line.contains("Change")) {
+                    String changeTime = line.substring(OtoConsts.INDEX_TIME_BEGIN,
+                                                       OtoConsts.INDEX_TIME_END);
+                    //Date dateTmp = dateFormat.parse(changeTime);
+                    created.setText(changeTime);
+                }
+            }
+        } catch (IOException e) {
+        }
     }
 
-    private void initLimit() {
+    private void initLimit(String line) {
         limit_owner_read = (CheckBox) findViewById(R.id.limit_owner_read);
         limit_owner_write = (CheckBox) findViewById(R.id.limit_owner_write);
         limit_owner_execute = (CheckBox) findViewById(R.id.limit_owner_execute);
@@ -110,17 +150,6 @@ public class PropertyDialog extends Dialog {
         limit_other_read = (CheckBox) findViewById(R.id.limit_other_read);
         limit_other_write = (CheckBox) findViewById(R.id.limit_other_write);
         limit_other_execute = (CheckBox) findViewById(R.id.limit_other_execute);
-        Process pro;
-        String line = "";
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            String command = "system/bin/ls";
-            String arg = "-dl";
-            pro = runtime.exec(new String[]{command, arg, mPath});
-            BufferedReader in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-            line = in.readLine();
-        } catch (IOException e) {
-        }
         String limit;
         if (!TextUtils.isEmpty(line)) {
             limit = line.substring(0, OtoConsts.LIMIT_LENGTH);

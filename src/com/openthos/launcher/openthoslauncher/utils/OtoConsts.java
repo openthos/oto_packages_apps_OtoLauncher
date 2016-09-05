@@ -57,4 +57,10 @@ public class OtoConsts {
     public static final long SIZE_MB = 1024L*1024L;
     public static final long SIZE_GB = 1024L*1024L*1024L;
     public static final long SIZE_TB = 1024L*1024L*1024L*1024L;
+
+    public static final int INDEX_LIMIT_BEGIN = 14;
+    public static final int INDEX_LIMIT_END = 24;
+    public static final int INDEX_TIME_BEGIN = 8;
+    public static final int INDEX_TIME_END = 27;
+
 }
