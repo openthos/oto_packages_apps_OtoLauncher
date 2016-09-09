@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
@@ -195,7 +196,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 HashMap current = data.get(pos);
-                current.put("name",((EditText)v).getText());
+                String path = (String)current.get("path");
+                String newname = String.valueOf(((EditText)v).getText());
+                DiskUtils.rename(path, newname);
+                current.put("name",newname);
                 data.set(pos,current);
                 v.setFocusable(false);
                 v.clearFocus();
