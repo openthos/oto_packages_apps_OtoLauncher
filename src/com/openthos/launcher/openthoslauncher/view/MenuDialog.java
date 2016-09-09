@@ -223,7 +223,7 @@ public class MenuDialog extends Dialog {
                                             @Override
                                             public void run() {
                                                 super.run();
-                                                DiskUtils.moveDirectory(path,
+                                                DiskUtils.moveFile(path,
                                                               OtoConsts.RECYCLE_PATH);
                                                 Message deleteFile = new Message();
                                                 deleteFile.obj = path;

@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 
@@ -46,9 +48,23 @@ public class DiskUtils {
         }
     }
 
-    public static void moveDirectory(String srcDirName, String destDirName) {
-        copyFolder(srcDirName, destDirName);
-        deleteFolder(srcDirName);
+    public static void moveFile(String srcFile, String destDir) {
+        try {
+            File f = new File(destDir, new File(srcFile).getName());
+            if (f.exists()) {
+                for (int i = 2; ; i++) {
+                    File current = new File(f.getAbsolutePath() + "." + i);
+                    if (!current.exists()) {
+                        rename(srcFile, current.getName());
+                        srcFile = new File(new File(srcFile).getParent(), current.getName())
+                                        .getAbsolutePath();
+                        break;
+                    }
+                }
+            }
+            Runtime.getRuntime().exec(new String[] {"/system/bin/mv", srcFile, destDir});
+        } catch (IOException e) {
+        }
         return;
     }
 
