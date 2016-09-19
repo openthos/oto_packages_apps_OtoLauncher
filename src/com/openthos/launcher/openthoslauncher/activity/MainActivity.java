@@ -24,6 +24,7 @@ import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -145,6 +146,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void initDesktop() {
+        List<HashMap<String, Object>>  userDatas = new ArrayList<>();
         int num = getNum();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
@@ -170,10 +172,24 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 map.put("icon", R.drawable.ic_app_text);
                 map.put("type", Type.file);
             }
-            if (mDatas.size() < num) {
-                mDatas.add(map);
+
+            if (userDatas.size() < (num - mDatas.size())) {
+                userDatas.add(map);
             }
         }}
+
+        Collections.sort(userDatas, new Comparator<HashMap<String, Object>>() {
+
+            @Override
+            public int compare(HashMap<String, Object> object,
+                               HashMap<String, Object> anotherObject) {
+                String anotherObjectName = (String) anotherObject.get("name");
+                String objectName = (String) object.get("name");
+                return objectName.compareTo(anotherObjectName);
+            }
+        });
+        mDatas.addAll(userDatas);
+
         while (mDatas.size() < num) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", "");
