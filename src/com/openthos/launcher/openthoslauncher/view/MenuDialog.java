@@ -36,6 +36,7 @@ public class MenuDialog extends Dialog {
     private Context context;
     private Type type;
     private String path;
+    private int dialogHeight;
     private static MenuDialog menuDialog;
 
     public MenuDialog(Context context) {
@@ -94,9 +95,11 @@ public class MenuDialog extends Dialog {
             case blank:
                 s = context.getResources().getStringArray(R.array.menu_blank);
                 break;
-
         }
 
+        dialogHeight = 0;
+        int mvHeight = 0;
+        int mvWidth = 0;
         for (int i = 0; i < s.length; i++) {
             View mv = View.inflate(context, R.layout.item_menu, null);
             TextView tv = (TextView) mv.findViewById(R.id.text);
@@ -105,8 +108,15 @@ public class MenuDialog extends Dialog {
             tv.setOnHoverListener(hoverListener);
             tv.setOnClickListener(clickListener);
             ll.addView(mv);
+            if (i == 0) {
+               int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+               int height = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+               mv.measure(width,height);
+               mvWidth = mv.getMeasuredWidth();
+               mvHeight = mv.getMeasuredHeight();
+            }
+            dialogHeight += mvHeight;
         }
-
     }
 
     public void showDialog(int x, int y) {
@@ -123,11 +133,13 @@ public class MenuDialog extends Dialog {
         } else {
             lp.x = x;
         }
-        if (y > (d.getHeight() - dialogWindow.getAttributes().height-OtoConsts.BAR_Y)) {
-            lp.y = y - dialogWindow.getAttributes().height;
+        // if (y > (d.getHeight() - dialogWindow.getAttributes().height-OtoConsts.BAR_Y)) {
+        //     lp.y = y - dialogWindow.getAttributes().height;
+        if (y > (d.getHeight() - dialogHeight - OtoConsts.BAR_Y)) {
+            lp.y = y - dialogHeight - OtoConsts.FIX_PADDING;
             //lp.y = d.getHeight() - dialogWindow.getAttributes().height;
         } else {
-            lp.y = y - OtoConsts.FIX_Y;
+            lp.y = y;
         }
         lp.alpha = OtoConsts.FIX_ALPHA;
         dialogWindow.setAttributes(lp);
