@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.EditText;
+import android.content.Context;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -38,6 +39,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private boolean isExistMene = false;
     private boolean isClicked = false;
     public boolean isRename = false;
+    public static final String ACTION_OPEN_APPLICATION = "android.intent.action.OPEN_APPLICATION";
 
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
@@ -161,10 +163,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
                             < OtoConsts.DOUBLE_CLICK_TIME) && (mLastClickId == getAdapterPosition())
                         && (event.getButtonState() != MotionEvent.BUTTON_SECONDARY)) {
-                       PackageManager packageManager = item.getContext().getPackageManager();
-                       Intent intent = packageManager.getLaunchIntentForPackage(
+                        PackageManager packageManager = item.getContext().getPackageManager();
+                        Intent intent = packageManager.getLaunchIntentForPackage(
                                                                     OtoConsts.FILEMANAGER_PACKAGE);
-                       item.getContext().startActivity(intent);
+                        item.getContext().startActivity(intent);
+                        openAppBroadcast(item.getContext());
                     } else {
                         if (null != mClick) {
                             mClick.itemOnClick(getAdapterPosition(), v);
@@ -197,6 +200,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             return false;
         }
     }
+
+    public static void openAppBroadcast(Context context) {
+        Intent openAppIntent = new Intent();
+        openAppIntent.setAction(ACTION_OPEN_APPLICATION);
+        context.sendBroadcast(openAppIntent);
+    }
+
 
     View.OnKeyListener keyListener = new View.OnKeyListener() {
 

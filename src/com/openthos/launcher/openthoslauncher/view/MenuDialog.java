@@ -27,6 +27,7 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 
 import java.io.File;
 /**
@@ -189,6 +190,7 @@ public class MenuDialog extends Dialog {
                         getContext().startActivity(openFile);
                         break;
                 }
+                HomeAdapter.openAppBroadcast(context);
             } else if (text.equals(all_menu[OtoConsts.INDEX_ABOUT_COMPUTER])) {
                 //about_computer
                 PackageManager packageManager = getContext().getPackageManager();
