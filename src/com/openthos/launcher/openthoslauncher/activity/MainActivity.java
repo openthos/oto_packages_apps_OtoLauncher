@@ -10,7 +10,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-
+import android.widget.LinearLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
@@ -20,6 +20,7 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
+import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +35,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
-
+    private int mHeightNum = OtoConsts.MAX_LINE;
+    private boolean mIsExistMene = false;
+    private boolean mIsClicked = false;
+    private boolean mIsRename = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +150,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void initDesktop() {
-        List<HashMap<String, Object>>  userDatas = new ArrayList<>();
+        List<HashMap<String, Object>> userDatas = new ArrayList<>();
         int num = getNum();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
@@ -202,32 +206,76 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
     }
 
-    int heightNum = OtoConsts.MAX_LINE;
     private int getNum() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int widthPixels = dm.widthPixels;
         int widthNum = widthPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
-        return widthNum * heightNum;
+        return widthNum * mHeightNum;
     }
 
     private void init() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(heightNum,
-                StaggeredGridLayoutManager.HORIZONTAL));
-        mAdapter = new HomeAdapter(mDatas, this);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        linearLayout.setOnTouchListener(new View.OnTouchListener() {
 
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    if (!mIsExistMene) {
+                        MenuDialog dialog = MenuDialog.getInstance(MainActivity.this,
+                                                                   Type.blank, "/");
+                        dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                    } else {
+                        mIsExistMene = false;
+                    }
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!mIsClicked && mAdapter.pos != -1) {
+                        mAdapter.getData().get(mAdapter.pos).put("isChecked", false);
+                        mAdapter.pos = -1;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    mIsClicked = false;
+                }
                 return false;
             }
         });
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
+                                       StaggeredGridLayoutManager.HORIZONTAL));
+        mAdapter = new HomeAdapter(mDatas, this);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    if (!mIsExistMene) {
+                        MenuDialog dialog = MenuDialog.getInstance(MainActivity.this,
+                                                                   Type.blank, "/");
+                        dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                    } else {
+                       mIsExistMene = false;
+                    }
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!mIsClicked && mAdapter.pos != -1) {
+                        mDatas.get(mAdapter.pos).put("isChecked", false);
+                        mAdapter.pos = -1;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    mIsClicked = false;
+                    if (mIsRename) {
+                        mIsRename = false;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+                return false;
+            }
+        });
         mItemTouchHelper = new ItemTouchHelper(new ItemCallBack(this));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
     @Override
@@ -236,8 +284,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     @Override
     public void onMove(int from, int to) {
-        if ((Boolean) mDatas.get(from).get("null") != true) {
-            if (to > 0 && from>0) {
+        if (!(Boolean) mDatas.get(from).get("null")) {
+            if (to > 0 && from > 0) {
                 synchronized (this) {
                     if (from > to) {
                         int count = from - to;
