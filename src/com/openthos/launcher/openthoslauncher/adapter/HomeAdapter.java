@@ -36,7 +36,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public int pos = -1;
     private int mLastClickId = -1;
     private long mLastClickTime = 0;
-    private boolean isExistMene = false;
     private boolean isClicked = false;
     public boolean isRename = false;
     public static final String ACTION_OPEN_APPLICATION = "android.intent.action.OPEN_APPLICATION";
@@ -116,53 +115,54 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             nullnull = (CheckBox) view.findViewById(R.id.nullnull);
             item.setOnTouchListener(this);
             this.mClick = click;
-            //itemView.setOnTouchListener(new View.OnTouchListener() {
-            //    @Override
-            //    public boolean onTouch(View v, MotionEvent event) {
-            //        if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-            //            if (isExistMene == false) {
-            //                //MenuDialog dialog = new MenuDialog(itemView.getContext(),
-            //                MenuDialog dialog = MenuDialog.getInstance(itemView.getContext(),
-            //                                                   Type.blank, "/");
-            //                dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-            //            } else {
-            //                isExistMene = false;
-            //            }
-            //        }
-            //        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            //            if (isClicked != true && pos != -1) {
-            //                data.get(pos).put("isChecked", false);
-            //                pos = -1;
-            //                notifyDataSetChanged();
-            //            }
-            //            isClicked = false;
-            //            if (isRename == true) {
-            //                isRename = false;
-            //                notifyDataSetChanged();
-            //            }
-            //        }
-            //        return false;
-            //    }
-            //});
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                        if (MenuDialog.isExistMenu() == false) {
+                            //MenuDialog dialog = new MenuDialog(itemView.getContext(),
+                            MenuDialog dialog = MenuDialog.getInstance(itemView.getContext(),
+                                                                       Type.blank, "/");
+                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        } else {
+                            MenuDialog.setExistMenu(false);
+                        }
+                    }
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if (isClicked != true && pos != -1) {
+                            data.get(pos).put("isChecked", false);
+                            pos = -1;
+                            notifyDataSetChanged();
+                        }
+                        isClicked = false;
+                        if (isRename == true) {
+                            isRename = false;
+                            notifyDataSetChanged();
+                        }
+                    }
+                    return false;
+                }
+            });
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                MenuDialog dialog = null;
-                if (Type.blank == (Type) data.get(getAdapterPosition()).get("type")) {
-                    dialog = MenuDialog.getInstance(item.getContext(),
-                                          (Type) data.get(getAdapterPosition()).get("type"),
-                                          (String) data.get(getAdapterPosition()).get("path"));
-                } else {
-                    dialog = new MenuDialog(item.getContext(),
-                                          (Type) data.get(getAdapterPosition()).get("type"),
-                                          (String) data.get(getAdapterPosition()).get("path"));
-                }
-                dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                isExistMene = true;
-            }
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    MenuDialog dialog = null;
+                    if (Type.blank == (Type) data.get(getAdapterPosition()).get("type")) {
+                        dialog = MenuDialog.getInstance(item.getContext(),
+                                 (Type) data.get(getAdapterPosition()).get("type"),
+                                 (String) data.get(getAdapterPosition()).get("path"));
+                    } else {
+                        dialog = new MenuDialog(item.getContext(),
+                                 (Type) data.get(getAdapterPosition()).get("type"),
+                                 (String) data.get(getAdapterPosition()).get("path"));
+                    }
+                    dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                    MenuDialog.setExistMenu(true);
+                }
                 if (getAdapterPosition() != -1){
                     if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
                         isClicked = true;
