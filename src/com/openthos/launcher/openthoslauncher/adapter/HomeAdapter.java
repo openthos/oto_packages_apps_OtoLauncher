@@ -111,6 +111,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             tv.setFocusable(true);
             tv.setOnKeyListener(keyListener);
             tv.setOnFocusChangeListener(focusChangeListener);
+            tv.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (isRename == false) {
+                        listenProcess(v,event);
+                    }
+                    return false;
+                }
+            });
             checkBox = (CheckBox) view.findViewById(R.id.check);
             nullnull = (CheckBox) view.findViewById(R.id.nullnull);
             item.setOnTouchListener(this);
@@ -148,8 +158,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+            listenProcess(v, event);
+            return true;
+        }
+
+        private void listenProcess(View v, MotionEvent event) {
+            if (getAdapterPosition() != -1) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                     MenuDialog dialog = null;
                     if (Type.blank == (Type) data.get(getAdapterPosition()).get("type")) {
                         dialog = MenuDialog.getInstance(item.getContext(),
@@ -162,14 +178,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     }
                     dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                     MenuDialog.setExistMenu(true);
-                }
-                if (getAdapterPosition() != -1){
+                    }
                     if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
                         isClicked = true;
-                        if ((Math.abs(System.currentTimeMillis() - mLastClickTime)
-                                     < OtoConsts.DOUBLE_CLICK_TIME)
-                                     && (mLastClickId == getAdapterPosition())
-                                     && (event.getButtonState() != MotionEvent.BUTTON_SECONDARY)) {
+                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
+                                                   && Math.abs(System.currentTimeMillis()
+                                                   - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
+                                                   && mLastClickId == getAdapterPosition()) {
                             PackageManager packageManager = item.getContext().getPackageManager();
                             Intent intent = packageManager.getLaunchIntentForPackage(
                                                                     OtoConsts.FILEMANAGER_PACKAGE);
@@ -179,12 +194,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             if (null != mClick) {
                                 mClick.itemOnClick(getAdapterPosition(), v);
                             }
-                            if (!(Boolean)data.get(getAdapterPosition()).get("isChecked")) {
+                            if (!(Boolean) data.get(getAdapterPosition()).get("isChecked")) {
                                 if (pos != -1 && pos != getAdapterPosition()
                                     && (Boolean) data.get(pos).get("isChecked")) {
                                     data.get(pos).put("isChecked", false);
                                 }
-                                data.get(getAdapterPosition()).put("isChecked",true);
+                                data.get(getAdapterPosition()).put("isChecked", true);
                                 if (pos != getAdapterPosition()) {
                                     pos = getAdapterPosition();
                                 } else {
@@ -195,18 +210,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             mLastClickTime = System.currentTimeMillis();
                             mLastClickId = pos;
                         }
-                    } else {
-                        if (pos != -1 && pos != getAdapterPosition()
-                               && (Boolean) data.get(pos).get("isChecked")) {
-                            data.get(pos).put("isChecked", false);
-                            pos = -1;
-                            notifyDataSetChanged();
-                        }
                     }
+                } else if ((Boolean) data.get(getAdapterPosition()).get("null")
+                                     && pos != -1 && pos != getAdapterPosition()
+                                     && (Boolean) data.get(pos).get("isChecked")) {
+                    data.get(pos).put("isChecked", false);
+                    pos = -1;
+                    notifyDataSetChanged();
                 }
             }
-            //return false;
-            return true;
         }
     }
 
@@ -215,7 +227,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         openAppIntent.setAction(ACTION_OPEN_APPLICATION);
         context.sendBroadcast(openAppIntent);
     }
-
 
     View.OnKeyListener keyListener = new View.OnKeyListener() {
 
