@@ -1278,7 +1278,8 @@ public class Launcher extends Activity
                 // If there are multiple keystrokes before the search dialog takes focus,
                 // onSearchRequested() will be called for every keystroke,
                 // but it is idempotent, so it's fine.
-                return onSearchRequested();
+                //return onSearchRequested();
+                return false;
             }
         }
 
