@@ -21,6 +21,7 @@ import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
+import android.view.KeyEvent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -304,5 +305,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.isCtrlPressed()) {
+            if (keyCode == KeyEvent.KEYCODE_ESCAPE || keyCode == KeyEvent.KEYCODE_MENU) {
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
