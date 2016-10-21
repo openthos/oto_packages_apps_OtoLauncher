@@ -241,37 +241,10 @@ public class MenuDialog extends Dialog {
                 getContext().startActivity(wallpaper);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DELETE])) {
                 //delete
-                new AlertDialog.Builder(getContext())
-                        .setMessage(getContext().getResources().getString(
-                                                              R.string.dialog_delete_text))
-                       .setPositiveButton(getContext().getResources().getString(
-                                                              R.string.dialog_delete_yes),
-                                new android.content.DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        new Thread() {
-                                            @Override
-                                            public void run() {
-                                                super.run();
-                                                DiskUtils.moveFile(path,
-                                                              OtoConsts.RECYCLE_PATH);
-                                                Message deleteFile = new Message();
-                                                deleteFile.obj = path;
-                                                deleteFile.what = OtoConsts.DELETE;
-                                                MainActivity.mHandler.sendMessage(deleteFile);
-                                            }
-                                        }.start();
-                                        dialog.cancel();
-                                    }
-                                })
-                        .setNegativeButton(getContext().getResources().getString(
-                                                             R.string.dialog_delete_no),
-                                new android.content.DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                }).show();
+                Message deleteFile = new Message();
+                deleteFile.obj = path;
+                deleteFile.what = OtoConsts.DELETE;
+                MainActivity.mHandler.sendMessage(deleteFile);
             } else if (text.equals(all_menu[OtoConsts.INDEX_RENAME])) {
                 //rename
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.RENAME);

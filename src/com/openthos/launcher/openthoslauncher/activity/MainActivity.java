@@ -1,5 +1,8 @@
 package com.openthos.launcher.openthoslauncher.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +63,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         break;
-                    case OtoConsts.DELETE:
+                    case OtoConsts.DELETE_REFRESH:
                         inner:
                         for (int i = 0; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals(msg.obj)) {
@@ -114,7 +117,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                                   (String) msg.obj);
                        dialog.showDialog();
                        break;
-
+                   case OtoConsts.DELETE:
+                       showDialogForMoveToRecycle((String) msg.obj);
+                       break;
                 }
             }
         };
@@ -310,10 +315,64 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
-            //if (keyCode == KeyEvent.KEYCODE_ESCAPE || keyCode == KeyEvent.KEYCODE_MENU) {
-                return true;
-            //}
+            return true;
+        } else if (!event.isShiftPressed() && keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+            if (type == Type.directory || type == Type.file) {
+                    Message deleteFile = new Message();
+                    deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
+                    deleteFile.what = OtoConsts.DELETE;
+                    mHandler.sendMessage(deleteFile);
+            }
+            return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void showDialogForMoveToRecycle(String path) {
+        MoveToRecycleClickListener listener = new MoveToRecycleClickListener(path);
+        new AlertDialog.Builder(MainActivity.this)
+             .setMessage(getResources().getString(R.string.dialog_delete_text))
+             .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
+             .setNegativeButton(getResources().getString(
+                                                  R.string.dialog_delete_no),
+                 new android.content.DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         dialog.cancel();
+                     }
+                 }).show();
+    }
+
+    private class MoveToRecycleClickListener implements OnClickListener {
+        String mPath;
+
+        public MoveToRecycleClickListener(String path) {
+            mPath = path;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            MoveToRecycleThread thread = new MoveToRecycleThread();
+            thread.start();
+            dialog.cancel();
+        }
+
+        private class MoveToRecycleThread extends Thread {
+
+            public MoveToRecycleThread() {
+               super();
+            }
+
+            @Override
+            public void run() {
+                super.run();
+                DiskUtils.moveFile(mPath, OtoConsts.RECYCLE_PATH);
+                Message deleteFile = new Message();
+                deleteFile.obj = mPath;
+                deleteFile.what = OtoConsts.DELETE_REFRESH;
+                MainActivity.mHandler.sendMessage(deleteFile);
+            }
+        }
     }
 }

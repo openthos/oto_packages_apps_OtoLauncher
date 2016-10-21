@@ -24,6 +24,7 @@ public class OtoConsts {
     public static final int NEWFOLDER = 0x0000004;
     public static final int RENAME = 0x00000005;
     public static final int PROPERTY = 0x00000006;
+    public static final int DELETE_REFRESH = 0x00000007;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;
