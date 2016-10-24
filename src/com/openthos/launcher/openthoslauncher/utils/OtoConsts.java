@@ -5,7 +5,6 @@ package com.openthos.launcher.openthoslauncher.utils;
  */
 public class OtoConsts {
     public static final int DOUBLE_CLICK_TIME = 500;
-    public static final int MAX_LINE = 6;
     public static final int BAR_Y = 40;
     public static final float FIX_ALPHA = 0.9f;
     public static final int FIX_PADDING = 16;

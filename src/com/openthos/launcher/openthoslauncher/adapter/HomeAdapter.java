@@ -48,9 +48,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.data = data;
     }
 
-    public List<HashMap<String, Object>> getData() {
-        return data;
-    }
 
     @Override
     public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

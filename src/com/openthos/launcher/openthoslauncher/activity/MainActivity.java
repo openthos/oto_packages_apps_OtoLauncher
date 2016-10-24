@@ -39,7 +39,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
-    private int mHeightNum = OtoConsts.MAX_LINE;
+    private int mHeightNum;
     private boolean mIsClicked = false;
     private boolean mIsRename = false;
     @Override
@@ -211,9 +211,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
     }
 
+    private void getHeightNum(DisplayMetrics dm) {
+        int heightPixels = dm.heightPixels;
+        mHeightNum = heightPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
+    }
+
     private int getNum() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+        getHeightNum (dm);
         int widthPixels = dm.widthPixels;
         int widthNum = widthPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
         return widthNum * mHeightNum;
@@ -236,7 +242,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                     }
                     if (!mIsClicked && mAdapter.pos != -1) {
-                        mAdapter.getData().get(mAdapter.pos).put("isChecked", false);
+                        mDatas.get(mAdapter.pos).put("isChecked", false);
+                        mAdapter.setData(mDatas);
                         mAdapter.pos = -1;
                         mAdapter.notifyDataSetChanged();
                     }
