@@ -38,7 +38,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private long mLastClickTime = 0;
     private boolean isClicked = false;
     public boolean isRename = false;
-    public static final String ACTION_OPEN_APPLICATION = "android.intent.action.OPEN_APPLICATION";
 
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
@@ -224,7 +223,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public static void openAppBroadcast(Context context) {
         Intent openAppIntent = new Intent();
-        openAppIntent.setAction(ACTION_OPEN_APPLICATION);
+        openAppIntent.setAction(Intent.ACTION_OPEN_APPLICATION);
         context.sendBroadcast(openAppIntent);
     }
 
