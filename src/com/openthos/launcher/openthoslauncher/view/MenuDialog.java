@@ -183,12 +183,21 @@ public class MenuDialog extends Dialog {
                     case recycle:
                     case directory:
                         PackageManager packageManager = getContext().getPackageManager();
-                        Intent openDir = packageManager.getLaunchIntentForPackage(
+                        try {
+                            Intent openDir = packageManager.getLaunchIntentForPackage(
+                                                              OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("path",path);
+                            openDir.putExtras(bundle);
+                            getContext().startActivity(openDir);
+                        } catch (NullPointerException e) {
+                            Intent openDir = packageManager.getLaunchIntentForPackage(
                                                               OtoConsts.FILEMANAGER_PACKAGE);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("path",path);
-                        openDir.putExtras(bundle);
-                        getContext().startActivity(openDir);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("path",path);
+                            openDir.putExtras(bundle);
+                            getContext().startActivity(openDir);
+                        }
                         break;
                     case file:
                         Intent openFile = new Intent();

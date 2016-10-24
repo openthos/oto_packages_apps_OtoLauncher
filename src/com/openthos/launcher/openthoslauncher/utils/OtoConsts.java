@@ -8,9 +8,8 @@ public class OtoConsts {
     public static final int BAR_Y = 40;
     public static final float FIX_ALPHA = 0.9f;
     public static final int FIX_PADDING = 16;
-    //openthos:"com.emindsoft.openthos"
-    //system:"com.cyanogenmod.filemanager"
     public static final String FILEMANAGER_PACKAGE = "com.cyanogenmod.filemanager";
+    public static final String OTO_FILEMANAGER_PACKAGE = "com.openthos.filemanager";
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";

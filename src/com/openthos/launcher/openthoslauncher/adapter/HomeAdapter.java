@@ -182,9 +182,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
                                                    && mLastClickId == getAdapterPosition()) {
                             PackageManager packageManager = item.getContext().getPackageManager();
-                            Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                    OtoConsts.FILEMANAGER_PACKAGE);
-                            item.getContext().startActivity(intent);
+                            try {
+                                Intent intent = packageManager.getLaunchIntentForPackage(
+                                                                OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                                item.getContext().startActivity(intent);
+                            } catch (NullPointerException e) {
+                                Intent intent = packageManager.getLaunchIntentForPackage(
+                                                                OtoConsts.FILEMANAGER_PACKAGE);
+                                item.getContext().startActivity(intent);
+                            }
                             openAppBroadcast(item.getContext());
                         } else {
                             if (null != mClick) {
