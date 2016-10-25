@@ -22,6 +22,7 @@ import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -234,19 +235,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                 HashMap current = data.get(pos);
                 String path = (String)current.get("path");
-                String newname = String.valueOf(((EditText)v).getText());
-                DiskUtils.rename(path, newname);
-                current.put("name",newname);
+                String newName = String.valueOf(((EditText)v).getText());
+                File oldFile = new File(path);
+                File newFile = new File(oldFile.getParent(), newName);
+                oldFile.renameTo(newFile);
+                current.put("name", newName);
+                current.put("path", newFile.getAbsolutePath());
                 data.set(pos,current);
-                v.setFocusable(false);
-                v.clearFocus();
                 notifyDataSetChanged();
                 HashMap mCurrent = ((MainActivity)mRecycleClick).mDatas.get(pos);
-                mCurrent.put("name",((EditText)v).getText());
-                ((MainActivity)mRecycleClick).mDatas.set(pos,mCurrent);
+                mCurrent.put("name", newName);
+                mCurrent.put("path", newFile.getAbsolutePath());
+                ((MainActivity)mRecycleClick).mDatas.set(pos, mCurrent);
+                v.setFocusable(false);
+                v.clearFocus();
                 isRename = false;
                 return true;
             }
