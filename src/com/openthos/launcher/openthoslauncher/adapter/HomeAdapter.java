@@ -3,6 +3,7 @@ package com.openthos.launcher.openthoslauncher.adapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 
@@ -182,15 +184,33 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                    && Math.abs(System.currentTimeMillis()
                                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
                                                    && mLastClickId == getAdapterPosition()) {
-                            PackageManager packageManager = item.getContext().getPackageManager();
-                            try {
-                                Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                                item.getContext().startActivity(intent);
-                            } catch (NullPointerException e) {
-                                Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                OtoConsts.FILEMANAGER_PACKAGE);
-                                item.getContext().startActivity(intent);
+                            switch ((Type) data.get(getAdapterPosition()).get("type")) {
+                                case computer:
+                                case recycle:
+                                case directory:
+                                    PackageManager packageManager = item.getContext()
+                                                                        .getPackageManager();
+                                    try {
+                                        Intent intent = packageManager.getLaunchIntentForPackage(
+                                                                 OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                                        item.getContext().startActivity(intent);
+                                    } catch (NullPointerException e) {
+                                        Intent intent = packageManager.getLaunchIntentForPackage(
+                                                                     OtoConsts.FILEMANAGER_PACKAGE);
+                                        item.getContext().startActivity(intent);
+                                    }
+                                    break;
+                                case file:
+                                    String filePath = (String)
+                                                         data.get(getAdapterPosition()).get("path");
+                                    Intent openFile = new Intent();
+                                    openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    openFile.setAction(Intent.ACTION_VIEW);
+                                    String fileType = FileUtils.getMIMEType(new File(filePath));
+                                    openFile.setDataAndType(
+                                                        Uri.fromFile(new File(filePath)), fileType);
+                                    item.getContext().startActivity(openFile);
+                                    break;
                             }
                             openAppBroadcast(item.getContext());
                         } else {
