@@ -12,6 +12,7 @@ public class OtoConsts {
     public static final String OTO_FILEMANAGER_PACKAGE = "com.openthos.filemanager";
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
+    public static final String DESKTOP_DATA = "com.android.launcher3.DesktopData";
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();

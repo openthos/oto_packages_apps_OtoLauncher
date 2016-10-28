@@ -1,15 +1,18 @@
 package com.openthos.launcher.openthoslauncher.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.TypedArray;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +36,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends Launcher implements RecycleCallBack {
     private RecyclerView mRecyclerView;
     public List<HashMap<String, Object>> mDatas;
@@ -42,11 +49,24 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private int mHeightNum;
     private boolean mIsClicked = false;
     private boolean mIsRename = false;
+    private SharedPreferences mSp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOtoContentView(R.layout.activity_main);
-        initData();
+        mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
+        mDatas = new ArrayList<>();
+        if (savedInstanceState != null) {
+            String tempData = savedInstanceState.getString(OtoConsts.DESKTOP_DATA);
+            try {
+                mDatas = stringToData(tempData);
+            } catch (JSONException e) {
+                initData();
+            }
+        } else {
+            initData();
+        }
         init();
         mHandler = new Handler() {
             @Override
@@ -126,6 +146,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void initData() {
+        String tempData = mSp.getString(OtoConsts.DESKTOP_DATA, "");
+        int num = getNum();
+        if (!TextUtils.isEmpty(tempData)) {
+            try {
+                mDatas = stringToData(tempData);
+                return;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         String[] defaultName = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcon = getResources().obtainTypedArray(R.array.default_icon);
         String[] paths = {"/", OtoConsts.RECYCLE_PATH};
@@ -140,7 +170,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             }
         }.start();
         Type[] defaultType = {Type.computer, Type.recycle};
-        mDatas = new ArrayList<>();
         for (int i = 0; i < defaultName.length; i++) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", defaultName[i]);
@@ -151,12 +180,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             map.put("type", defaultType[i]);
             mDatas.add(map);
         }
-        initDesktop();
+        initDesktop(num);
     }
 
-    private void initDesktop() {
+    private void initDesktop(int num) {
         List<HashMap<String, Object>> userDatas = new ArrayList<>();
-        int num = getNum();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
             dir.mkdir();
@@ -314,6 +342,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mAdapter.setData(mDatas);
                     mAdapter.notifyItemMoved(from, to);
                     mAdapter.pos = to;
+                    mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
                 }
             }
         }
@@ -381,5 +410,78 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 MainActivity.mHandler.sendMessage(deleteFile);
             }
         }
+    }
+
+    private String dataToString () {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
+        boolean first = true;
+        for (HashMap map : mDatas) {
+            if (!first){
+                sb.append(",");
+            } else {
+                first = false;
+            }
+            sb.append("{\"type\":\"");
+            sb.append(map.get("type"));
+            sb.append("\",\"name\":\"");
+            sb.append(map.get("name"));
+            sb.append("\",\"path\":\"");
+            sb.append(map.get("path"));
+            sb.append("\"}");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private ArrayList<HashMap<String, Object>> stringToData(String s) throws JSONException {
+        JSONArray array = new JSONArray(s);
+        ArrayList<HashMap<String, Object>> list = new ArrayList();
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("isChecked", false);
+            map.put("name", obj.getString("name"));
+            map.put("path", obj.getString("path"));
+            Type type = Type.valueOf(obj.getString("type"));
+            map.put("type", type);
+            switch (type){
+                case computer:
+                    map.put("null", false);
+                    map.put("icon", R.drawable.ic_app_computer);
+                    break;
+                case recycle:
+                    map.put("null", false);
+                    map.put("icon", R.drawable.ic_app_recycle);
+                    break;
+                case file:
+                    map.put("null", false);
+                    map.put("icon", R.drawable.ic_app_text);
+                    break;
+                case directory:
+                    map.put("null", false);
+                    map.put("icon", R.drawable.ic_app_file);
+                    break;
+                case blank:
+                    map.put("null", true);
+                    map.put("icon", -1);
+                    break;
+            }
+            list.add(map);
+        }
+        return list;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String desktop = dataToString();
+        outState.putString(OtoConsts.DESKTOP_DATA, desktop);
+    }
+
+    @Override
+    public void onDestroy() {
+        mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+        super.onDestroy();
     }
 }
