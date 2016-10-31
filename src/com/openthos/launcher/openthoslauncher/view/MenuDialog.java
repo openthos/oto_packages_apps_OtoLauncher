@@ -229,10 +229,10 @@ public class MenuDialog extends Dialog {
                 getContext().startActivity(display);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CHANGE_WALLPAPER])) {
                 //change_wallpaper
-                Intent wallpaper = new Intent(getContext(),LauncherWallpaperPickerActivity.class);
-                //ComponentName compWall = new ComponentName(OtoConsts.SETTINGS_PACKAGE,
-                //                                             OtoConsts.WALLPAPER_SETTINGS);
-                //wallpaper.setComponent(compWall);
+                Intent wallpaper =  new Intent();
+                ComponentName compWallpaper = new ComponentName(OtoConsts.SETTINGS_PACKAGE,
+                                                              OtoConsts.WALLPAPER_PICKER);
+                wallpaper.setComponent(compWallpaper);
                 wallpaper.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().startActivity(wallpaper);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DELETE])) {
