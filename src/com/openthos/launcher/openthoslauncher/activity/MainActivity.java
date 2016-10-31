@@ -83,7 +83,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 switch (msg.what) {
                     case OtoConsts.SORT:
                         mDatas.clear();
-                        initData();
+                        initDesktop();
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
@@ -158,65 +158,55 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 e.printStackTrace();
             }
         }
-        String[] defaultName = getResources().getStringArray(R.array.default_icon_name);
-        TypedArray defaultIcon = getResources().obtainTypedArray(R.array.default_icon);
-        String[] paths = {"/", OtoConsts.RECYCLE_PATH};
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                File recycle = DiskUtils.getRecycle();
-                if (!recycle.exists()) {
-                    recycle.mkdir();
-                }
-            }
-        }.start();
-        Type[] defaultType = {Type.computer, Type.recycle};
-        for (int i = 0; i < defaultName.length; i++) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("name", defaultName[i]);
-            map.put("path", paths[i]);
-            map.put("isChecked", false);
-            map.put("null", false);
-            map.put("icon", defaultIcon.getResourceId(i, R.mipmap.ic_launcher));
-            map.put("type", defaultType[i]);
-            mDatas.add(map);
-        }
         initDesktop();
     }
 
     private void initDesktop() {
+        //default icon
+        String[] defaultNames = getResources().getStringArray(R.array.default_icon_name);
+        TypedArray defaultIcons = getResources().obtainTypedArray(R.array.default_icon);
+        String[] defaultPaths = {"/", OtoConsts.RECYCLE_PATH};
+        File recycle = DiskUtils.getRecycle();
+        if (!recycle.exists()) {
+            recycle.mkdir();
+        }
+        Type[] defaultTypes = {Type.computer, Type.recycle};
+        for (int i = 0; i < defaultNames.length; i++) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("name", defaultNames[i]);
+            map.put("path", defaultPaths[i]);
+            map.put("isChecked", false);
+            map.put("null", false);
+            map.put("icon", defaultIcons.getResourceId(i, R.mipmap.ic_launcher));
+            map.put("type", defaultTypes[i]);
+            mDatas.add(map);
+        }
+        //desktop icon
         List<HashMap<String, Object>> userDatas = new ArrayList<>();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
             dir.mkdir();
         }
         File[] files = dir.listFiles();
-        if(files != null){
-        for (int i = 0; i < files.length; i++) {
-            HashMap<String, Object> map = new HashMap<>();
-            if (files[i].isDirectory()) {
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                HashMap<String, Object> map = new HashMap<>();
+                if (files[i].isDirectory()) {
+                    map.put("icon", R.drawable.ic_app_file);
+                    map.put("type", Type.directory);
+                } else {
+                    map.put("icon", R.drawable.ic_app_text);
+                    map.put("type", Type.file);
+                }
                 map.put("name", files[i].getName());
                 map.put("path", files[i].getAbsolutePath());
                 map.put("isChecked", false);
                 map.put("null", false);
-                map.put("icon", R.drawable.ic_app_file);
-                map.put("type", Type.directory);
-
-            } else {
-                map.put("name", files[i].getName());
-                map.put("path", files[i].getAbsolutePath());
-                map.put("isChecked", false);
-                map.put("null", false);
-                map.put("icon", R.drawable.ic_app_text);
-                map.put("type", Type.file);
+                if (userDatas.size() < (mSumNum - mDatas.size())) {
+                    userDatas.add(map);
+                }
             }
-
-            if (userDatas.size() < (mSumNum - mDatas.size())) {
-                userDatas.add(map);
-            }
-        }}
-
+        }
         Collections.sort(userDatas, new Comparator<HashMap<String, Object>>() {
 
             @Override
@@ -228,7 +218,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             }
         });
         mDatas.addAll(userDatas);
-
         while (mDatas.size() < mSumNum) {
             mDatas.add(mBlankMap);
         }
@@ -249,33 +238,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void init() {
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
-        linearLayout.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        if (!MenuDialog.isExistMenu()) {
-                            MenuDialog dialog = MenuDialog.getInstance(MainActivity.this,
-                                                                       Type.blank, "/");
-                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                        } else {
-                            MenuDialog.setExistMenu(false);
-                        }
-                    }
-                    if (!mIsClicked && mAdapter.pos != -1) {
-                        mDatas.get(mAdapter.pos).put("isChecked", false);
-                        mAdapter.setData(mDatas);
-                        mAdapter.pos = -1;
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    mIsClicked = false;
-                }
-                return false;
-            }
-        });
-
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
                                        StaggeredGridLayoutManager.HORIZONTAL));
@@ -287,8 +249,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                         if (!MenuDialog.isExistMenu()) {
-                            MenuDialog dialog = MenuDialog.getInstance(MainActivity.this,
-                                                                       Type.blank, "/");
+                            MenuDialog dialog = new MenuDialog(MainActivity.this, Type.blank, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                         } else {
                             MenuDialog.setExistMenu(false);
@@ -444,26 +405,25 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 case computer:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_computer);
+                    map.put("name", getResources().getString(R.string.my_computer));
                     break;
                 case recycle:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_recycle);
+                    map.put("name", getResources().getString(R.string.recycle));
                     break;
                 case file:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_text);
+                    map.put("name", obj.getString("name"));
                     break;
                 case directory:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_file);
-                    break;
-                case blank:
-                    map.put("null", true);
-                    map.put("icon", -1);
+                    map.put("name", obj.getString("name"));
                     break;
             }
             map.put("isChecked", false);
-            map.put("name", obj.getString("name"));
             map.put("path", obj.getString("path"));
             map.put("type", type);
             list.add(map);

@@ -130,10 +130,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                         if (MenuDialog.isExistMenu() == false) {
-                            //MenuDialog dialog = new MenuDialog(itemView.getContext(),
-                            MenuDialog dialog = MenuDialog.getInstance(itemView.getContext(),
-                                                                       Type.blank, "/");
+                            MenuDialog dialog = new MenuDialog(item.getContext(), Type.blank, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                            MenuDialog.setExistMenu(true);
                         } else {
                             MenuDialog.setExistMenu(false);
                         }
@@ -165,18 +164,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (getAdapterPosition() != -1) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                    MenuDialog dialog = null;
-                    if (Type.blank == (Type) data.get(getAdapterPosition()).get("type")) {
-                        dialog = MenuDialog.getInstance(item.getContext(),
+                        MenuDialog dialog = new MenuDialog(item.getContext(),
                                  (Type) data.get(getAdapterPosition()).get("type"),
                                  (String) data.get(getAdapterPosition()).get("path"));
-                    } else {
-                        dialog = new MenuDialog(item.getContext(),
-                                 (Type) data.get(getAdapterPosition()).get("type"),
-                                 (String) data.get(getAdapterPosition()).get("path"));
-                    }
-                    dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                    MenuDialog.setExistMenu(true);
+                        dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        MenuDialog.setExistMenu(true);
                     }
                     if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
                         isClicked = true;

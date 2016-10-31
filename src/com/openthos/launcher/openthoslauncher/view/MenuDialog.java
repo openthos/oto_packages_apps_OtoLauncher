@@ -38,7 +38,6 @@ public class MenuDialog extends Dialog {
     private Type type;
     private String path;
     private int dialogHeight;
-    private static MenuDialog menuDialog;
     private static boolean existMenu;
 
     public MenuDialog(Context context) {
@@ -58,18 +57,10 @@ public class MenuDialog extends Dialog {
         this.context = context;
     }
 
-
     protected MenuDialog(Context context, boolean cancelable,
                          DialogInterface.OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         this.context = context;
-    }
-
-    public static MenuDialog getInstance(Context context, Type type, String path) {
-        if (menuDialog == null) {
-            menuDialog = new MenuDialog(context,type,path);
-        }
-        return menuDialog;
     }
 
     public static void setExistMenu(boolean exist) {
@@ -86,7 +77,6 @@ public class MenuDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_menu);
         getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.color.transparent));
-        android.widget.Toast.makeText(getContext(),path,android.widget.Toast.LENGTH_LONG).show();
         String[] s = {};
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
         switch (type) {
@@ -143,11 +133,8 @@ public class MenuDialog extends Dialog {
         } else {
             lp.x = x;
         }
-        // if (y > (d.getHeight() - dialogWindow.getAttributes().height-OtoConsts.BAR_Y)) {
-        //     lp.y = y - dialogWindow.getAttributes().height;
         if (y > (d.getHeight() - dialogHeight - OtoConsts.BAR_Y)) {
             lp.y = y - dialogHeight - OtoConsts.FIX_PADDING;
-            //lp.y = d.getHeight() - dialogWindow.getAttributes().height;
         } else {
             lp.y = y;
         }
