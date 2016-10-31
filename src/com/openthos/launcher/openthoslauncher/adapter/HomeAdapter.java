@@ -273,6 +273,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 v.setFocusable(false);
                 v.clearFocus();
                 isRename = false;
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                 return true;
             }
             return false;

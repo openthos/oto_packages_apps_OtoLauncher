@@ -17,7 +17,7 @@ public class OtoConsts {
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
     //MainActivity Handler Message'what
-    public static final int REFRESH = 0x0000001;
+    public static final int SAVEDATA = 0x00000001;
     public static final int SORT = 0x0000002;
     public static final int DELETE = 0x0000003;
     public static final int NEWFOLDER = 0x0000004;

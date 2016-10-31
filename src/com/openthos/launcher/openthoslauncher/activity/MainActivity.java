@@ -50,6 +50,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean mIsClicked = false;
     private boolean mIsRename = false;
     private SharedPreferences mSp;
+    private int mSumNum;
+    private HashMap<String, Object> mBlankMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +59,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         setOtoContentView(R.layout.activity_main);
         mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
         mDatas = new ArrayList<>();
+        mSumNum = getNum();
+        mBlankMap.put("name", "");
+        mBlankMap.put("isChecked", false);
+        mBlankMap.put("icon", -1);
+        mBlankMap.put("null", true);
+        mBlankMap.put("path", "");
+        mBlankMap.put("type", Type.blank);
         if (savedInstanceState != null) {
-            String tempData = savedInstanceState.getString(OtoConsts.DESKTOP_DATA);
             try {
-                mDatas = stringToData(tempData);
+                mDatas = stringToData(savedInstanceState.getString(OtoConsts.DESKTOP_DATA));
             } catch (JSONException e) {
                 initData();
             }
@@ -73,33 +81,24 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
-                    case OtoConsts.REFRESH:
-                        File doc = new File(OtoConsts.DESKTOP_PATH);
-                        File[] files = doc.listFiles();
-                        break;
                     case OtoConsts.SORT:
                         mDatas.clear();
                         initData();
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
+                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.DELETE_REFRESH:
                         inner:
                         for (int i = 0; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals(msg.obj)) {
-                                HashMap<String, Object> nullmap = new HashMap<>();
-                                nullmap.put("name", "");
-                                nullmap.put("isChecked", false);
-                                nullmap.put("icon", -1);
-                                nullmap.put("null", true);
-                                nullmap.put("path", "");
-                                nullmap.put("type", Type.blank);
-                                mDatas.set(i, nullmap);
+                                mDatas.set(i, mBlankMap);
                                 break inner;
                             }
                         }
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
+                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFOLDER:
                         inner:
@@ -127,19 +126,23 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
+                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
                         mAdapter.notifyDataSetChanged();
                         break;
-                   case OtoConsts.PROPERTY:
-                       PropertyDialog dialog = new PropertyDialog(MainActivity.this,
-                                                                  (String) msg.obj);
-                       dialog.showDialog();
-                       break;
-                   case OtoConsts.DELETE:
-                       showDialogForMoveToRecycle((String) msg.obj);
-                       break;
+                    case OtoConsts.PROPERTY:
+                        PropertyDialog dialog = new PropertyDialog(MainActivity.this,
+                                                                   (String) msg.obj);
+                        dialog.showDialog();
+                        break;
+                    case OtoConsts.DELETE:
+                        showDialogForMoveToRecycle((String) msg.obj);
+                        break;
+                    case OtoConsts.SAVEDATA:
+                        mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+                        break;
                 }
             }
         };
@@ -147,7 +150,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void initData() {
         String tempData = mSp.getString(OtoConsts.DESKTOP_DATA, "");
-        int num = getNum();
         if (!TextUtils.isEmpty(tempData)) {
             try {
                 mDatas = stringToData(tempData);
@@ -180,10 +182,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             map.put("type", defaultType[i]);
             mDatas.add(map);
         }
-        initDesktop(num);
+        initDesktop();
     }
 
-    private void initDesktop(int num) {
+    private void initDesktop() {
         List<HashMap<String, Object>> userDatas = new ArrayList<>();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
@@ -210,7 +212,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 map.put("type", Type.file);
             }
 
-            if (userDatas.size() < (num - mDatas.size())) {
+            if (userDatas.size() < (mSumNum - mDatas.size())) {
                 userDatas.add(map);
             }
         }}
@@ -227,15 +229,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         });
         mDatas.addAll(userDatas);
 
-        while (mDatas.size() < num) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("name", "");
-            map.put("isChecked", false);
-            map.put("icon", -1);
-            map.put("null", true);
-            map.put("path", "");
-            map.put("type", Type.blank);
-            mDatas.add(map);
+        while (mDatas.size() < mSumNum) {
+            mDatas.add(mBlankMap);
         }
     }
 
@@ -342,7 +337,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mAdapter.setData(mDatas);
                     mAdapter.notifyItemMoved(from, to);
                     mAdapter.pos = to;
-                    mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+                    mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                 }
             }
         }
@@ -439,12 +434,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         ArrayList<HashMap<String, Object>> list = new ArrayList();
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("isChecked", false);
-            map.put("name", obj.getString("name"));
-            map.put("path", obj.getString("path"));
             Type type = Type.valueOf(obj.getString("type"));
-            map.put("type", type);
+            if (type == Type.blank) {
+                list.add(mBlankMap);
+                continue;
+            }
+            HashMap<String, Object> map = new HashMap<>();
             switch (type){
                 case computer:
                     map.put("null", false);
@@ -467,6 +462,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     map.put("icon", -1);
                     break;
             }
+            map.put("isChecked", false);
+            map.put("name", obj.getString("name"));
+            map.put("path", obj.getString("path"));
+            map.put("type", type);
             list.add(map);
         }
         return list;
@@ -475,13 +474,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        String desktop = dataToString();
-        outState.putString(OtoConsts.DESKTOP_DATA, desktop);
+        outState.putString(OtoConsts.DESKTOP_DATA, dataToString());
     }
 
     @Override
     public void onDestroy() {
-        mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
         super.onDestroy();
     }
 }
