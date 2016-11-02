@@ -130,7 +130,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                         if (MenuDialog.isExistMenu() == false) {
-                            MenuDialog dialog = new MenuDialog(item.getContext(), Type.blank, "");
+                            MenuDialog dialog = new MenuDialog(item.getContext(), Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                             MenuDialog.setExistMenu(true);
                         } else {
@@ -177,9 +177,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
                                                    && mLastClickId == getAdapterPosition()) {
                             switch ((Type) data.get(getAdapterPosition()).get("type")) {
-                                case computer:
-                                case recycle:
-                                case directory:
+                                case COMPUTER:
+                                case RECYCLE:
+                                case DIRECTORY:
                                     PackageManager packageManager = item.getContext()
                                                                         .getPackageManager();
                                     try {
@@ -192,7 +192,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                         item.getContext().startActivity(intent);
                                     }
                                     break;
-                                case file:
+                                case FILE:
                                     String filePath = (String)
                                                          data.get(getAdapterPosition()).get("path");
                                     Intent openFile = new Intent();

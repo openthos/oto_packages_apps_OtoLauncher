@@ -107,12 +107,12 @@ public class PropertyDialog extends Dialog {
         Process pro;
         String line = "";
         Runtime runtime = Runtime.getRuntime();
+        BufferedReader in = null;
         try {
             String command = "/system/xbin/stat";
             String arg = "";
             pro = runtime.exec(new String[]{command, arg, mPath});
-            BufferedReader in = new BufferedReader(
-                                new InputStreamReader(pro.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             while ((line = in.readLine()) != null) {
                 if (line.contains("Access") && line.contains("Uid")) {
                     String limit = line.substring(OtoConsts.INDEX_LIMIT_BEGIN,
@@ -137,6 +137,13 @@ public class PropertyDialog extends Dialog {
                 }
             }
         } catch (IOException e) {
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 

@@ -254,7 +254,11 @@
     <add-resource type="string" name="dialog_property_confirm" />
     <add-resource type="string" name="dialog_property_cancel" />
     <add-resource type="string" name="dialog_property_apply" />
-
+    <add-resource type="string" name="launcher_tar" />
+    <add-resource type="string" name="launcher_tar_gz" />
+    <add-resource type="string" name="launcher_tar_bz2" />
+    <add-resource type="string" name="launcher_zip" />
+    <add-resource type="string" name="dialog_compress_title" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -301,4 +305,10 @@
     <string name="dialog_property_confirm">确定</string>
     <string name="dialog_property_cancel">取消</string>
     <string name="dialog_property_apply">应用</string>
+    <string name="launcher_tar">tar格式</string>
+    <string name="launcher_tar_gz">tar.gz格式</string>
+    <string name="launcher_tar_bz2">tar.bz2格式</string>
+    <string name="launcher_zip">zip格式</string>
+    <string name="dialog_compress_title">请选择压缩格式</string>
+
 </resources>

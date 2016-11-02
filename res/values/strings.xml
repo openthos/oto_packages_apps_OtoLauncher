@@ -490,6 +490,11 @@ s -->
     <add-resource type="string" name="dialog_property_confirm" />
     <add-resource type="string" name="dialog_property_cancel" />
     <add-resource type="string" name="dialog_property_apply" />
+    <add-resource type="string" name="launcher_tar" />
+    <add-resource type="string" name="launcher_tar_gz" />
+    <add-resource type="string" name="launcher_tar_bz2" />
+    <add-resource type="string" name="launcher_zip" />
+    <add-resource type="string" name="dialog_compress_title" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -534,8 +539,10 @@ s -->
     <string name="dialog_property_confirm">OK</string>
     <string name="dialog_property_cancel">Cancel</string>
     <string name="dialog_property_apply">Apply</string>
-
-
-
+    <string name="launcher_tar">tar</string>
+    <string name="launcher_tar_gz">tar.gz</string>
+    <string name="launcher_tar_bz2">tar.bz2</string>
+    <string name="launcher_zip">zip</string>
+    <string name="dialog_compress_title">Please select the compression format</string>
 
 </resources>

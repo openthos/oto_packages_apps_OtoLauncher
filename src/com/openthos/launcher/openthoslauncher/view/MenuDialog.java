@@ -80,19 +80,19 @@ public class MenuDialog extends Dialog {
         String[] s = {};
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
         switch (type) {
-            case computer:
+            case COMPUTER:
                 s = context.getResources().getStringArray(R.array.menu_computer);
                 break;
-            case recycle:
+            case RECYCLE:
                 s = context.getResources().getStringArray(R.array.menu_recycle);
                 break;
-            case directory:
+            case DIRECTORY:
                 s = context.getResources().getStringArray(R.array.menu_file);
                 break;
-            case file:
+            case FILE:
                 s = context.getResources().getStringArray(R.array.menu_file);
                 break;
-            case blank:
+            case BLANK:
                 s = context.getResources().getStringArray(R.array.menu_blank);
                 break;
         }
@@ -166,9 +166,9 @@ public class MenuDialog extends Dialog {
             if (text.equals(all_menu[OtoConsts.INDEX_OPEN])) {
                 //open
                 switch (type) {
-                    case computer:
-                    case recycle:
-                    case directory:
+                    case COMPUTER:
+                    case RECYCLE:
+                    case DIRECTORY:
                         PackageManager packageManager = getContext().getPackageManager();
                         try {
                             Intent openDir = packageManager.getLaunchIntentForPackage(
@@ -186,7 +186,7 @@ public class MenuDialog extends Dialog {
                             getContext().startActivity(openDir);
                         }
                         break;
-                    case file:
+                    case FILE:
                         Intent openFile = new Intent();
                         openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         openFile.setAction(Intent.ACTION_VIEW);
@@ -205,6 +205,10 @@ public class MenuDialog extends Dialog {
                 getContext().startActivity(about);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
+                Message compress = new Message();
+                compress.obj = path;
+                compress.what = OtoConsts.COMPRESS;
+                MainActivity.mHandler.sendMessage(compress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
@@ -263,7 +267,6 @@ public class MenuDialog extends Dialog {
                 property.obj = path;
                 property.what = OtoConsts.PROPERTY;
                 MainActivity.mHandler.sendMessage(property);
-
             }
             dismiss();
         }

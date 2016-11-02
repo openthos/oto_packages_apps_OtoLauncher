@@ -25,6 +25,7 @@ import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import android.view.KeyEvent;
@@ -65,7 +66,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mBlankMap.put("icon", -1);
         mBlankMap.put("null", true);
         mBlankMap.put("path", "");
-        mBlankMap.put("type", Type.blank);
+        mBlankMap.put("type", Type.BLANK);
         if (savedInstanceState != null) {
             try {
                 mDatas = stringToData(savedInstanceState.getString(OtoConsts.DESKTOP_DATA));
@@ -117,7 +118,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                         map.put("isChecked", false);
                                         map.put("null", false);
                                         map.put("icon", R.drawable.ic_app_file);
-                                        map.put("type", Type.directory);
+                                        map.put("type", Type.DIRECTORY);
                                         mDatas.set(i, map);
                                         break inner;
                                     }
@@ -133,9 +134,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mAdapter.notifyDataSetChanged();
                         break;
                     case OtoConsts.PROPERTY:
-                        PropertyDialog dialog = new PropertyDialog(MainActivity.this,
-                                                                   (String) msg.obj);
-                        dialog.showDialog();
+                        PropertyDialog propertyDialog = new PropertyDialog(MainActivity.this,
+                                                                          (String) msg.obj);
+                        propertyDialog.showDialog();
+                        break;
+                    case OtoConsts.COMPRESS:
+                        CompressDialog compressDialog = new CompressDialog(MainActivity.this,
+                                                                          (String) msg.obj);
+                        compressDialog.showDialog();
                         break;
                     case OtoConsts.DELETE:
                         showDialogForMoveToRecycle((String) msg.obj);
@@ -170,7 +176,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         if (!recycle.exists()) {
             recycle.mkdir();
         }
-        Type[] defaultTypes = {Type.computer, Type.recycle};
+        Type[] defaultTypes = {Type.COMPUTER, Type.RECYCLE};
         for (int i = 0; i < defaultNames.length; i++) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", defaultNames[i]);
@@ -193,10 +199,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 HashMap<String, Object> map = new HashMap<>();
                 if (files[i].isDirectory()) {
                     map.put("icon", R.drawable.ic_app_file);
-                    map.put("type", Type.directory);
+                    map.put("type", Type.DIRECTORY);
                 } else {
                     map.put("icon", R.drawable.ic_app_text);
-                    map.put("type", Type.file);
+                    map.put("type", Type.FILE);
                 }
                 map.put("name", files[i].getName());
                 map.put("path", files[i].getAbsolutePath());
@@ -249,7 +255,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                         if (!MenuDialog.isExistMenu()) {
-                            MenuDialog dialog = new MenuDialog(MainActivity.this, Type.blank, "");
+                            MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                         } else {
                             MenuDialog.setExistMenu(false);
@@ -310,7 +316,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             return true;
         } else if (!event.isShiftPressed() && keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
             Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-            if (type == Type.directory || type == Type.file) {
+            if (type == Type.DIRECTORY || type == Type.FILE) {
                     Message deleteFile = new Message();
                     deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
                     deleteFile.what = OtoConsts.DELETE;
@@ -396,28 +402,28 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             Type type = Type.valueOf(obj.getString("type"));
-            if (type == Type.blank) {
+            if (type == Type.BLANK) {
                 list.add(mBlankMap);
                 continue;
             }
             HashMap<String, Object> map = new HashMap<>();
             switch (type){
-                case computer:
+                case COMPUTER:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_computer);
                     map.put("name", getResources().getString(R.string.my_computer));
                     break;
-                case recycle:
+                case RECYCLE:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_recycle);
                     map.put("name", getResources().getString(R.string.recycle));
                     break;
-                case file:
+                case FILE:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_text);
                     map.put("name", obj.getString("name"));
                     break;
-                case directory:
+                case DIRECTORY:
                     map.put("null", false);
                     map.put("icon", R.drawable.ic_app_file);
                     map.put("name", obj.getString("name"));

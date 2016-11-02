@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
 
 /**
  * Created by xu on 2016/8/22.
@@ -169,5 +170,83 @@ public class DiskUtils {
             }
         }
         folder.delete();
+    }
+
+    public static File compress(String path, CompressFormatType type) {
+        File f = new File(path);
+        Runtime runtime = Runtime.getRuntime();
+        String command;
+        String arg0;
+        String arg1;
+        String suffix;
+        String tarPath;
+        switch (type) {
+            case TAR:
+                command = "/system/xbin/tar";
+                arg0 = "-cvf";
+                arg1 ="-C";
+                suffix =".tar";
+                tarPath = path + suffix;
+                try {
+                    runtime.exec(
+                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case GZIP:
+                command = "/system/xbin/tar";
+                arg0 = "-zcvf";
+                arg1 ="-C";
+                suffix = ".tar.gz";
+                tarPath = path + suffix;
+                try {
+                    runtime.exec(
+                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case BZIP2:
+                command = "/system/xbin/tar";
+                arg0 = "-jcvf";
+                arg1 ="-C";
+                suffix = ".tar.bz2";
+                tarPath = path + suffix;
+                try {
+                    runtime.exec(
+                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case ZIP:
+                command = "/system/xbin/7z";
+                arg0 = "a";
+                arg1 ="-w";
+                suffix = ".zip";
+                tarPath = path + suffix;
+                try {
+                    runtime.exec(new String[]{command, arg0, tarPath, arg1, path});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+        return null;
+    }
+
+    public static File decompress(String path) {
+        String command ="/usr/bin/7z";
+        String arg0 = "x";
+        String arg1 ="-o";
+        File f = new File(path);
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            runtime.exec(new String[]{command, arg0,  path, arg1 + f.getParent()});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
