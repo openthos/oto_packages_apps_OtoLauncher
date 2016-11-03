@@ -3,13 +3,19 @@ package com.openthos.launcher.openthoslauncher.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
+import com.openthos.launcher.openthoslauncher.activity.MainActivity;
+import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
+import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +26,7 @@ import java.io.IOException;
 public class CompressDialog extends Dialog {
     private Context mContext;
     private String mPath;
+    private CompressFormatType mFormatType = CompressFormatType.RAR;
 
     public CompressDialog(Context context) {
         super(context);
@@ -48,7 +55,38 @@ public class CompressDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_compress);
         getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
+        initBody();
         initFoot();
+    }
+
+    private void initBody() {
+        RadioButton tar = (RadioButton) findViewById(R.id.tar);
+        RadioButton tar_gz = (RadioButton) findViewById(R.id.tar_gz);
+        RadioButton tar_bz2 = (RadioButton) findViewById(R.id.tar_bz2);
+        RadioButton zip = (RadioButton) findViewById(R.id.zip);
+        View.OnClickListener click= new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.tar:
+                        mFormatType = CompressFormatType.TAR;
+                        break;
+                    case R.id.tar_gz:
+                        mFormatType = CompressFormatType.GZIP;
+                        break;
+                    case R.id.tar_bz2:
+                        mFormatType = CompressFormatType.BZIP2;
+                        break;
+                    case R.id.zip:
+                        mFormatType = CompressFormatType.ZIP;
+                        break;
+                }
+            }
+        };
+        tar.setOnClickListener(click);
+        tar_gz.setOnClickListener(click);
+        tar_bz2.setOnClickListener(click);
+        zip.setOnClickListener(click);
     }
 
     private void initFoot() {
@@ -57,6 +95,21 @@ public class CompressDialog extends Dialog {
         View.OnClickListener click= new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.confirm:
+                        new Thread() {
+                            public void run() {
+                                File f = DiskUtils.compress(mPath, mFormatType);
+                                Message msg = new Message();
+                                msg.obj = f.getAbsolutePath();
+                                msg.what = OtoConsts.SHOW_FILE;
+                                MainActivity.mHandler.sendMessage(msg);
+                            }
+                        }.start();
+                        break;
+                    case R.id.cancel:
+                        break;
+                }
                 dismiss();
             }
         };

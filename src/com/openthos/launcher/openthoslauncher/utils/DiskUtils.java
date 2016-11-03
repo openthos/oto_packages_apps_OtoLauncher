@@ -49,16 +49,22 @@ public class DiskUtils {
     //command:mv
     public static void moveFile(String srcFile, String destDir) {
         String command = "/system/xbin/mv";
-        copyOrMoveFile(command, srcFile, destDir);
+        String arg = "-v";
+        copyOrMoveFile(command, arg, srcFile, destDir);
     }
 
     //command:cp
     public static void copyFile(String srcFile, String destDir) {
         String command = "/system/xbin/cp";
-        copyOrMoveFile(command, srcFile, destDir);
+        String arg = "-v";
+        File f = new File(srcFile);
+        if (f.isDirectory()){
+            arg = "-rv";
+        }
+        copyOrMoveFile(command, arg, srcFile, destDir);
     }
 
-    private static void copyOrMoveFile(String command, String srcFile, String destDir) {
+    private static void copyOrMoveFile(String command, String arg, String srcFile, String destDir) {
          try {
             File f = new File(destDir, new File(srcFile).getName());
             File destFile = f;
@@ -71,7 +77,8 @@ public class DiskUtils {
                     }
                 }
             }
-            Runtime.getRuntime().exec(new String[] {command, srcFile, destFile.getAbsolutePath()});
+            Runtime.getRuntime().exec(new String[] {command, arg, srcFile,
+                                                    destFile.getAbsolutePath()});
         } catch (IOException e) {
         }
     }
@@ -106,7 +113,9 @@ public class DiskUtils {
         String arg0;
         String arg1;
         String suffix;
-        String tarPath;
+        String tarPath = "";
+        BufferedReader in = null;
+        boolean isOk = false;
         switch (type) {
             case TAR:
                 command = "/system/xbin/tar";
@@ -114,7 +123,8 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix =".tar";
                 tarPath = path + suffix;
-                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
+                isOk = tarCommand(command, arg0, tarPath, arg1,
+                                                        f.getParent(), f.getName(), in);
                 break;
             case GZIP:
                 command = "/system/xbin/tar";
@@ -122,7 +132,8 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix = ".tar.gz";
                 tarPath = path + suffix;
-                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
+                isOk = tarCommand(command, arg0, tarPath, arg1,
+                                                        f.getParent(), f.getName(), in);
                 break;
             case BZIP2:
                 command = "/system/xbin/tar";
@@ -130,7 +141,8 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix = ".tar.bz2";
                 tarPath = path + suffix;
-                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
+                isOk = tarCommand(command, arg0, tarPath, arg1,
+                                                        f.getParent(), f.getName(), in);
                 break;
             case ZIP:
                 command = "/system/xbin/7z";
@@ -139,23 +151,43 @@ public class DiskUtils {
                 suffix = ".zip";
                 tarPath = path + suffix;
                 try {
-                    Runtime.getRuntime().exec(new String[]{command, arg0, tarPath, arg1, path});
+                    Process pro = Runtime.getRuntime().exec(
+                                                  new String[]{command, arg0, tarPath, arg1, path});
+                    in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                    while(in.readLine() != null) {
+                    }
+                    isOk = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
         }
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (isOk) {
+            return new File(tarPath);
+        }
         return null;
     }
 
-    private static void tarCommand(String command, String arg0, String tarPath, String arg1,
-                                                              String parentPath, String fileName) {
+    private static boolean tarCommand(String command, String arg0, String tarPath, String arg1,
+                                            String parentPath, String fileName, BufferedReader in) {
         try {
-            Runtime.getRuntime().exec(
+            Process pro = Runtime.getRuntime().exec(
                                   new String[]{command, arg0, tarPath, arg1, parentPath, fileName});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            while(in.readLine() != null) {
+            }
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // command

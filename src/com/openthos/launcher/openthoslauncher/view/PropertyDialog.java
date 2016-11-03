@@ -78,7 +78,7 @@ public class PropertyDialog extends Dialog {
         titleImage = (ImageView) findViewById(R.id.title_image);
         if (file.isDirectory()) {
             titleImage.setImageDrawable(getContext().getResources()
-                                                             .getDrawable(R.drawable.ic_app_file));
+                                                             .getDrawable(R.drawable.ic_directory));
         } else if (file.isFile()) {
             titleImage.setImageDrawable(getContext().getResources()
                                                              .getDrawable(R.drawable.ic_app_text));

@@ -117,12 +117,36 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                         map.put("path", file.getAbsolutePath());
                                         map.put("isChecked", false);
                                         map.put("null", false);
-                                        map.put("icon", R.drawable.ic_app_file);
+                                        map.put("icon", R.drawable.ic_directory);
                                         map.put("type", Type.DIRECTORY);
                                         mDatas.set(i, map);
                                         break inner;
                                     }
                                 }
+                            }
+                        }
+                        mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+                        break;
+                    case OtoConsts.SHOW_FILE:
+                        for (int i = 0; i < mDatas.size(); i++) {
+                            if ((mDatas.get(i).get("path")).equals("")) {
+                                HashMap<String, Object> map = new HashMap<>();
+                                File showFile = new File((String) msg.obj);
+                                map.put("name", showFile.getName());
+                                map.put("path", showFile.getAbsolutePath());
+                                map.put("isChecked", false);
+                                map.put("null", false);
+                                if (showFile.isDirectory()) {
+                                    map.put("icon", R.drawable.ic_directory);
+                                    map.put("type", Type.DIRECTORY);
+                                } else {
+                                    map.put("icon", R.drawable.ic_app_text);
+                                    map.put("type", Type.FILE);
+                                }
+                                mDatas.set(i, map);
+                                break;
                             }
                         }
                         mAdapter.setData(mDatas);
@@ -201,7 +225,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             for (int i = 0; i < files.length; i++) {
                 HashMap<String, Object> map = new HashMap<>();
                 if (files[i].isDirectory()) {
-                    map.put("icon", R.drawable.ic_app_file);
+                    map.put("icon", R.drawable.ic_directory);
                     map.put("type", Type.DIRECTORY);
                 } else {
                     map.put("icon", R.drawable.ic_app_text);
@@ -484,7 +508,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     break;
                 case DIRECTORY:
                     map.put("null", false);
-                    map.put("icon", R.drawable.ic_app_file);
+                    map.put("icon", R.drawable.ic_directory);
                     map.put("name", obj.getString("name"));
                     break;
             }
