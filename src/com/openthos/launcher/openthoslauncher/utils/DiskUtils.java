@@ -20,53 +20,60 @@ import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
 public class DiskUtils {
 
     public static File getDesktop() {
-        File dir = Environment.getExternalStorageDirectory();
-        return new File(dir, "Desktop");
+        return new File(Environment.getExternalStorageDirectory(), "Desktop");
     }
 
     public static File getRecycle() {
-        File dir = Environment.getExternalStorageDirectory();
-        return new File(dir, "Recycle");
+        return new File(Environment.getExternalStorageDirectory(), "Recycle");
     }
 
+    //command:rm
     public static void delete(File file) {
         if (file.exists()) {
+            String command = "/system/xbin/rm";
+            String arg = "";
             if (file.isFile()) {
-                file.delete();
+                arg = "-v";
             } else if (file.isDirectory()) {
-                File[] childFile = file.listFiles();
-                if (childFile == null || childFile.length == 0) {
-                    file.delete();
-                } else {
-                    for (File f : childFile) {
-                        delete(f);
-                        file.delete();
-                    }
-                }
+                arg = "-rv";
             }
-        } else {
-            return;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(new String[]{command, arg, file.getAbsolutePath()});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    //command:mv
     public static void moveFile(String srcFile, String destDir) {
-        try {
+        String command = "/system/xbin/mv";
+        copyOrMoveFile(command, srcFile, destDir);
+    }
+
+    //command:cp
+    public static void copyFile(String srcFile, String destDir) {
+        String command = "/system/xbin/cp";
+        copyOrMoveFile(command, srcFile, destDir);
+    }
+
+    private static void copyOrMoveFile(String command, String srcFile, String destDir) {
+         try {
             File f = new File(destDir, new File(srcFile).getName());
+            File destFile = f;
             if (f.exists()) {
                 for (int i = 2; ; i++) {
                     File current = new File(f.getAbsolutePath() + "." + i);
                     if (!current.exists()) {
-                        rename(srcFile, current.getName());
-                        srcFile = new File(new File(srcFile).getParent(), current.getName())
-                                        .getAbsolutePath();
+                        destFile= new File(destDir, current.getName());
                         break;
                     }
                 }
             }
-            Runtime.getRuntime().exec(new String[] {"/system/bin/mv", srcFile, destDir});
+            Runtime.getRuntime().exec(new String[] {command, srcFile, destFile.getAbsolutePath()});
         } catch (IOException e) {
         }
-        return;
     }
 
     public static String formatFileSize(long fileSize) {
@@ -92,89 +99,9 @@ public class DiskUtils {
         oldFile.renameTo(newFile);
     }
 
-    public static void copyFolder(String srcDir, String destDir) {
-        File srcFile = new File(srcDir);
-        String name = srcFile.getName();
-        File destFile = new File(destDir + File.separator + name);
-        if (!destFile.exists()) {
-            destFile.mkdir();
-        }
-        if (srcFile.exists() && destFile.isDirectory()) {
-            File[] files = srcFile.listFiles();
-            String src = srcDir;
-            String dest = destFile.getAbsolutePath();
-            for (File temp : files) {
-                if (temp.isDirectory()) {
-                    String tempSrc = src + File.separator + temp.getName();
-                    String tempDest = dest + File.separator + temp.getName();
-                    File tempFile = new File(tempDest);
-                    tempFile.mkdir();
-                    if (temp.listFiles().length != 0) {
-                        copyFolder(tempSrc, tempDest);
-                    }
-                } else {
-                    String tempPath = src + File.separator + temp.getName();
-                    copyFile(tempPath, dest);
-                }
-            }
-        }
-    }
-
-    public static void copyFile(String srcPath, String destDirPath) {
-        File srcfile = new File(srcPath);
-        File destDir = new File(destDirPath);
-        InputStream is = null;
-        OutputStream os = null;
-        int ret = 0;
-        if (srcfile.exists() && destDir.exists() && destDir.isDirectory()) {
-            try {
-                is = new FileInputStream(srcfile);
-                String destFile = destDirPath + File.separator + srcfile.getName();
-                os = new FileOutputStream(new File(destFile));
-                byte[] buffer = new byte[1024];
-                while ((ret = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, ret);
-                }
-                os.flush();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (os != null) {
-                        os.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (Exception e) {
-                }
-            }
-        }
-    }
-
-    public static void deleteFolder(String dirPath) {
-        File folder = new File(dirPath);
-        File[] files = folder.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                String tempFilePath = dirPath + File.separator + file.getName();
-                deleteFolder(tempFilePath);
-            } else {
-                file.delete();
-            }
-        }
-        folder.delete();
-    }
-
+    // command
     public static File compress(String path, CompressFormatType type) {
         File f = new File(path);
-        Runtime runtime = Runtime.getRuntime();
         String command;
         String arg0;
         String arg1;
@@ -187,12 +114,7 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix =".tar";
                 tarPath = path + suffix;
-                try {
-                    runtime.exec(
-                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
                 break;
             case GZIP:
                 command = "/system/xbin/tar";
@@ -200,12 +122,7 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix = ".tar.gz";
                 tarPath = path + suffix;
-                try {
-                    runtime.exec(
-                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
                 break;
             case BZIP2:
                 command = "/system/xbin/tar";
@@ -213,12 +130,7 @@ public class DiskUtils {
                 arg1 ="-C";
                 suffix = ".tar.bz2";
                 tarPath = path + suffix;
-                try {
-                    runtime.exec(
-                        new String[]{command, arg0, tarPath, arg1, f.getParent(), f.getName()});
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                tarCommand(command, arg0, tarPath, arg1, f.getParent(), f.getName());
                 break;
             case ZIP:
                 command = "/system/xbin/7z";
@@ -227,7 +139,7 @@ public class DiskUtils {
                 suffix = ".zip";
                 tarPath = path + suffix;
                 try {
-                    runtime.exec(new String[]{command, arg0, tarPath, arg1, path});
+                    Runtime.getRuntime().exec(new String[]{command, arg0, tarPath, arg1, path});
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -236,14 +148,24 @@ public class DiskUtils {
         return null;
     }
 
+    private static void tarCommand(String command, String arg0, String tarPath, String arg1,
+                                                              String parentPath, String fileName) {
+        try {
+            Runtime.getRuntime().exec(
+                                  new String[]{command, arg0, tarPath, arg1, parentPath, fileName});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // command
     public static File decompress(String path) {
         String command ="/usr/bin/7z";
         String arg0 = "x";
         String arg1 ="-o";
         File f = new File(path);
-        Runtime runtime = Runtime.getRuntime();
         try {
-            runtime.exec(new String[]{command, arg0,  path, arg1 + f.getParent()});
+            Runtime.getRuntime().exec(new String[]{command, arg0,  path, arg1 + f.getParent()});
         } catch (IOException e) {
             e.printStackTrace();
         }

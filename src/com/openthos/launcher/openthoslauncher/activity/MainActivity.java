@@ -149,6 +149,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.SAVEDATA:
                         mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
                         break;
+                    case OtoConsts.DELETE_DIRECT:
+                        showDialogForDirectDelete((String) msg.obj);
+                        break;
                 }
             }
         };
@@ -323,6 +326,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mHandler.sendMessage(deleteFile);
             }
             return true;
+        } else if (event.isShiftPressed() && keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+            if (type == Type.DIRECTORY || type == Type.FILE) {
+                    Message deleteFileByDirect = new Message();
+                    deleteFileByDirect.obj = mDatas.get(mAdapter.pos).get("path");
+                    deleteFileByDirect.what = OtoConsts.DELETE_DIRECT;
+                    mHandler.sendMessage(deleteFileByDirect);
+            }
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -331,6 +343,21 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         MoveToRecycleClickListener listener = new MoveToRecycleClickListener(path);
         new AlertDialog.Builder(MainActivity.this)
              .setMessage(getResources().getString(R.string.dialog_delete_text))
+             .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
+             .setNegativeButton(getResources().getString(
+                                                  R.string.dialog_delete_no),
+                 new android.content.DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         dialog.cancel();
+                     }
+                 }).show();
+    }
+
+    private void showDialogForDirectDelete(String path) {
+        DirectDeleteClickListener listener = new DirectDeleteClickListener(path);
+        new AlertDialog.Builder(MainActivity.this)
+             .setMessage(getResources().getString(R.string.dialog_direct_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
              .setNegativeButton(getResources().getString(
                                                   R.string.dialog_delete_no),
@@ -366,10 +393,42 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             public void run() {
                 super.run();
                 DiskUtils.moveFile(mPath, OtoConsts.RECYCLE_PATH);
-                Message deleteFile = new Message();
-                deleteFile.obj = mPath;
-                deleteFile.what = OtoConsts.DELETE_REFRESH;
-                MainActivity.mHandler.sendMessage(deleteFile);
+                Message deleteRefreshFile = new Message();
+                deleteRefreshFile.obj = mPath;
+                deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
+                MainActivity.mHandler.sendMessage(deleteRefreshFile);
+            }
+        }
+    }
+
+    private class DirectDeleteClickListener implements OnClickListener {
+        String mPath;
+
+        public DirectDeleteClickListener(String path) {
+            mPath = path;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            DirectDeleteThread thread = new DirectDeleteThread();
+            thread.start();
+            dialog.cancel();
+        }
+
+        private class DirectDeleteThread extends Thread {
+
+            public DirectDeleteThread() {
+               super();
+            }
+
+            @Override
+            public void run() {
+                super.run();
+                DiskUtils.delete(new File(mPath));
+                Message deleteRefreshFile = new Message();
+                deleteRefreshFile.obj = mPath;
+                deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
+                MainActivity.mHandler.sendMessage(deleteRefreshFile);
             }
         }
     }

@@ -233,6 +233,7 @@
     <add-resource type="string" name="property" />
     <add-resource type="string" name="clean_recycle" />
     <add-resource type="string" name="dialog_delete_text" />
+    <add-resource type="string" name="dialog_direct_delete_text" />
     <add-resource type="string" name="dialog_delete_yes" />
     <add-resource type="string" name="dialog_delete_no" />
     <add-resource type="string" name="dialog_property_title" />
@@ -283,6 +284,7 @@
     <string name="clean_recycle">清空回收站</string>
     <!-- 删除到回收站 -->
     <string name="dialog_delete_text">您确定将该文件移动到回收站吗</string>
+    <string name="dialog_direct_delete_text">您确定要永久删除吗？</string>
     <string name="dialog_delete_yes">是</string>
     <string name="dialog_delete_no">否</string>
     <!-- 属性 -->
