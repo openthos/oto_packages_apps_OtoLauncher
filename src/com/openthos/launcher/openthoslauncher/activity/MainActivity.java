@@ -341,22 +341,17 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
             return true;
-        } else if (!event.isShiftPressed() && keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.pos != -1) {
             Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
             if (type == Type.DIRECTORY || type == Type.FILE) {
-                    Message deleteFile = new Message();
-                    deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
+                Message deleteFile = new Message();
+                deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
+                if (event.isShiftPressed()){
+                    deleteFile.what = OtoConsts.DELETE_DIRECT;
+                } else {
                     deleteFile.what = OtoConsts.DELETE;
-                    mHandler.sendMessage(deleteFile);
-            }
-            return true;
-        } else if (event.isShiftPressed() && keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
-            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-            if (type == Type.DIRECTORY || type == Type.FILE) {
-                    Message deleteFileByDirect = new Message();
-                    deleteFileByDirect.obj = mDatas.get(mAdapter.pos).get("path");
-                    deleteFileByDirect.what = OtoConsts.DELETE_DIRECT;
-                    mHandler.sendMessage(deleteFileByDirect);
+                }
+                mHandler.sendMessage(deleteFile);
             }
             return true;
         }
