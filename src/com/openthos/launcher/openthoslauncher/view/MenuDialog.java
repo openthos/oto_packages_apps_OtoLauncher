@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -173,16 +174,12 @@ public class MenuDialog extends Dialog {
                         try {
                             Intent openDir = packageManager.getLaunchIntentForPackage(
                                                               OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("path",path);
-                            openDir.putExtras(bundle);
+                            openDir.putExtra("path", path);
                             getContext().startActivity(openDir);
                         } catch (NullPointerException e) {
                             Intent openDir = packageManager.getLaunchIntentForPackage(
                                                               OtoConsts.FILEMANAGER_PACKAGE);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("path",path);
-                            openDir.putExtras(bundle);
+                            openDir.putExtra("path", path);
                             getContext().startActivity(openDir);
                         }
                         break;
@@ -192,6 +189,8 @@ public class MenuDialog extends Dialog {
                         openFile.setAction(Intent.ACTION_VIEW);
                         String fileType = FileUtils.getMIMEType(new File(path));
                         openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                        openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
+                                                            ApplicationInfo.APPNAME_OTO_LAUNCHER);
                         getContext().startActivity(openFile);
                         break;
                 }

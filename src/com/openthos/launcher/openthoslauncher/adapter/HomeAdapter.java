@@ -2,6 +2,7 @@ package com.openthos.launcher.openthoslauncher.adapter;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -185,10 +186,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     try {
                                         Intent intent = packageManager.getLaunchIntentForPackage(
                                                                  OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                                        intent.putExtra("path",
+                                                (String) data.get(getAdapterPosition()).get("path"));
                                         item.getContext().startActivity(intent);
                                     } catch (NullPointerException e) {
                                         Intent intent = packageManager.getLaunchIntentForPackage(
                                                                      OtoConsts.FILEMANAGER_PACKAGE);
+                                        intent.putExtra("path",
+                                                (String) data.get(getAdapterPosition()).get("path"));
                                         item.getContext().startActivity(intent);
                                     }
                                     break;
@@ -201,6 +206,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     String fileType = FileUtils.getMIMEType(new File(filePath));
                                     openFile.setDataAndType(
                                                         Uri.fromFile(new File(filePath)), fileType);
+                                    openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
+                                                              ApplicationInfo.APPNAME_OTO_LAUNCHER);
                                     item.getContext().startActivity(openFile);
                                     break;
                             }
