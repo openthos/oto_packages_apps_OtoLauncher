@@ -186,20 +186,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     try {
                                         Intent intent = packageManager.getLaunchIntentForPackage(
                                                                  OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                                        intent.putExtra("path",
-                                                (String) data.get(getAdapterPosition()).get("path"));
+                                        intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG,
+                                               (String) data.get(getAdapterPosition()).get(
+                                                                    Intent.EXTRA_DESKTOP_PATH_TAG));
                                         item.getContext().startActivity(intent);
                                     } catch (NullPointerException e) {
                                         Intent intent = packageManager.getLaunchIntentForPackage(
                                                                      OtoConsts.FILEMANAGER_PACKAGE);
-                                        intent.putExtra("path",
-                                                (String) data.get(getAdapterPosition()).get("path"));
+                                        intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG,
+                                                        (String) data.get(getAdapterPosition()).get(
+                                                                    Intent.EXTRA_DESKTOP_PATH_TAG));
                                         item.getContext().startActivity(intent);
                                     }
                                     break;
                                 case FILE:
-                                    String filePath = (String)
-                                                         data.get(getAdapterPosition()).get("path");
+                                    String filePath = (String)data.get(getAdapterPosition()).
+                                                                 get(Intent.EXTRA_DESKTOP_PATH_TAG);
                                     Intent openFile = new Intent();
                                     openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     openFile.setAction(Intent.ACTION_VIEW);

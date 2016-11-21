@@ -174,12 +174,12 @@ public class MenuDialog extends Dialog {
                         try {
                             Intent openDir = packageManager.getLaunchIntentForPackage(
                                                               OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                            openDir.putExtra("path", path);
+                            openDir.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
                             getContext().startActivity(openDir);
                         } catch (NullPointerException e) {
                             Intent openDir = packageManager.getLaunchIntentForPackage(
                                                               OtoConsts.FILEMANAGER_PACKAGE);
-                            openDir.putExtra("path", path);
+                            openDir.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
                             getContext().startActivity(openDir);
                         }
                         break;
