@@ -167,6 +167,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                                           (String) msg.obj);
                         compressDialog.showDialog();
                         break;
+                    case OtoConsts.DECOMPRESS:
+                        new DecompressThread((String) msg.obj).start();
+                        break;
                     case OtoConsts.DELETE:
                         showDialogForMoveToRecycle((String) msg.obj);
                         break;
@@ -448,6 +451,27 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 deleteRefreshFile.obj = mPath;
                 deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
                 MainActivity.mHandler.sendMessage(deleteRefreshFile);
+            }
+        }
+    }
+
+    private class DecompressThread extends Thread {
+        String mPath;
+
+        public DecompressThread(String path) {
+           super();
+           mPath = path;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            String[] fileList = DiskUtils.decompress(mPath);
+            for (int i = 0; i < fileList.length; i++ ) {
+                Message showFile = new Message();
+                showFile.obj = OtoConsts.DESKTOP_PATH + "/" + fileList[i];
+                showFile.what = OtoConsts.SHOW_FILE;
+                MainActivity.mHandler.sendMessage(showFile);
             }
         }
     }

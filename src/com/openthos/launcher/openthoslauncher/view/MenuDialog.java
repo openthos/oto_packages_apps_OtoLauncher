@@ -210,6 +210,10 @@ public class MenuDialog extends Dialog {
                 MainActivity.mHandler.sendMessage(compress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
+                Message decompress = new Message();
+                decompress.obj = path;
+                decompress.what = OtoConsts.DECOMPRESS;
+                MainActivity.mHandler.sendMessage(decompress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {

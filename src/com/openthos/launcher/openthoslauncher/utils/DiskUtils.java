@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
 
 /**
@@ -145,7 +146,7 @@ public class DiskUtils {
                                                         f.getParent(), f.getName(), in);
                 break;
             case ZIP:
-                command = "/system/xbin/7z";
+                command = "/system/bin/7za";
                 arg0 = "a";
                 arg1 ="-w";
                 suffix = ".zip";
@@ -191,8 +192,8 @@ public class DiskUtils {
     }
 
     // command
-    public static File decompress(String path) {
-        String command ="/usr/bin/7z";
+    public static String[] decompress(String path) {
+        String command = "/system/bin/7za";
         String arg0 = "x";
         String arg1 ="-o";
         File f = new File(path);
@@ -201,6 +202,53 @@ public class DiskUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return list(path);
+    }
+
+    public static String[] list(String file){
+        String command = "system/bin/7za";
+        String arg0 = "l";
+        Runtime runtime = Runtime.getRuntime();
+        Process pro;
+        BufferedReader in = null;
+        boolean isPrint = false;
+        ArrayList<String> fileList= new ArrayList<>();
+        try {
+            pro = runtime.exec(new String[]{command, arg0, file});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (isPrint) {
+                    if (line.contains("-----")) {
+                        isPrint = false;
+                        continue;
+                    }
+                    line = line.substring(OtoConsts.INDEX_7Z_FILENAME);
+                    System.out.println(line);
+                    if (line.contains("/")) {
+                        line = line.replace(line.substring(line.indexOf("/")), "");
+                        if (!fileList.contains(line)) {
+                            fileList.add(line);
+                        }
+                    } else {
+                        fileList.add(line);
+                    }
+                }
+                if (line.contains("-----")){
+                    isPrint = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return fileList.toString().substring(1, fileList.toString().length() - 1).split(", ");
     }
 }

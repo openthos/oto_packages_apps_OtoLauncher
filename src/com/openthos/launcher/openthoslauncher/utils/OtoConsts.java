@@ -28,6 +28,7 @@ public class OtoConsts {
     public static final int COMPRESS = 0x00000008;
     public static final int DELETE_DIRECT = 0x00000009;
     public static final int SHOW_FILE = 0x00000010;
+    public static final int DECOMPRESS = 0x00000011;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;
@@ -65,5 +66,6 @@ public class OtoConsts {
     public static final int INDEX_LIMIT_END = 24;
     public static final int INDEX_TIME_BEGIN = 8;
     public static final int INDEX_TIME_END = 27;
+    public static final int INDEX_7Z_FILENAME = 53;
 
 }
