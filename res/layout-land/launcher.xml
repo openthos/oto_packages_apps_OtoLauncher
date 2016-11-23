@@ -28,7 +28,8 @@
     <com.android.launcher3.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <com.android.launcher3.FocusIndicatorView
             android:id="@+id/focus_indicator"
@@ -70,7 +71,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inflatedId="@+id/launcher_overlay"
-        android:layout="@layout/launcher_overlay" />
+        android:layout="@layout/launcher_overlay"
+        android:visibility="gone" />
     <FrameLayout
         android:id="@+id/otocontent"
         android:layout_width="match_parent"

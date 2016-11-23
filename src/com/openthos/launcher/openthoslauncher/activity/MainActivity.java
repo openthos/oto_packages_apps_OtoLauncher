@@ -201,7 +201,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         //default icon
         String[] defaultNames = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcons = getResources().obtainTypedArray(R.array.default_icon);
-        String[] defaultPaths = {"/", OtoConsts.RECYCLE_PATH};
+        String[] defaultPaths = {"", OtoConsts.RECYCLE_PATH};
         File recycle = DiskUtils.getRecycle();
         if (!recycle.exists()) {
             recycle.mkdir();
