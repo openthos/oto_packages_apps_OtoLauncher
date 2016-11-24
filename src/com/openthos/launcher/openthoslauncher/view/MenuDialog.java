@@ -102,7 +102,21 @@ public class MenuDialog extends Dialog {
         int mvHeight = 0;
         int mvWidth = 0;
         for (int i = 0; i < s.length; i++) {
-            View mv = View.inflate(context, R.layout.item_menu, null);
+            View mv;
+            if ((s[i].equals(context.getResources().getString(R.string.decompression))
+                        && !(path.endsWith(OtoConsts.SUFFIX_TAR)
+                         || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                         || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                         || path.endsWith(OtoConsts.SUFFIX_ZIP)))
+              ||(s[i].equals(context.getResources().getString(R.string.compress))
+                        && (path.endsWith(OtoConsts.SUFFIX_TAR)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                          || path.endsWith(OtoConsts.SUFFIX_ZIP)))) {
+                mv = View.inflate(context, R.layout.item_menu_unable, null);
+            } else {
+                mv = View.inflate(context, R.layout.item_menu, null);
+            }
             TextView tv = (TextView) mv.findViewById(R.id.text);
             tv.setText(s[i]);
             tv.setTag(s[i]);
@@ -204,12 +218,24 @@ public class MenuDialog extends Dialog {
                 getContext().startActivity(about);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
+                if (path.endsWith(OtoConsts.SUFFIX_TAR)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                          || path.endsWith(OtoConsts.SUFFIX_ZIP)) {
+                    return;
+                }
                 Message compress = new Message();
                 compress.obj = path;
                 compress.what = OtoConsts.COMPRESS;
                 MainActivity.mHandler.sendMessage(compress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
+                if (!(path.endsWith(OtoConsts.SUFFIX_TAR)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                          || path.endsWith(OtoConsts.SUFFIX_ZIP))) {
+                    return;
+                }
                 Message decompress = new Message();
                 decompress.obj = path;
                 decompress.what = OtoConsts.DECOMPRESS;

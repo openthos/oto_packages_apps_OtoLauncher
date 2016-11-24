@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 /**
  * Created by xu on 2016/8/22.
@@ -121,8 +122,8 @@ public class DiskUtils {
             case TAR:
                 command = "/system/xbin/tar";
                 arg0 = "-cvf";
-                arg1 ="-C";
-                suffix =".tar";
+                arg1 = "-C";
+                suffix = OtoConsts.SUFFIX_TAR;
                 tarPath = path + suffix;
                 isOk = tarCommand(command, arg0, tarPath, arg1,
                                                         f.getParent(), f.getName(), in);
@@ -130,8 +131,8 @@ public class DiskUtils {
             case GZIP:
                 command = "/system/xbin/tar";
                 arg0 = "-zcvf";
-                arg1 ="-C";
-                suffix = ".tar.gz";
+                arg1 = "-C";
+                suffix = OtoConsts.SUFFIX_TAR_GZIP;
                 tarPath = path + suffix;
                 isOk = tarCommand(command, arg0, tarPath, arg1,
                                                         f.getParent(), f.getName(), in);
@@ -139,8 +140,8 @@ public class DiskUtils {
             case BZIP2:
                 command = "/system/xbin/tar";
                 arg0 = "-jcvf";
-                arg1 ="-C";
-                suffix = ".tar.bz2";
+                arg1 = "-C";
+                suffix = OtoConsts.SUFFIX_TAR_BZIP2;
                 tarPath = path + suffix;
                 isOk = tarCommand(command, arg0, tarPath, arg1,
                                                         f.getParent(), f.getName(), in);
@@ -148,8 +149,8 @@ public class DiskUtils {
             case ZIP:
                 command = "/system/bin/7za";
                 arg0 = "a";
-                arg1 ="-w";
-                suffix = ".zip";
+                arg1 = "-w";
+                suffix = OtoConsts.SUFFIX_ZIP;
                 tarPath = path + suffix;
                 try {
                     Process pro = Runtime.getRuntime().exec(
@@ -195,7 +196,7 @@ public class DiskUtils {
     public static String[] decompress(String path) {
         String command = "/system/bin/7za";
         String arg0 = "x";
-        String arg1 ="-o";
+        String arg1 = "-o";
         File f = new File(path);
         try {
             Runtime.getRuntime().exec(new String[]{command, arg0,  path, arg1 + f.getParent()});

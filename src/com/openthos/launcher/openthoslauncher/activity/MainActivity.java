@@ -103,7 +103,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case OtoConsts.NEWFOLDER:
                         inner:
-                        for (int i = 0; i < mDatas.size(); i++) {
+                        for (int i = 1; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals("")) {
                                 File root = new File(OtoConsts.DESKTOP_PATH);
                                 for (int j = 1; ; j++) {
@@ -130,7 +130,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.SHOW_FILE:
-                        for (int i = 0; i < mDatas.size(); i++) {
+                        for (int i = 1; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals("")) {
                                 HashMap<String, Object> map = new HashMap<>();
                                 File showFile = new File((String) msg.obj);
