@@ -35,6 +35,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
             android:textSize="14sp"
+            android:checked="true"
             android:text="@string/launcher_tar"
             android:textColor="@color/black" />
 
