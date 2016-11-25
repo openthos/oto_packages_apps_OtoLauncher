@@ -70,6 +70,6 @@ public class OtoConsts {
 
     public static final String SUFFIX_TAR = ".tar";
     public static final String SUFFIX_TAR_GZIP = ".tar.gz";
-    public static final String SUFFIX_TAR_BZIP2 = "tar.bz2";
+    public static final String SUFFIX_TAR_BZIP2 = ".tar.bz2";
     public static final String SUFFIX_ZIP = ".zip";
 }
