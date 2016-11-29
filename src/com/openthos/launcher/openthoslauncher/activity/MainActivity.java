@@ -179,6 +179,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.DELETE_DIRECT:
                         showDialogForDirectDelete((String) msg.obj);
                         break;
+                    case OtoConsts.COPY_PASTE:
+                        DiskUtils.copyFile((String) msg.obj, OtoConsts.DESKTOP_PATH);
+                        break;
+                    case OtoConsts.CROP_PASTE:
+                        DiskUtils.moveFile((String) msg.obj, OtoConsts.DESKTOP_PATH);
+                        break;
                 }
             }
         };

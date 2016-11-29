@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.text.ClipboardManager;
 
 import com.android.launcher3.R;
 import com.android.launcher3.LauncherWallpaperPickerActivity;
@@ -40,6 +41,7 @@ public class MenuDialog extends Dialog {
     private String path;
     private int dialogHeight;
     private static boolean existMenu;
+    private String sourcePath;
 
     public MenuDialog(Context context) {
         super(context);
@@ -101,6 +103,9 @@ public class MenuDialog extends Dialog {
         dialogHeight = 0;
         int mvHeight = 0;
         int mvWidth = 0;
+        ClipboardManager cm = (ClipboardManager) context.getSystemService(
+                                                              Context.CLIPBOARD_SERVICE);
+        sourcePath = (String) cm.getText();
         for (int i = 0; i < s.length; i++) {
             View mv;
             if ((s[i].equals(context.getResources().getString(R.string.decompression))
@@ -112,7 +117,11 @@ public class MenuDialog extends Dialog {
                         && (path.endsWith(OtoConsts.SUFFIX_TAR)
                           || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
                           || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
-                          || path.endsWith(OtoConsts.SUFFIX_ZIP)))) {
+                          || path.endsWith(OtoConsts.SUFFIX_ZIP)))
+                || (s[i].equals(context.getResources().getString(R.string.paste))
+                        && (sourcePath == null) && !(sourcePath != null
+                               && ((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
+                               || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)))))){
                 mv = View.inflate(context, R.layout.item_menu_unable, null);
             } else {
                 mv = View.inflate(context, R.layout.item_menu, null);
@@ -242,10 +251,28 @@ public class MenuDialog extends Dialog {
                 MainActivity.mHandler.sendMessage(decompress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
+                ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
+                                        .setText(Intent.EXTRA_CROP_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
+                ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
+                                        .setText(Intent.EXTRA_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
+                if(!(text.equals(context.getResources().getString(R.string.paste))
+                       && (sourcePath != null) && ((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
+                                   || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))){
+                   return;
+                }
+                Message paste = new Message();
+                if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
+                    paste.what = OtoConsts.COPY_PASTE;
+                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
+                } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
+                    paste.what = OtoConsts.CROP_PASTE;
+                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
+                }
+                MainActivity.mHandler.sendMessage(paste);
             } else if (text.equals(all_menu[OtoConsts.INDEX_SORT])) {
                 //sort
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.SORT);
