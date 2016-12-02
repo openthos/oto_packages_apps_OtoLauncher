@@ -455,6 +455,7 @@ s -->
     <add-resource type="string" name="paste" />
     <add-resource type="string" name="sort" />
     <add-resource type="string" name="new_folder" />
+    <add-resource type="string" name="new_file" />
     <add-resource type="string" name="display_settings" />
     <add-resource type="string" name="change_wallpaper" />
     <add-resource type="string" name="open" />
@@ -503,6 +504,7 @@ s -->
     <string name="paste">Paste</string>
     <string name="sort">Sort</string>
     <string name="new_folder">New Folder</string>
+    <string name="new_file">New File</string>
     <string name="display_settings">Display Settings</string>
     <string name="change_wallpaper">Change Wallpaper</string>
     <string name="open">Open</string>

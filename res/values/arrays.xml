@@ -34,6 +34,7 @@
         <item>@string/paste</item>
         <item>@string/sort</item>
         <item>@string/new_folder</item>
+        <item>@string/new_file</item>
         <item>@string/display_settings</item>
         <item>@string/change_wallpaper</item>
     </array>
@@ -67,5 +68,6 @@
         <item>@string/rename</item>
         <item>@string/clean_recycle</item>
         <item>@string/property</item>
+        <item>@string/new_file</item>
     </array>
 </resources>

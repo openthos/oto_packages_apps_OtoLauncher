@@ -31,6 +31,7 @@ import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import android.view.KeyEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -102,38 +103,25 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFOLDER:
-                        inner:
-                        for (int i = 1; i < mDatas.size(); i++) {
-                            if ((mDatas.get(i).get("path")).equals("")) {
-                                File root = new File(OtoConsts.DESKTOP_PATH);
-                                for (int j = 1; ; j++) {
-                                    File file = new File(root,
-                                                        MainActivity.this.getResources()
-                                                        .getString(R.string.new_folder) + j);
-                                    if (!file.exists()) {
-                                        file.mkdir();
-                                        HashMap<String, Object> map = new HashMap<>();
-                                        map.put("name", file.getName());
-                                        map.put("path", file.getAbsolutePath());
-                                        map.put("isChecked", false);
-                                        map.put("null", false);
-                                        map.put("icon", R.drawable.ic_directory);
-                                        map.put("type", Type.DIRECTORY);
-                                        mDatas.set(i, map);
-                                        break inner;
-                                    }
-                                }
-                            }
-                        }
+                        createNewFileOrFolder(Type.DIRECTORY);
+                        mAdapter.setData(mDatas);
+                        mAdapter.notifyDataSetChanged();
+                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+                        break;
+                    case OtoConsts.NEWFILE:
+                        createNewFileOrFolder(Type.FILE);
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.SHOW_FILE:
+                        File showFile = new File((String) msg.obj);
+                        if (!showFile.exists()) {
+                            return;
+                        }
                         for (int i = 1; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals("")) {
                                 HashMap<String, Object> map = new HashMap<>();
-                                File showFile = new File((String) msg.obj);
                                 map.put("name", showFile.getName());
                                 map.put("path", showFile.getAbsolutePath());
                                 map.put("isChecked", false);
@@ -188,6 +176,49 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
         };
+    }
+
+    private void createNewFileOrFolder(Type type) {
+        for (int i = 1; i < mDatas.size(); i++) {
+            if ((mDatas.get(i).get("path")).equals("")) {
+                File root = new File(OtoConsts.DESKTOP_PATH);
+                for (int j = 1; ; j++) {
+                    File file = null;
+                    if (type == Type.FILE) {
+                        file = new File(root, MainActivity.this.getResources()
+                                                               .getString(R.string.new_file) + j);
+                    } else if (type == Type.DIRECTORY){
+                        file = new File(root, MainActivity.this.getResources()
+                                                               .getString(R.string.new_folder) + j);
+                    }
+                    if (!file.exists()) {
+                        try {
+                            if (type == Type.FILE) {
+                                file.createNewFile();
+                            } else if (type == Type.DIRECTORY) {
+                                file.mkdir();
+                            }
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("name", file.getName());
+                            map.put("path", file.getAbsolutePath());
+                            map.put("isChecked", false);
+                            map.put("null", false);
+                            if (type == Type.FILE) {
+                                map.put("icon", R.drawable.ic_app_text);
+                                map.put("type", Type.FILE);
+                            } else if (type == Type.DIRECTORY) {
+                                map.put("icon", R.drawable.ic_directory);
+                                map.put("type", Type.DIRECTORY);
+                            }
+                            mDatas.set(i, map);
+                            return;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void initData() {

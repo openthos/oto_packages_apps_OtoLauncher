@@ -105,9 +105,13 @@ public class MenuDialog extends Dialog {
         int mvWidth = 0;
         ClipboardManager cm = (ClipboardManager) context.getSystemService(
                                                               Context.CLIPBOARD_SERVICE);
-        sourcePath = (String) cm.getText();
+        try {
+            sourcePath = (String) cm.getText();
+        } catch (ClassCastException e) {
+        }
         for (int i = 0; i < s.length; i++) {
             View mv;
+            boolean isInitListener = false;
             if ((s[i].equals(context.getResources().getString(R.string.decompression))
                         && !(path.endsWith(OtoConsts.SUFFIX_TAR)
                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
@@ -125,12 +129,15 @@ public class MenuDialog extends Dialog {
                 mv = View.inflate(context, R.layout.item_menu_unable, null);
             } else {
                 mv = View.inflate(context, R.layout.item_menu, null);
+                isInitListener = true;
             }
             TextView tv = (TextView) mv.findViewById(R.id.text);
             tv.setText(s[i]);
             tv.setTag(s[i]);
-            tv.setOnHoverListener(hoverListener);
-            tv.setOnClickListener(clickListener);
+            if (isInitListener) {
+                tv.setOnHoverListener(hoverListener);
+                tv.setOnClickListener(clickListener);
+            }
             ll.addView(mv);
             if (i == 0) {
                int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -279,7 +286,10 @@ public class MenuDialog extends Dialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_NEW_FOLDER])) {
                 //new_folder
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.NEWFOLDER);
-            }else if (text.equals(all_menu[OtoConsts.INDEX_DISPLAY_SETTINGS])) {
+            } else if (text.equals(all_menu[OtoConsts.INDEX_NEW_FILE])) {
+                //new_file
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.NEWFILE);
+            } else if (text.equals(all_menu[OtoConsts.INDEX_DISPLAY_SETTINGS])) {
                 //display_settings
                 Intent display = new Intent();
                 ComponentName compDisplay = new ComponentName(OtoConsts.SETTINGS_PACKAGE,

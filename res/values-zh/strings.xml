@@ -219,6 +219,7 @@
     <add-resource type="string" name="paste" />
     <add-resource type="string" name="sort" />
     <add-resource type="string" name="new_folder" />
+    <add-resource type="string" name="new_file" />
     <add-resource type="string" name="display_settings" />
     <add-resource type="string" name="change_wallpaper" />
     <add-resource type="string" name="open" />
@@ -312,5 +313,6 @@
     <string name="launcher_tar_bz2">tar.bz2格式</string>
     <string name="launcher_zip">zip格式</string>
     <string name="dialog_compress_title">请选择压缩格式</string>
+    <string name="new_file">新建文件</string>
 
 </resources>

@@ -31,6 +31,7 @@ public class OtoConsts {
     public static final int DECOMPRESS = 0x00000011;
     public static final int COPY_PASTE = 0x00000012;
     public static final int CROP_PASTE = 0x00000013;
+    public static final int NEWFILE = 0x00000014;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;
@@ -47,6 +48,7 @@ public class OtoConsts {
     public static final int INDEX_RENAME = 12;
     public static final int INDEX_CLEAN_RECYCLE = 13;
     public static final int INDEX_PROPERTY = 14;
+    public static final int INDEX_NEW_FILE = 15;
 
     public static final int LIMIT_LENGTH = 10;
     public static final int LIMIT_OWNER_READ = 1;

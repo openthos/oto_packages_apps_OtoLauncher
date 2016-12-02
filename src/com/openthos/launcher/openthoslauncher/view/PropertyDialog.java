@@ -32,14 +32,6 @@ import java.util.TimeZone;
 public class PropertyDialog extends Dialog {
     private Context mContext;
     private String mPath;
-    private File file;
-    private ImageView titleImage;
-    private TextView titleText;
-    private TextView location, size, sizeOnDisk, created, modified, accessed;
-    private CheckBox limit_owner_read, limit_owner_write, limit_owner_execute;
-    private CheckBox limit_group_read, limit_group_write, limit_group_execute;
-    private CheckBox limit_other_read, limit_other_write, limit_other_execute;
-    private TextView apply, confirm, cancel;
 
     public PropertyDialog(Context context) {
         super(context);
@@ -68,14 +60,14 @@ public class PropertyDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_property);
         getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
-        initTitle();
-        initBody();
+        File file = new File(mPath);
+        initTitle(file);
+        initBody(file);
         initFoot();
     }
 
-    private void initTitle() {
-        file = new File(mPath);
-        titleImage = (ImageView) findViewById(R.id.title_image);
+    private void initTitle(File file) {
+        ImageView titleImage = (ImageView) findViewById(R.id.title_image);
         if (file.isDirectory()) {
             titleImage.setImageDrawable(getContext().getResources()
                                                              .getDrawable(R.drawable.ic_directory));
@@ -83,18 +75,18 @@ public class PropertyDialog extends Dialog {
             titleImage.setImageDrawable(getContext().getResources()
                                                              .getDrawable(R.drawable.ic_app_text));
         }
-        titleText = (TextView) findViewById(R.id.title_text);
+        TextView titleText = (TextView) findViewById(R.id.title_text);
         titleText.setText(file.getName() + " "
                           + getContext().getResources().getString(R.string.dialog_property_title));
     }
 
-    private void initBody() {
-        location = (TextView) findViewById(R.id.location);
-        size = (TextView) findViewById(R.id.size);
-        sizeOnDisk = (TextView) findViewById(R.id.size_on_disk);
-        created = (TextView) findViewById(R.id.created);
-        modified = (TextView) findViewById(R.id.modified);
-        accessed = (TextView) findViewById(R.id.accessed);
+    private void initBody(File file) {
+        TextView location = (TextView) findViewById(R.id.location);
+        TextView size = (TextView) findViewById(R.id.size);
+        TextView sizeOnDisk = (TextView) findViewById(R.id.size_on_disk);
+        TextView created = (TextView) findViewById(R.id.created);
+        TextView modified = (TextView) findViewById(R.id.modified);
+        TextView accessed = (TextView) findViewById(R.id.accessed);
 
         location.setText(file.getAbsolutePath());
         size.setText(DiskUtils.formatFileSize(file.length()));
@@ -148,61 +140,61 @@ public class PropertyDialog extends Dialog {
     }
 
     private void initLimit(String line) {
-        limit_owner_read = (CheckBox) findViewById(R.id.limit_owner_read);
-        limit_owner_write = (CheckBox) findViewById(R.id.limit_owner_write);
-        limit_owner_execute = (CheckBox) findViewById(R.id.limit_owner_execute);
-        limit_group_read = (CheckBox) findViewById(R.id.limit_group_read);
-        limit_group_write = (CheckBox) findViewById(R.id.limit_group_write);
-        limit_group_execute = (CheckBox) findViewById(R.id.limit_group_execute);
-        limit_other_read = (CheckBox) findViewById(R.id.limit_other_read);
-        limit_other_write = (CheckBox) findViewById(R.id.limit_other_write);
-        limit_other_execute = (CheckBox) findViewById(R.id.limit_other_execute);
+        CheckBox limitOwnerRead = (CheckBox) findViewById(R.id.limit_owner_read);
+        CheckBox limitOwnerWrite = (CheckBox) findViewById(R.id.limit_owner_write);
+        CheckBox limitOwnerExecute = (CheckBox) findViewById(R.id.limit_owner_execute);
+        CheckBox limitGroupRead = (CheckBox) findViewById(R.id.limit_group_read);
+        CheckBox limitGroupWrite = (CheckBox) findViewById(R.id.limit_group_write);
+        CheckBox limitGroupExecute = (CheckBox) findViewById(R.id.limit_group_execute);
+        CheckBox limitOtherRead = (CheckBox) findViewById(R.id.limit_other_read);
+        CheckBox limitOtherWrite = (CheckBox) findViewById(R.id.limit_other_write);
+        CheckBox limitOtherExecute = (CheckBox) findViewById(R.id.limit_other_execute);
         String limit;
         if (!TextUtils.isEmpty(line)) {
             limit = line.substring(0, OtoConsts.LIMIT_LENGTH);
             if (limit.charAt(OtoConsts.LIMIT_OWNER_READ) == 'r') {
-                limit_owner_read.setChecked(true);
+                limitOwnerRead.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_OWNER_WRITE) == 'w') {
-                limit_owner_write.setChecked(true);
+                limitOwnerWrite.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_OWNER_EXECUTE) == 'x') {
-                limit_owner_execute.setChecked(true);
+                limitOwnerExecute.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_GROUP_READ) == 'r') {
-                limit_group_read.setChecked(true);
+                limitGroupRead.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_GROUP_WRITE) == 'w') {
-                limit_group_write.setChecked(true);
+                limitGroupWrite.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_GROUP_EXECUTE) == 'x') {
-                limit_group_execute.setChecked(true);
+                limitGroupExecute.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_OTHER_READ) == 'r') {
-                limit_other_read.setChecked(true);
+                limitOtherRead.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_OTHER_WRITE) == 'w') {
-                limit_other_write.setChecked(true);
+                limitOtherWrite.setChecked(true);
             }
             if (limit.charAt(OtoConsts.LIMIT_OTHER_EXECUTE) == 'x') {
-                limit_other_execute.setChecked(true);
+                limitOtherExecute.setChecked(true);
             }
         }
-        limit_owner_read.setClickable(false);
-        limit_owner_write.setClickable(false);
-        limit_owner_execute.setClickable(false);
-        limit_group_read.setClickable(false);
-        limit_group_write.setClickable(false);
-        limit_group_execute.setClickable(false);
-        limit_other_read.setClickable(false);
-        limit_other_write.setClickable(false);
-        limit_other_execute.setClickable(false);
+        limitOwnerRead.setClickable(false);
+        limitOwnerWrite.setClickable(false);
+        limitOwnerExecute.setClickable(false);
+        limitGroupRead.setClickable(false);
+        limitGroupWrite.setClickable(false);
+        limitGroupExecute.setClickable(false);
+        limitOtherRead.setClickable(false);
+        limitOtherWrite.setClickable(false);
+        limitOtherExecute.setClickable(false);
     }
 
     private void initFoot() {
-        apply = (TextView) findViewById(R.id.apply);
-        confirm = (TextView) findViewById(R.id.confirm);
-        cancel = (TextView) findViewById(R.id.cancel);
+        TextView apply = (TextView) findViewById(R.id.apply);
+        TextView confirm = (TextView) findViewById(R.id.confirm);
+        TextView cancel = (TextView) findViewById(R.id.cancel);
         View.OnClickListener click= new View.OnClickListener() {
             @Override
             public void onClick(View v) {
