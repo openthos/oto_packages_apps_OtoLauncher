@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import android.view.KeyEvent;
+import android.text.ClipboardManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -380,6 +382,45 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
+            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.pos != -1) {
+                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+                if (type == Type.DIRECTORY || type == Type.FILE) {
+                    Message deleteFile = new Message();
+                    deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
+                    deleteFile.what = OtoConsts.DELETE;
+                    mHandler.sendMessage(deleteFile);
+                }
+            }
+            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.pos != -1) {
+                ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+                     .setText(Intent.EXTRA_CROP_FILE_HEADER + mDatas.get(mAdapter.pos).get("path"));
+            }
+            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.pos != -1) {
+                ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+                     .setText(Intent.EXTRA_FILE_HEADER + mDatas.get(mAdapter.pos).get("path"));
+            }
+            if (keyCode == KeyEvent.KEYCODE_V && mAdapter.pos != -1) {
+                String sourcePath = "";
+                try {
+                    sourcePath = (String)
+                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getText();
+                } catch (ClassCastException e) {
+                    sourcePath = "";
+                }
+                if(!(sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)
+                                   || sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))){
+                   return true;
+                }
+                Message paste = new Message();
+                if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
+                    paste.what = OtoConsts.COPY_PASTE;
+                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
+                } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
+                    paste.what = OtoConsts.CROP_PASTE;
+                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
+                }
+                mHandler.sendMessage(paste);
+            }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.pos != -1) {
             Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
@@ -394,6 +435,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendMessage(deleteFile);
             }
             return true;
+        } else if (keyCode == KeyEvent.KEYCODE_F5) {
+            mHandler.sendEmptyMessage(OtoConsts.SORT);
+        } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.pos != -1) {
+            mHandler.sendEmptyMessage(OtoConsts.RENAME);
         }
         return super.onKeyDown(keyCode, event);
     }

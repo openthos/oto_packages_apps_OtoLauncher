@@ -234,24 +234,12 @@ public class MenuDialog extends Dialog {
                 getContext().startActivity(about);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
-                if (path.endsWith(OtoConsts.SUFFIX_TAR)
-                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
-                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
-                          || path.endsWith(OtoConsts.SUFFIX_ZIP)) {
-                    return;
-                }
                 Message compress = new Message();
                 compress.obj = path;
                 compress.what = OtoConsts.COMPRESS;
                 MainActivity.mHandler.sendMessage(compress);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
-                if (!(path.endsWith(OtoConsts.SUFFIX_TAR)
-                          || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
-                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
-                          || path.endsWith(OtoConsts.SUFFIX_ZIP))) {
-                    return;
-                }
                 Message decompress = new Message();
                 decompress.obj = path;
                 decompress.what = OtoConsts.DECOMPRESS;
@@ -266,11 +254,6 @@ public class MenuDialog extends Dialog {
                                         .setText(Intent.EXTRA_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
-                if(!(text.equals(context.getResources().getString(R.string.paste))
-                       && (sourcePath != null) && ((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
-                                   || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))){
-                   return;
-                }
                 Message paste = new Message();
                 if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
