@@ -32,32 +32,45 @@ public class DiskUtils {
     //command:rm
     public static void delete(File file) {
         if (file.exists()) {
-            String command = "/system/xbin/rm";
+            String command = "/system/bin/rm";
             String arg = "";
             if (file.isFile()) {
                 arg = "-v";
             } else if (file.isDirectory()) {
                 arg = "-rv";
             }
+            BufferedReader in = null;
             Runtime runtime = Runtime.getRuntime();
             try {
-                runtime.exec(new String[]{command, arg, file.getAbsolutePath()});
+                Process pro = runtime.exec(new String[]{command, arg, file.getAbsolutePath()});
+                in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                String line;
+                while ((line = in.readLine()) != null) {
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
 
     //command:mv
     public static void moveFile(String srcFile, String destDir) {
-        String command = "/system/xbin/mv";
+        String command = "/system/bin/mv";
         String arg = "-v";
         copyOrMoveFile(command, arg, srcFile, destDir);
     }
 
     //command:cp
     public static void copyFile(String srcFile, String destDir) {
-        String command = "/system/xbin/cp";
+        String command = "/system/bin/cp";
         String arg = "-v";
         File f = new File(srcFile);
         if (f.isDirectory()){

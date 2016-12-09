@@ -26,7 +26,7 @@ import java.io.IOException;
 public class CompressDialog extends Dialog {
     private Context mContext;
     private String mPath;
-    private CompressFormatType mFormatType = CompressFormatType.TAR;
+    private CompressFormatType mFormatType = CompressFormatType.ZIP;
 
     public CompressDialog(Context context) {
         super(context);
