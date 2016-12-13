@@ -261,6 +261,11 @@
     <add-resource type="string" name="launcher_tar_bz2" />
     <add-resource type="string" name="launcher_zip" />
     <add-resource type="string" name="dialog_compress_title" />
+    <add-resource type="string" name="launcher_txt" />
+    <add-resource type="string" name="launcher_doc" />
+    <add-resource type="string" name="launcher_ppt" />
+    <add-resource type="string" name="launcher_xls" />
+    <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
 
     <string name="app_name">桌面</string>
@@ -316,4 +321,9 @@
     <string name="dialog_compress_title">请选择压缩格式</string>
     <string name="new_file">新建文件</string>
     <string name="copy_info">正在操作……</string>
+    <string name="launcher_txt">.txt</string>
+    <string name="launcher_doc">.doc</string>
+    <string name="launcher_xls">.xls</string>
+    <string name="launcher_ppt">.ppt</string>
+    <string name="dialog_new_file_title">请选择要创建的文件的格式</string>
 </resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dialog_property_width"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dialog_property_title_height"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/dialog_new_file_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_property_font_size" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_property_padding3x">
+
+        <RadioButton
+            android:paddingLeft="16dp"
+            android:id="@+id/txt"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:checked="true"
+            android:text="@string/launcher_txt"
+            android:textColor="@color/black" />
+
+
+        <RadioButton
+            android:paddingLeft="16dp"
+            android:id="@+id/doc"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:text="@string/launcher_doc"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:paddingLeft="16dp"
+            android:id="@+id/ppt"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:text="@string/launcher_ppt"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:paddingLeft="16dp"
+            android:id="@+id/xls"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:text="@string/launcher_xls"
+            android:textColor="@color/black" />
+
+    </RadioGroup>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dialog_property_padding1x"
+        android:layout_marginTop="@dimen/dialog_property_padding1x">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="@dimen/dialog_property_button_width"
+            android:layout_height="@dimen/dialog_property_button_height"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="@string/dialog_property_cancel"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_property_font_size" />
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="@dimen/dialog_property_button_width"
+            android:layout_height="@dimen/dialog_property_button_height"
+            android:layout_marginRight="@dimen/dialog_property_padding1x"
+            android:layout_toLeftOf="@id/cancel"
+            android:gravity="center"
+            android:text="@string/dialog_property_confirm"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dialog_property_font_size" />
+
+    </RelativeLayout>
+
+</LinearLayout>

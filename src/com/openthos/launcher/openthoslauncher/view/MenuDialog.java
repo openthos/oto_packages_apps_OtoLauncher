@@ -271,7 +271,8 @@ public class MenuDialog extends Dialog {
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.NEWFOLDER);
             } else if (text.equals(all_menu[OtoConsts.INDEX_NEW_FILE])) {
                 //new_file
-                MainActivity.mHandler.sendEmptyMessage(OtoConsts.NEWFILE);
+                NewFileDialog newFileDialog = new NewFileDialog(context);
+                newFileDialog.showDialog();
             } else if (text.equals(all_menu[OtoConsts.INDEX_DISPLAY_SETTINGS])) {
                 //display_settings
                 Intent display = new Intent();

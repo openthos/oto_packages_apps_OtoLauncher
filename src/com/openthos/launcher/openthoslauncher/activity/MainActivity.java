@@ -27,6 +27,7 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
+import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
 import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
@@ -107,13 +108,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFOLDER:
-                        createNewFileOrFolder(Type.DIRECTORY);
+                        createNewFileOrFolder(Type.DIRECTORY, null);
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFILE:
-                        createNewFileOrFolder(Type.FILE);
+                        createNewFileOrFolder(Type.FILE, (String) msg.obj);
                         mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
@@ -214,7 +215,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
        }
    }
 
-    private void createNewFileOrFolder(Type type) {
+    private void createNewFileOrFolder(Type type, String suffix) {
         for (int i = 1; i < mDatas.size(); i++) {
             if ((mDatas.get(i).get("path")).equals("")) {
                 File root = new File(OtoConsts.DESKTOP_PATH);
@@ -222,7 +223,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     File file = null;
                     if (type == Type.FILE) {
                         file = new File(root, MainActivity.this.getResources()
-                                                               .getString(R.string.new_file) + j);
+                                                        .getString(R.string.new_file) + j + suffix);
                     } else if (type == Type.DIRECTORY){
                         file = new File(root, MainActivity.this.getResources()
                                                                .getString(R.string.new_folder) + j);

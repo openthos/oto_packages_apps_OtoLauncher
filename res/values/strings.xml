@@ -497,6 +497,11 @@ s -->
     <add-resource type="string" name="launcher_tar_bz2" />
     <add-resource type="string" name="launcher_zip" />
     <add-resource type="string" name="dialog_compress_title" />
+    <add-resource type="string" name="launcher_txt" />
+    <add-resource type="string" name="launcher_doc" />
+    <add-resource type="string" name="launcher_ppt" />
+    <add-resource type="string" name="launcher_xls" />
+    <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
 
     <string name="app_name">OpenthosLauncher</string>
@@ -549,5 +554,10 @@ s -->
     <string name="launcher_tar_bz2">tar.bz2</string>
     <string name="launcher_zip">zip</string>
     <string name="dialog_compress_title">Please select the compression format</string>
+    <string name="launcher_txt">.txt</string>
+    <string name="launcher_doc">.doc</string>
+    <string name="launcher_xls">.xls</string>
+    <string name="launcher_ppt">.ppt</string>
+    <string name="dialog_new_file_title">Please select the format you want to create</string>
     <string name="copy_info">Do in progress...</string>
 </resources>
