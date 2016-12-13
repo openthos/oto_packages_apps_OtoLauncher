@@ -2,6 +2,7 @@ package com.openthos.launcher.openthoslauncher.utils;
 
 import android.os.Environment;
 
+import android.os.Message;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 
 /**
  * Created by xu on 2016/8/22.
@@ -80,21 +82,67 @@ public class DiskUtils {
     }
 
     private static void copyOrMoveFile(String command, String arg, String srcFile, String destDir) {
-         try {
+        Process pro;
+        BufferedReader in = null;
+        try {
             File f = new File(destDir, new File(srcFile).getName());
             File destFile = f;
-            if (f.exists()) {
-                for (int i = 2; ; i++) {
-                    File current = new File(f.getAbsolutePath() + "." + i);
-                    if (!current.exists()) {
-                        destFile= new File(destDir, current.getName());
-                        break;
+            File sourceFile = new File(srcFile);
+            if (sourceFile.isDirectory()) {
+                if (f.exists()) {
+                    for (int i = 2; ; i++) {
+                        File current = new File(f.getAbsolutePath() + "." + i);
+                        if (!current.exists()) {
+                            destFile = new File(destDir, current.getName());
+                            break;
+                        }
+                    }
+                }
+            } else if (sourceFile.isFile()) {
+                if (f.exists()) {
+                    String suffix;
+                    if (f.getAbsolutePath().contains(".")) {
+                        suffix = f.getAbsolutePath().substring(f.getAbsolutePath().lastIndexOf("."),
+                                f.getAbsolutePath().length());
+                    } else {
+                        suffix = "";
+                    }
+                    for (int i = 2; ; i++) {
+                        File current = new File(f.getAbsolutePath().replace(suffix, "") + "."
+                                + i + suffix);
+                        if (!current.exists()) {
+                            destFile = new File(destDir, current.getName());
+                            break;
+                        }
                     }
                 }
             }
-            Runtime.getRuntime().exec(new String[] {command, arg, srcFile,
-                                                    destFile.getAbsolutePath()});
+            pro = Runtime.getRuntime().exec(new String[]{command, arg, srcFile,
+                    destFile.getAbsolutePath()});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
+            int i = 0;
+            while ((line = in.readLine()) != null) {
+                if (i == 0) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.COPY_INFO, line));
+                    i = OtoConsts.SKIP_LINES;
+                } else {
+                    i--;
+                }
+            }
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
         } catch (IOException e) {
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -32,6 +32,10 @@ public class OtoConsts {
     public static final int COPY_PASTE = 0x00000012;
     public static final int CROP_PASTE = 0x00000013;
     public static final int NEWFILE = 0x00000014;
+    public static final int COPY_INFO_SHOW = 0x00000015;
+    public static final int COPY_INFO_HIDE = 0x00000016;
+    public static final int COPY_INFO = 0x00000017;
+    public static final int SKIP_LINES = 10;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;

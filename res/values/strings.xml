@@ -497,6 +497,7 @@ s -->
     <add-resource type="string" name="launcher_tar_bz2" />
     <add-resource type="string" name="launcher_zip" />
     <add-resource type="string" name="dialog_compress_title" />
+    <add-resource type="string" name="copy_info" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -548,5 +549,5 @@ s -->
     <string name="launcher_tar_bz2">tar.bz2</string>
     <string name="launcher_zip">zip</string>
     <string name="dialog_compress_title">Please select the compression format</string>
-
+    <string name="copy_info">Do in progress...</string>
 </resources>

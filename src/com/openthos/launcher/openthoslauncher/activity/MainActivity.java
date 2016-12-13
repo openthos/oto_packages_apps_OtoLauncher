@@ -27,6 +27,7 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
+import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import android.view.KeyEvent;
@@ -55,6 +56,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean mIsRename = false;
     private SharedPreferences mSp;
     private int mSumNum;
+    private CopyInfoDialog mCopyInfoDialog;
     private HashMap<String, Object> mBlankMap = new HashMap<>();
 
     @Override
@@ -170,15 +172,47 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         showDialogForDirectDelete((String) msg.obj);
                         break;
                     case OtoConsts.COPY_PASTE:
-                        DiskUtils.copyFile((String) msg.obj, OtoConsts.DESKTOP_PATH);
+                        new CopyThread((String) msg.obj, false).start();
                         break;
                     case OtoConsts.CROP_PASTE:
-                        DiskUtils.moveFile((String) msg.obj, OtoConsts.DESKTOP_PATH);
+                        new CopyThread((String) msg.obj, true).start();
+                        break;
+                    case OtoConsts.COPY_INFO_SHOW:
+                        mCopyInfoDialog.showDialog();
+                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
+                                                                .getString(R.string.copy_info));
+                        break;
+                    case OtoConsts.COPY_INFO:
+                        mCopyInfoDialog.changeMsg((String) msg.obj);
+                        break;
+                    case OtoConsts.COPY_INFO_HIDE:
+                        mCopyInfoDialog.cancel();
                         break;
                 }
             }
         };
     }
+
+    private class CopyThread extends Thread {
+       private String mPath;
+       private boolean mIsCut;
+
+       public CopyThread(String path, boolean isCut) {
+          super();
+          mPath = path;
+          mIsCut = isCut;
+       }
+
+       @Override
+       public void run() {
+           super.run();
+           if (mIsCut) {
+               DiskUtils.moveFile(mPath, OtoConsts.DESKTOP_PATH);
+           } else {
+               DiskUtils.copyFile(mPath, OtoConsts.DESKTOP_PATH);
+           }
+       }
+   }
 
     private void createNewFileOrFolder(Type type) {
         for (int i = 1; i < mDatas.size(); i++) {
@@ -347,6 +381,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mItemTouchHelper = new ItemTouchHelper(new ItemCallBack(this));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
+        mCopyInfoDialog = CopyInfoDialog.getInstance(MainActivity.this);
     }
 
     @Override
