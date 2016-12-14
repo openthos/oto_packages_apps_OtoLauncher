@@ -428,14 +428,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
             if (keyCode == KeyEvent.KEYCODE_X && mAdapter.pos != -1) {
-                ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                     .setText(Intent.EXTRA_CROP_FILE_HEADER + mDatas.get(mAdapter.pos).get("path"));
+                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+                if (type == Type.DIRECTORY || type == Type.FILE) {
+                    ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+                                              .setText(Intent.EXTRA_CROP_FILE_HEADER
+                                                       + mDatas.get(mAdapter.pos).get("path"));
+                }
             }
             if (keyCode == KeyEvent.KEYCODE_C && mAdapter.pos != -1) {
-                ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                     .setText(Intent.EXTRA_FILE_HEADER + mDatas.get(mAdapter.pos).get("path"));
+                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+                if (type == Type.DIRECTORY || type == Type.FILE) {
+                    ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+                                              .setText(Intent.EXTRA_FILE_HEADER
+                                                       + mDatas.get(mAdapter.pos).get("path"));
+                }
             }
-            if (keyCode == KeyEvent.KEYCODE_V && mAdapter.pos != -1) {
+            if (keyCode == KeyEvent.KEYCODE_V) {
                 String sourcePath = "";
                 try {
                     sourcePath = (String)
@@ -474,7 +482,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } else if (keyCode == KeyEvent.KEYCODE_F5) {
             mHandler.sendEmptyMessage(OtoConsts.SORT);
         } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.pos != -1) {
-            mHandler.sendEmptyMessage(OtoConsts.RENAME);
+            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+            if (type == Type.DIRECTORY || type == Type.FILE) {
+                mHandler.sendEmptyMessage(OtoConsts.RENAME);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

@@ -83,11 +83,11 @@ public class DiskUtils {
 
     private static void copyOrMoveFile(String command, String arg, String srcFile, String destDir) {
         Process pro;
+        File f = new File(destDir, new File(srcFile).getName());
+        File destFile = f;
+        File sourceFile = new File(srcFile);
         BufferedReader in = null;
         try {
-            File f = new File(destDir, new File(srcFile).getName());
-            File destFile = f;
-            File sourceFile = new File(srcFile);
             if (sourceFile.isDirectory()) {
                 if (f.exists()) {
                     for (int i = 2; ; i++) {
@@ -133,6 +133,21 @@ public class DiskUtils {
                 }
             }
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+            if (command.contains("cp")) {
+                if (destFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.SHOW_FILE, destFile.getAbsolutePath()));
+                }
+            } else if (command.contains("mv")) {
+                if (destFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.SHOW_FILE, destFile.getAbsolutePath()));
+                }
+                if (sourceFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.DELETE_REFRESH, sourceFile.getAbsolutePath()));
+                }
+            }
         } catch (IOException e) {
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
         } finally {
