@@ -40,6 +40,7 @@
     </array>
     <array name="menu_file">
         <item>@string/open</item>
+        <item>@string/open_with</item>
         <item>@string/compress</item>
         <item>@string/decompression</item>
         <item>@string/crop</item>
@@ -69,5 +70,6 @@
         <item>@string/clean_recycle</item>
         <item>@string/property</item>
         <item>@string/new_file</item>
+        <item>@string/open_with</item>
     </array>
 </resources>

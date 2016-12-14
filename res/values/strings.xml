@@ -503,6 +503,7 @@ s -->
     <add-resource type="string" name="launcher_xls" />
     <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
+    <add-resource type="string" name="open_with" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -560,4 +561,5 @@ s -->
     <string name="launcher_ppt">.ppt</string>
     <string name="dialog_new_file_title">Please select the format you want to create</string>
     <string name="copy_info">Do in progress...</string>
+    <string name="open_with">Open with</string>
 </resources>

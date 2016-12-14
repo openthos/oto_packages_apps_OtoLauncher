@@ -317,6 +317,10 @@ public class MenuDialog extends Dialog {
                 property.obj = path;
                 property.what = OtoConsts.PROPERTY;
                 MainActivity.mHandler.sendMessage(property);
+            } else if (text.equals(all_menu[OtoConsts.INDEX_OPEN_WITH])) {
+                OpenWithDialog openWithDialog = new OpenWithDialog(context, path);
+                openWithDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                openWithDialog.showDialog();
             }
             dismiss();
         }

@@ -267,6 +267,7 @@
     <add-resource type="string" name="launcher_xls" />
     <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
+    <add-resource type="string" name="open_with" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -326,4 +327,5 @@
     <string name="launcher_xls">.xls</string>
     <string name="launcher_ppt">.ppt</string>
     <string name="dialog_new_file_title">请选择要创建的文件的格式</string>
+    <string name="open_with">打开方式</string>
 </resources>

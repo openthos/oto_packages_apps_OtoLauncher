@@ -53,6 +53,7 @@ public class OtoConsts {
     public static final int INDEX_CLEAN_RECYCLE = 13;
     public static final int INDEX_PROPERTY = 14;
     public static final int INDEX_NEW_FILE = 15;
+    public static final int INDEX_OPEN_WITH = 16;
 
     public static final int LIMIT_LENGTH = 10;
     public static final int LIMIT_OWNER_READ = 1;
