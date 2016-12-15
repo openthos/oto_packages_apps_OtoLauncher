@@ -26,6 +26,7 @@ import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
 import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
@@ -135,7 +136,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                     map.put("icon", R.drawable.ic_directory);
                                     map.put("type", Type.DIRECTORY);
                                 } else {
-                                    map.put("icon", R.drawable.ic_app_text);
+                                    map.put("icon", FileUtils.getFileIcon(
+                                                             showFile.getAbsolutePath()));
                                     map.put("type", Type.FILE);
                                 }
                                 mDatas.set(i, map);
@@ -241,7 +243,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             map.put("isChecked", false);
                             map.put("null", false);
                             if (type == Type.FILE) {
-                                map.put("icon", R.drawable.ic_app_text);
+                                map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath()));
                                 map.put("type", Type.FILE);
                             } else if (type == Type.DIRECTORY) {
                                 map.put("icon", R.drawable.ic_directory);
@@ -305,7 +307,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     map.put("icon", R.drawable.ic_directory);
                     map.put("type", Type.DIRECTORY);
                 } else {
-                    map.put("icon", R.drawable.ic_app_text);
+                    map.put("icon", FileUtils.getFileIcon(files[i].getAbsolutePath()));
                     map.put("type", Type.FILE);
                 }
                 map.put("name", files[i].getName());
@@ -651,7 +653,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     break;
                 case FILE:
                     map.put("null", false);
-                    map.put("icon", R.drawable.ic_app_text);
+                    map.put("icon", FileUtils.getFileIcon(obj.getString("path")));
                     map.put("name", obj.getString("name"));
                     break;
                 case DIRECTORY:

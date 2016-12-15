@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 import java.io.BufferedReader;
@@ -73,7 +74,7 @@ public class PropertyDialog extends Dialog {
                                                              .getDrawable(R.drawable.ic_directory));
         } else if (file.isFile()) {
             titleImage.setImageDrawable(getContext().getResources()
-                                                             .getDrawable(R.drawable.ic_app_text));
+                                                        .getDrawable(FileUtils.getFileIcon(mPath)));
         }
         TextView titleText = (TextView) findViewById(R.id.title_text);
         titleText.setText(file.getName() + " "

@@ -1,6 +1,7 @@
 package com.openthos.launcher.openthoslauncher.adapter;
 
 import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import android.widget.EditText;
 import android.content.Context;
 
@@ -210,7 +212,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                         Uri.fromFile(new File(filePath)), fileType);
                                     openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
                                                               ApplicationInfo.APPNAME_OTO_LAUNCHER);
-                                    item.getContext().startActivity(openFile);
+                                    try {
+                                        item.getContext().startActivity(openFile);
+                                    } catch (ActivityNotFoundException e) {
+                                        Toast.makeText(item.getContext(),
+                                                       item.getContext().getResources()
+                                                                  .getString(R.string.can_not_open),
+                                                       Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
                                     break;
                             }
                             openAppBroadcast(item.getContext());

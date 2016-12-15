@@ -1,6 +1,7 @@
 package com.openthos.launcher.openthoslauncher.utils;
 
 import java.io.File;
+import com.android.launcher3.R;
 
 /**
  * Created by xu on 2016/8/22.
@@ -23,6 +24,75 @@ public class FileUtils {
         }
         return type;
     }
+
+   private static final String SUFFIX_APE = ".ape";
+   private static final String SUFFIX_AVI = ".avi";
+   private static final String SUFFIX_DOC = ".doc";
+   private static final String SUFFIX_HTML = ".html";
+   private static final String SUFFIX_MP3 = ".mp3";
+   private static final String SUFFIX_MP4 = ".mp4";
+   private static final String SUFFIX_PPT = ".ppt";
+   private static final String SUFFIX_TXT = ".txt";
+   private static final String SUFFIX_WAV = ".wav";
+   private static final String SUFFIX_WMV = ".wmv";
+   private static final String SUFFIX_XLS = ".xls";
+   private static final String SUFFIX_PDF = ".pdf";
+   private static final String SUFFIX_RM = ".rm";
+   private static final String SUFFIX_RMVB = ".rmvb";
+   private static final String SUFFIX_TAR = ".tar";
+   private static final String SUFFIX_BZ2 = ".bz2";
+   private static final String SUFFIX_GZ = ".gz";
+   private static final String SUFFIX_ZIP = ".zip";
+   private static final String SUFFIX_RAR = ".rar";
+
+   public static int getFileIcon(String path) {
+       if (!path.contains(".")) {
+           return R.drawable.suffix_default;
+       }
+       String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
+       switch (suffix) {
+           case SUFFIX_APE:
+               return R.drawable.suffix_ape;
+           case SUFFIX_AVI:
+               return R.drawable.suffix_avi;
+           case SUFFIX_DOC:
+               return R.drawable.suffix_doc;
+           case SUFFIX_HTML:
+               return R.drawable.suffix_html;
+           case SUFFIX_MP3:
+               return R.drawable.suffix_mp3;
+           case SUFFIX_MP4:
+               return R.drawable.suffix_mp4;
+           case SUFFIX_PPT:
+               return R.drawable.suffix_ppt;
+           case SUFFIX_TXT:
+               return R.drawable.suffix_txt;
+           case SUFFIX_WAV:
+               return R.drawable.suffix_wav;
+           case SUFFIX_WMV:
+               return R.drawable.suffix_wmv;
+           case SUFFIX_XLS:
+               return R.drawable.suffix_xls;
+           case SUFFIX_PDF:
+               return R.drawable.suffix_default;
+           case SUFFIX_RM:
+               return R.drawable.suffix_default;
+           case SUFFIX_RMVB:
+               return R.drawable.suffix_default;
+           case SUFFIX_TAR:
+               return R.drawable.suffix_default;
+           case SUFFIX_BZ2:
+               return R.drawable.suffix_default;
+           case SUFFIX_GZ:
+               return R.drawable.suffix_default;
+           case SUFFIX_ZIP:
+               return R.drawable.suffix_default;
+           case SUFFIX_RAR:
+               return R.drawable.suffix_default;
+           default:
+               return R.drawable.suffix_default;
+       }
+   }
 
     /**
      * getFileIcon: Get the Icon from the file name.
@@ -62,7 +132,6 @@ public class FileUtils {
      * The Table of MIME Types
      */
     public static final String[][] MIME_MapTable = {
-            //{后缀名， MIME类型}
             {"3gp", "video/3gpp"},
             {"aab", "application/x-authoware-bin"},
             {"aam", "application/x-authoware-map"},
@@ -481,7 +550,6 @@ public class FileUtils {
      * The Table of ICON Types
      */
     public static final String[][] ICON_MapTable={
-            //{后缀名， ICON类型}
             {"3gp", "icon_video"},
             {"aab", "application/x-authoware-bin"},
             {"aam", "application/x-authoware-map"},

@@ -504,6 +504,7 @@ s -->
     <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
     <add-resource type="string" name="open_with" />
+    <add-resource type="string" name="can_not_open" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -562,4 +563,5 @@ s -->
     <string name="dialog_new_file_title">Please select the format you want to create</string>
     <string name="copy_info">Do in progress...</string>
     <string name="open_with">Open with</string>
+    <string name="can_not_open">Could not find the appropriate application to open the file!</string>
 </resources>

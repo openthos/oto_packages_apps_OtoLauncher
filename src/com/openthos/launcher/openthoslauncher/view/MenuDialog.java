@@ -3,6 +3,7 @@ package com.openthos.launcher.openthoslauncher.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.text.ClipboardManager;
 
 import com.android.launcher3.R;
@@ -221,7 +223,14 @@ public class MenuDialog extends Dialog {
                         openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
                         openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
                                                             ApplicationInfo.APPNAME_OTO_LAUNCHER);
-                        getContext().startActivity(openFile);
+                        try {
+                            getContext().startActivity(openFile);
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(getContext(),
+                                      getContext().getResources().getString(R.string.can_not_open),
+                                      Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         break;
                 }
                 HomeAdapter.openAppBroadcast(context);
