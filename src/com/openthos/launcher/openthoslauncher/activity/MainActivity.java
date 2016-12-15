@@ -210,9 +210,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
        public void run() {
            super.run();
            if (mIsCut) {
-               DiskUtils.moveFile(mPath, OtoConsts.DESKTOP_PATH);
+               String[] srcCropPaths = mPath.split(Intent.EXTRA_CROP_FILE_HEADER);
+               for (int i = 1; i < srcCropPaths.length; i++) {
+                   DiskUtils.moveFile(srcCropPaths[i].replace(Intent.EXTRA_CROP_FILE_HEADER, ""),
+                                      OtoConsts.DESKTOP_PATH);
+//               DiskUtils.moveFile(mPath, OtoConsts.DESKTOP_PATH);
+               }
            } else {
-               DiskUtils.copyFile(mPath, OtoConsts.DESKTOP_PATH);
+               String[] srcCopyPaths = mPath.split(Intent.EXTRA_FILE_HEADER);
+//               DiskUtils.copyFile(mPath, OtoConsts.DESKTOP_PATH);
+               for (int i = 1; i < srcCopyPaths.length; i++) {
+                   DiskUtils.copyFile(srcCopyPaths[i].replace(Intent.EXTRA_FILE_HEADER, ""),
+                                      OtoConsts.DESKTOP_PATH);
+               }
            }
        }
    }
@@ -460,11 +470,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 Message paste = new Message();
                 if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
-                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
+//                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
                 } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
                     paste.what = OtoConsts.CROP_PASTE;
-                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
+//                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
                 }
+                paste.obj = sourcePath;
                 mHandler.sendMessage(paste);
             }
             return true;
