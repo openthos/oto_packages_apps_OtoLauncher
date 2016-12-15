@@ -87,6 +87,14 @@ public class CompressDialog extends Dialog {
         tar_gz.setOnClickListener(click);
         tar_bz2.setOnClickListener(click);
         zip.setOnClickListener(click);
+        if (mPath.endsWith(OtoConsts.SUFFIX_TAR)) {
+            tar.setVisibility(View.GONE);
+            zip.setVisibility(View.GONE);
+            tar_gz.performClick();
+        } else {
+            tar_gz.setVisibility(View.GONE);
+            tar_bz2.setVisibility(View.GONE);
+        }
     }
 
     private void initFoot() {

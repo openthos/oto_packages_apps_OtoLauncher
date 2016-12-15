@@ -187,58 +187,40 @@ public class DiskUtils {
     // command
     public static File compress(String path, CompressFormatType type) {
         File f = new File(path);
-        String command;
-        String arg0;
-        String arg1;
-        String suffix;
-        String tarPath = "";
+        String command = "/system/bin/7za";
+        String arg0 = "a";
+        String arg1 = "";
+        String suffix = "";
         BufferedReader in = null;
         boolean isOk = false;
         switch (type) {
             case TAR:
-                command = "/system/xbin/tar";
-                arg0 = "-cvf";
-                arg1 = "-C";
+                arg1 = "-r";
                 suffix = OtoConsts.SUFFIX_TAR;
-                tarPath = path + suffix;
-                isOk = tarCommand(command, arg0, tarPath, arg1,
-                                                        f.getParent(), f.getName(), in);
                 break;
             case GZIP:
-                command = "/system/xbin/tar";
-                arg0 = "-zcvf";
-                arg1 = "-C";
+                arg1 = "-w";
                 suffix = OtoConsts.SUFFIX_TAR_GZIP;
-                tarPath = path + suffix;
-                isOk = tarCommand(command, arg0, tarPath, arg1,
-                                                        f.getParent(), f.getName(), in);
                 break;
             case BZIP2:
-                command = "/system/xbin/tar";
-                arg0 = "-jcvf";
-                arg1 = "-C";
+                arg1 = "-w";
                 suffix = OtoConsts.SUFFIX_TAR_BZIP2;
-                tarPath = path + suffix;
-                isOk = tarCommand(command, arg0, tarPath, arg1,
-                                                        f.getParent(), f.getName(), in);
                 break;
             case ZIP:
-                command = "/system/bin/7za";
-                arg0 = "a";
                 arg1 = "-w";
                 suffix = OtoConsts.SUFFIX_ZIP;
-                tarPath = path + suffix;
-                try {
-                    Process pro = Runtime.getRuntime().exec(
-                                                  new String[]{command, arg0, tarPath, arg1, path});
-                    in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-                    while(in.readLine() != null) {
-                    }
-                    isOk = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 break;
+        }
+        String tarPath = path + suffix;
+        try {
+            Process pro = Runtime.getRuntime().exec(
+                                          new String[]{command, arg0, tarPath, arg1, path});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            while(in.readLine() != null) {
+            }
+            isOk = true;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (in != null) {
             try {
@@ -251,21 +233,6 @@ public class DiskUtils {
             return new File(tarPath);
         }
         return null;
-    }
-
-    private static boolean tarCommand(String command, String arg0, String tarPath, String arg1,
-                                            String parentPath, String fileName, BufferedReader in) {
-        try {
-            Process pro = Runtime.getRuntime().exec(
-                                  new String[]{command, arg0, tarPath, arg1, parentPath, fileName});
-            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-            while(in.readLine() != null) {
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     // command

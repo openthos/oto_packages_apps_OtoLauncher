@@ -39,7 +39,6 @@
             android:text="@string/launcher_zip"
             android:textColor="@color/black" />
 
-
         <RadioButton
             android:paddingLeft="16dp"
             android:id="@+id/tar"
