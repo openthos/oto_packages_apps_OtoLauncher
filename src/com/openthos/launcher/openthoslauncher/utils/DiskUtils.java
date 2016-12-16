@@ -22,6 +22,7 @@ import com.openthos.launcher.openthoslauncher.activity.MainActivity;
  * Created by xu on 2016/8/22.
  */
 public class DiskUtils {
+    private static final String COMMAND_7ZA = "/system/bin/7za";
 
     public static File getDesktop() {
         return new File(Environment.getExternalStorageDirectory(), "Desktop");
@@ -187,46 +188,51 @@ public class DiskUtils {
     // command
     public static File compress(String path, CompressFormatType type) {
         File f = new File(path);
-        String command = "/system/bin/7za";
-        String arg0 = "a";
-        String arg1 = "";
+        String arg = "";
         String suffix = "";
         BufferedReader in = null;
         boolean isOk = false;
         switch (type) {
             case TAR:
-                arg1 = "-r";
+                arg = "-r";
                 suffix = OtoConsts.SUFFIX_TAR;
                 break;
             case GZIP:
-                arg1 = "-w";
+                arg = "-w";
                 suffix = OtoConsts.SUFFIX_TAR_GZIP;
                 break;
             case BZIP2:
-                arg1 = "-w";
+                arg = "-w";
                 suffix = OtoConsts.SUFFIX_TAR_BZIP2;
                 break;
             case ZIP:
-                arg1 = "-w";
+                arg = "-w";
                 suffix = OtoConsts.SUFFIX_ZIP;
                 break;
         }
         String tarPath = path + suffix;
         try {
             Process pro = Runtime.getRuntime().exec(
-                                          new String[]{command, arg0, tarPath, arg1, path});
+                                      new String[]{COMMAND_7ZA, "a", tarPath, arg, path, "-bb3", "-y"});
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-            while(in.readLine() != null) {
+            String line;
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
+            while ((line = in.readLine()) != null) {
+                MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.COPY_INFO, line));
             }
             isOk = true;
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (in != null) {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         if (isOk) {
@@ -237,28 +243,42 @@ public class DiskUtils {
 
     // command
     public static String[] decompress(String path) {
-        String command = "/system/bin/7za";
-        String arg0 = "x";
-        String arg1 = "-o";
         File f = new File(path);
+        BufferedReader in = null;
         try {
-            Runtime.getRuntime().exec(new String[]{command, arg0,  path, arg1 + f.getParent()});
+            Process pro = Runtime.getRuntime().exec(new String[]{COMMAND_7ZA, "x",
+                                                  path, "-o" + f.getParent(), "-bb3", "-y"});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
+            while ((line = in.readLine()) != null) {
+                MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.COPY_INFO, line));
+            }
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
         } catch (IOException e) {
             e.printStackTrace();
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return list(path);
     }
 
     public static String[] list(String file){
-        String command = "system/bin/7za";
-        String arg0 = "l";
         Runtime runtime = Runtime.getRuntime();
         Process pro;
         BufferedReader in = null;
         boolean isPrint = false;
         ArrayList<String> fileList= new ArrayList<>();
         try {
-            pro = runtime.exec(new String[]{command, arg0, file});
+            pro = runtime.exec(new String[]{COMMAND_7ZA, "l", file});
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
