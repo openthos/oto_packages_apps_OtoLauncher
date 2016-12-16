@@ -265,11 +265,12 @@ public class MenuDialog extends Dialog {
                 Message paste = new Message();
                 if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
-                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
+                    //paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
                 } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
                     paste.what = OtoConsts.CROP_PASTE;
-                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
+                    //paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
                 }
+                paste.obj = sourcePath;
                 MainActivity.mHandler.sendMessage(paste);
             } else if (text.equals(all_menu[OtoConsts.INDEX_SORT])) {
                 //sort
