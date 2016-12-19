@@ -66,6 +66,9 @@ public class DiskUtils {
 
     //command:mv
     public static void moveFile(String srcFile, String destDir) {
+        if (new File(srcFile).getParent().equals(destDir)) {
+            return;
+        }
         String command = "/system/bin/mv";
         String arg = "-v";
         copyOrMoveFile(command, arg, srcFile, destDir);
@@ -73,6 +76,9 @@ public class DiskUtils {
 
     //command:cp
     public static void copyFile(String srcFile, String destDir) {
+        if (srcFile.equals(destDir)) {
+            return;
+        }
         String command = "/system/bin/cp";
         String arg = "-v";
         File f = new File(srcFile);
@@ -148,6 +154,7 @@ public class DiskUtils {
                     MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.DELETE_REFRESH, sourceFile.getAbsolutePath()));
                 }
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.CLEAN_CLIPBOARD);
             }
         } catch (IOException e) {
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);

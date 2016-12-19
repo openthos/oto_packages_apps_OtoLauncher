@@ -35,6 +35,8 @@ public class OtoConsts {
     public static final int COPY_INFO_SHOW = 0x00000015;
     public static final int COPY_INFO_HIDE = 0x00000016;
     public static final int COPY_INFO = 0x00000017;
+    public static final int CLEAN_CLIPBOARD = 0x00000018;
+
     public static final int SKIP_LINES = 10;
 
     public static final int INDEX_OPEN = 0;

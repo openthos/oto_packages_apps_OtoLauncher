@@ -191,6 +191,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.COPY_INFO_HIDE:
                         mCopyInfoDialog.cancel();
                         break;
+                    case OtoConsts.CLEAN_CLIPBOARD:
+                        ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
+                                                                               .setText("");
+                        break;
                 }
             }
         };

@@ -110,6 +110,7 @@ public class MenuDialog extends Dialog {
         try {
             sourcePath = (String) cm.getText();
         } catch (ClassCastException e) {
+            sourcePath = "";
         }
         for (int i = 0; i < s.length; i++) {
             View mv;
@@ -124,9 +125,8 @@ public class MenuDialog extends Dialog {
                           || path.endsWith(OtoConsts.SUFFIX_ZIP)
                           || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)))
                 || (s[i].equals(context.getResources().getString(R.string.paste))
-                        && (sourcePath == null) && !(sourcePath != null
-                               && ((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
-                               || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)))))){
+                        && !((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
+                               || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))) {
                 mv = View.inflate(context, R.layout.item_menu_unable, null);
             } else {
                 mv = View.inflate(context, R.layout.item_menu, null);
