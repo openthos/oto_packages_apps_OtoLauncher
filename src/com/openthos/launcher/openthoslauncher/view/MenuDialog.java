@@ -43,7 +43,7 @@ public class MenuDialog extends Dialog {
     private String path;
     private int dialogHeight;
     private static boolean existMenu;
-    private String sourcePath;
+    private String sourcePath = "";
 
     public MenuDialog(Context context) {
         super(context);
@@ -110,6 +110,9 @@ public class MenuDialog extends Dialog {
         try {
             sourcePath = (String) cm.getText();
         } catch (ClassCastException e) {
+            sourcePath = "";
+        }
+        if (sourcePath == null) {
             sourcePath = "";
         }
         for (int i = 0; i < s.length; i++) {

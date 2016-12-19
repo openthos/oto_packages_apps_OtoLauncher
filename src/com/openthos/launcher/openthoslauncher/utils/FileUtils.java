@@ -1,5 +1,11 @@
 package com.openthos.launcher.openthoslauncher.utils;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
+import android.content.pm.ApplicationInfo;
+import android.graphics.drawable.Drawable;
+
 import java.io.File;
 import com.android.launcher3.R;
 
@@ -44,53 +50,68 @@ public class FileUtils {
    private static final String SUFFIX_GZ = ".gz";
    private static final String SUFFIX_ZIP = ".zip";
    private static final String SUFFIX_RAR = ".rar";
+   private static final String SUFFIX_APK = ".apk";
 
-   public static int getFileIcon(String path) {
+   public static Drawable getFileIcon(String path, Context context) {
        if (!path.contains(".")) {
-           return R.drawable.suffix_default;
+           return context.getResources().getDrawable(R.drawable.suffix_default);
        }
        String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
        switch (suffix) {
            case SUFFIX_APE:
-               return R.drawable.suffix_ape;
+               return context.getResources().getDrawable(R.drawable.suffix_ape);
            case SUFFIX_AVI:
-               return R.drawable.suffix_avi;
+               return context.getResources().getDrawable(R.drawable.suffix_avi);
            case SUFFIX_DOC:
-               return R.drawable.suffix_doc;
+               return context.getResources().getDrawable(R.drawable.suffix_doc);
            case SUFFIX_HTML:
-               return R.drawable.suffix_html;
+               return context.getResources().getDrawable(R.drawable.suffix_html);
            case SUFFIX_MP3:
-               return R.drawable.suffix_mp3;
+               return context.getResources().getDrawable(R.drawable.suffix_mp3);
            case SUFFIX_MP4:
-               return R.drawable.suffix_mp4;
+               return context.getResources().getDrawable(R.drawable.suffix_mp4);
            case SUFFIX_PPT:
-               return R.drawable.suffix_ppt;
+               return context.getResources().getDrawable(R.drawable.suffix_ppt);
            case SUFFIX_TXT:
-               return R.drawable.suffix_txt;
+               return context.getResources().getDrawable(R.drawable.suffix_txt);
            case SUFFIX_WAV:
-               return R.drawable.suffix_wav;
+               return context.getResources().getDrawable(R.drawable.suffix_wav);
            case SUFFIX_WMV:
-               return R.drawable.suffix_wmv;
+               return context.getResources().getDrawable(R.drawable.suffix_wmv);
            case SUFFIX_XLS:
-               return R.drawable.suffix_xls;
+               return context.getResources().getDrawable(R.drawable.suffix_xls);
            case SUFFIX_PDF:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_RM:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_RMVB:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_TAR:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_BZ2:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_GZ:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_ZIP:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
            case SUFFIX_RAR:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
+           case SUFFIX_APK:
+               PackageManager pm = context.getPackageManager();
+               PackageInfo pkgInfo = pm.getPackageArchiveInfo(path,PackageManager.GET_ACTIVITIES);
+               if (pkgInfo != null) {
+                   ApplicationInfo appInfo = pkgInfo.applicationInfo;
+                   appInfo.sourceDir = path;
+                   appInfo.publicSourceDir = path;
+                   String appName = pm.getApplicationLabel(appInfo).toString();
+                   String packageName = appInfo.packageName;
+                   Drawable icon = pm.getApplicationIcon(appInfo);
+                   return icon;
+               } else {
+                   return context.getResources().getDrawable(R.drawable.suffix_default);
+               }
            default:
-               return R.drawable.suffix_default;
+               return context.getResources().getDrawable(R.drawable.suffix_default);
        }
    }
 

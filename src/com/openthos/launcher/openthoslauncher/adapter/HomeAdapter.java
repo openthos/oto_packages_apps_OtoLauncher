@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -80,9 +81,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         } else if (!(Boolean) data.get(position).get("null")) {
             holder.nullnull.setChecked(false);
         }
-        if ((int) data.get(position).get("icon") != -1) {
-            holder.iv.setImageDrawable(holder.item.getResources().getDrawable(
-                                                         (int) data.get(position).get("icon")));
+        if ((Drawable) data.get(position).get("icon") != null) {
+            holder.iv.setImageDrawable((Drawable) data.get(position).get("icon"));
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }

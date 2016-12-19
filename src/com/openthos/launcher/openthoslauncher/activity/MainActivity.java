@@ -70,7 +70,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mSumNum = getNum();
         mBlankMap.put("name", "");
         mBlankMap.put("isChecked", false);
-        mBlankMap.put("icon", -1);
+        mBlankMap.put("icon", null);
         mBlankMap.put("null", true);
         mBlankMap.put("path", "");
         mBlankMap.put("type", Type.BLANK);
@@ -133,11 +133,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 map.put("isChecked", false);
                                 map.put("null", false);
                                 if (showFile.isDirectory()) {
-                                    map.put("icon", R.drawable.ic_directory);
+                                    map.put("icon", MainActivity.this
+                                             .getResources().getDrawable(R.drawable.ic_directory));
                                     map.put("type", Type.DIRECTORY);
                                 } else {
                                     map.put("icon", FileUtils.getFileIcon(
-                                                             showFile.getAbsolutePath()));
+                                                   showFile.getAbsolutePath(), MainActivity.this));
                                     map.put("type", Type.FILE);
                                 }
                                 mDatas.set(i, map);
@@ -238,11 +239,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 for (int j = 1; ; j++) {
                     File file = null;
                     if (type == Type.FILE) {
-                        file = new File(root, MainActivity.this.getResources()
+                        file = new File(root, getResources()
                                                         .getString(R.string.new_file) + j + suffix);
                     } else if (type == Type.DIRECTORY){
-                        file = new File(root, MainActivity.this.getResources()
-                                                               .getString(R.string.new_folder) + j);
+                        file = new File(root, getResources().getString(R.string.new_folder) + j);
                     }
                     if (!file.exists()) {
                         try {
@@ -257,10 +257,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             map.put("isChecked", false);
                             map.put("null", false);
                             if (type == Type.FILE) {
-                                map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath()));
+                                map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath(),
+                                                                      this));
                                 map.put("type", Type.FILE);
                             } else if (type == Type.DIRECTORY) {
-                                map.put("icon", R.drawable.ic_directory);
+                                map.put("icon", getResources().getDrawable(
+                                                                    R.drawable.ic_directory));
                                 map.put("type", Type.DIRECTORY);
                             }
                             mDatas.set(i, map);
@@ -303,7 +305,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             map.put("path", defaultPaths[i]);
             map.put("isChecked", false);
             map.put("null", false);
-            map.put("icon", defaultIcons.getResourceId(i, R.mipmap.ic_launcher));
+            map.put("icon", getResources().getDrawable(
+                                           defaultIcons.getResourceId(i, R.mipmap.ic_launcher)));
             map.put("type", defaultTypes[i]);
             mDatas.add(map);
         }
@@ -318,10 +321,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             for (int i = 0; i < files.length; i++) {
                 HashMap<String, Object> map = new HashMap<>();
                 if (files[i].isDirectory()) {
-                    map.put("icon", R.drawable.ic_directory);
+                    map.put("icon", getResources().getDrawable(R.drawable.ic_directory));
                     map.put("type", Type.DIRECTORY);
                 } else {
-                    map.put("icon", FileUtils.getFileIcon(files[i].getAbsolutePath()));
+                    map.put("icon", FileUtils.getFileIcon(files[i].getAbsolutePath(), this));
                     map.put("type", Type.FILE);
                 }
                 map.put("name", files[i].getName());
@@ -398,7 +401,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mItemTouchHelper = new ItemTouchHelper(new ItemCallBack(this));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
-        mCopyInfoDialog = CopyInfoDialog.getInstance(MainActivity.this);
+        mCopyInfoDialog = CopyInfoDialog.getInstance(this);
     }
 
     @Override
@@ -509,7 +512,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void showDialogForMoveToRecycle(String path) {
         MoveToRecycleClickListener listener = new MoveToRecycleClickListener(path);
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
              .setNegativeButton(getResources().getString(
@@ -524,7 +527,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void showDialogForDirectDelete(String path) {
         DirectDeleteClickListener listener = new DirectDeleteClickListener(path);
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_direct_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
              .setNegativeButton(getResources().getString(
@@ -658,22 +661,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             switch (type){
                 case COMPUTER:
                     map.put("null", false);
-                    map.put("icon", R.drawable.ic_app_computer);
+                    map.put("icon", getResources().getDrawable(R.drawable.ic_app_computer));
                     map.put("name", getResources().getString(R.string.my_computer));
                     break;
                 case RECYCLE:
                     map.put("null", false);
-                    map.put("icon", R.drawable.ic_app_recycle);
+                    map.put("icon", getResources().getDrawable(R.drawable.ic_app_recycle));
                     map.put("name", getResources().getString(R.string.recycle));
                     break;
                 case FILE:
                     map.put("null", false);
-                    map.put("icon", FileUtils.getFileIcon(obj.getString("path")));
+                    map.put("icon", FileUtils.getFileIcon(obj.getString("path"), this));
                     map.put("name", obj.getString("name"));
                     break;
                 case DIRECTORY:
                     map.put("null", false);
-                    map.put("icon", R.drawable.ic_directory);
+                    map.put("icon", getResources().getDrawable(R.drawable.ic_directory));
                     map.put("name", obj.getString("name"));
                     break;
             }
