@@ -11,4 +11,14 @@
         android:layout_height="wrap_content"
         android:divider="@null">
     </ListView>
+
+    <TextView
+        android:id="@+id/tv_no_open_with"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/no_app_open_with"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:padding="16dp" />
 </LinearLayout>

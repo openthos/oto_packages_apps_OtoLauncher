@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.view.Window;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -27,10 +30,12 @@ import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
+import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by xu on 2016/8/8.
@@ -204,22 +209,31 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 case FILE:
                                     String filePath = (String)data.get(getAdapterPosition()).
                                                                  get(Intent.EXTRA_DESKTOP_PATH_TAG);
-                                    Intent openFile = new Intent();
-                                    openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    openFile.setAction(Intent.ACTION_VIEW);
                                     String fileType = FileUtils.getMIMEType(new File(filePath));
-                                    openFile.setDataAndType(
+                                    List<ResolveInfo> resolveInfoList = new ArrayList<>();
+                                    PackageManager manager = item.getContext().getPackageManager();
+                                    Intent intent = new Intent();
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setAction(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(Uri.fromFile(new File(filePath)),
+                                                                                 fileType);
+                                    resolveInfoList = manager.queryIntentActivities(intent,
+                                                                 PackageManager.MATCH_DEFAULT_ONLY);
+                                    if (resolveInfoList.size() > 0) {
+                                        Intent openFile = new Intent();
+                                        openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        openFile.setAction(Intent.ACTION_VIEW);
+                                        openFile.setDataAndType(
                                                         Uri.fromFile(new File(filePath)), fileType);
-                                    openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
+                                        openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
                                                               ApplicationInfo.APPNAME_OTO_LAUNCHER);
-                                    try {
                                         item.getContext().startActivity(openFile);
-                                    } catch (ActivityNotFoundException e) {
-                                        Toast.makeText(item.getContext(),
-                                                       item.getContext().getResources()
-                                                                  .getString(R.string.can_not_open),
-                                                       Toast.LENGTH_SHORT).show();
-                                        return;
+                                    } else {
+                                        OpenWithDialog openWithDialog = new OpenWithDialog(
+                                                                       item.getContext(), filePath);
+                                        openWithDialog.requestWindowFeature(
+                                                                        Window.FEATURE_NO_TITLE);
+                                        openWithDialog.showDialog();
                                     }
                                     break;
                             }
