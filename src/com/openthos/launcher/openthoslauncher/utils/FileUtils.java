@@ -31,116 +31,116 @@ public class FileUtils {
         return type;
     }
 
-   private static final String SUFFIX_APE = ".ape";
-   private static final String SUFFIX_AVI = ".avi";
-   private static final String SUFFIX_DOC = ".doc";
-   private static final String SUFFIX_HTML = ".html";
-   private static final String SUFFIX_MP3 = ".mp3";
-   private static final String SUFFIX_MP4 = ".mp4";
-   private static final String SUFFIX_PPT = ".ppt";
-   private static final String SUFFIX_TXT = ".txt";
-   private static final String SUFFIX_WAV = ".wav";
-   private static final String SUFFIX_WMV = ".wmv";
-   private static final String SUFFIX_XLS = ".xls";
-   private static final String SUFFIX_PDF = ".pdf";
-   private static final String SUFFIX_RM = ".rm";
-   private static final String SUFFIX_RMVB = ".rmvb";
-   private static final String SUFFIX_TAR = ".tar";
-   private static final String SUFFIX_BZ2 = ".bz2";
-   private static final String SUFFIX_GZ = ".gz";
-   private static final String SUFFIX_ZIP = ".zip";
-   private static final String SUFFIX_RAR = ".rar";
-   private static final String SUFFIX_APK = ".apk";
-   private static final String SUFFIX_XLSX = ".xlsx";
-   private static final String SUFFIX_DOCX = ".docx";
-   private static final String SUFFIX_PPTX = ".pptx";
-   private static final String SUFFIX_3GP = ".3gp";
-   private static final String SUFFIX_BMP = ".bmp";
-   private static final String SUFFIX_GIF = ".gif";
-   private static final String SUFFIX_PNG = ".png";
-   private static final String SUFFIX_ISO = ".iso";
-   private static final String SUFFIX_JPG = ".jpg";
-   private static final String SUFFIX_JPEG = ".jpeg";
+    private static final String SUFFIX_APE = ".ape";
+    private static final String SUFFIX_AVI = ".avi";
+    private static final String SUFFIX_DOC = ".doc";
+    private static final String SUFFIX_HTML = ".html";
+    private static final String SUFFIX_MP3 = ".mp3";
+    private static final String SUFFIX_MP4 = ".mp4";
+    private static final String SUFFIX_PPT = ".ppt";
+    private static final String SUFFIX_TXT = ".txt";
+    private static final String SUFFIX_WAV = ".wav";
+    private static final String SUFFIX_WMV = ".wmv";
+    private static final String SUFFIX_XLS = ".xls";
+    private static final String SUFFIX_PDF = ".pdf";
+    private static final String SUFFIX_RM = ".rm";
+    private static final String SUFFIX_RMVB = ".rmvb";
+    private static final String SUFFIX_TAR = ".tar";
+    private static final String SUFFIX_BZ2 = ".bz2";
+    private static final String SUFFIX_GZ = ".gz";
+    private static final String SUFFIX_ZIP = ".zip";
+    private static final String SUFFIX_RAR = ".rar";
+    private static final String SUFFIX_APK = ".apk";
+    private static final String SUFFIX_XLSX = ".xlsx";
+    private static final String SUFFIX_DOCX = ".docx";
+    private static final String SUFFIX_PPTX = ".pptx";
+    private static final String SUFFIX_3GP = ".3gp";
+    private static final String SUFFIX_BMP = ".bmp";
+    private static final String SUFFIX_GIF = ".gif";
+    private static final String SUFFIX_PNG = ".png";
+    private static final String SUFFIX_ISO = ".iso";
+    private static final String SUFFIX_JPG = ".jpg";
+    private static final String SUFFIX_JPEG = ".jpeg";
 
-   public static Drawable getFileIcon(String path, Context context) {
-       if (!path.contains(".")) {
-           return context.getResources().getDrawable(R.drawable.suffix_default);
-       }
-       String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
-       switch (suffix) {
-           case SUFFIX_APE:
-               return context.getResources().getDrawable(R.drawable.suffix_ape);
-           case SUFFIX_AVI:
-               return context.getResources().getDrawable(R.drawable.suffix_avi);
-           case SUFFIX_DOC:
-           case SUFFIX_DOCX:
-               return context.getResources().getDrawable(R.drawable.suffix_doc);
-           case SUFFIX_HTML:
-               return context.getResources().getDrawable(R.drawable.suffix_html);
-           case SUFFIX_MP3:
-               return context.getResources().getDrawable(R.drawable.suffix_mp3);
-           case SUFFIX_MP4:
-               return context.getResources().getDrawable(R.drawable.suffix_mp4);
-           case SUFFIX_PPT:
-           case SUFFIX_PPTX:
-               return context.getResources().getDrawable(R.drawable.suffix_ppt);
-           case SUFFIX_TXT:
-               return context.getResources().getDrawable(R.drawable.suffix_txt);
-           case SUFFIX_WAV:
-               return context.getResources().getDrawable(R.drawable.suffix_wav);
-           case SUFFIX_WMV:
-               return context.getResources().getDrawable(R.drawable.suffix_wmv);
-           case SUFFIX_XLS:
-           case SUFFIX_XLSX:
-               return context.getResources().getDrawable(R.drawable.suffix_xls);
-           case SUFFIX_PDF:
-               return context.getResources().getDrawable(R.drawable.suffix_pdf);
-           case SUFFIX_RM:
-               return context.getResources().getDrawable(R.drawable.suffix_rm);
-           case SUFFIX_RMVB:
-               return context.getResources().getDrawable(R.drawable.suffix_rmvb);
-           case SUFFIX_TAR:
-               return context.getResources().getDrawable(R.drawable.suffix_tar);
-           case SUFFIX_BZ2:
-               return context.getResources().getDrawable(R.drawable.suffix_bz2);
-           case SUFFIX_GZ:
-               return context.getResources().getDrawable(R.drawable.suffix_gz);
-           case SUFFIX_ZIP:
-               return context.getResources().getDrawable(R.drawable.suffix_zip);
-           case SUFFIX_RAR:
-               return context.getResources().getDrawable(R.drawable.suffix_rar);
-           case SUFFIX_3GP:
-               return context.getResources().getDrawable(R.drawable.suffix_3gp);
-           case SUFFIX_BMP:
-               return context.getResources().getDrawable(R.drawable.suffix_bmp);
-           case SUFFIX_PNG:
-               return context.getResources().getDrawable(R.drawable.suffix_png);
-           case SUFFIX_GIF:
-               return context.getResources().getDrawable(R.drawable.suffix_gif);
-           case SUFFIX_JPG:
-               return context.getResources().getDrawable(R.drawable.suffix_jpg);
-           case SUFFIX_JPEG:
-               return context.getResources().getDrawable(R.drawable.suffix_jpeg);
-           case SUFFIX_ISO:
-               return context.getResources().getDrawable(R.drawable.suffix_iso);
-           case SUFFIX_APK:
-               PackageManager pm = context.getPackageManager();
-               PackageInfo pkgInfo = pm.getPackageArchiveInfo(path,PackageManager.GET_ACTIVITIES);
-               if (pkgInfo != null) {
-                   ApplicationInfo appInfo = pkgInfo.applicationInfo;
-                   appInfo.sourceDir = path;
-                   appInfo.publicSourceDir = path;
-                   String appName = pm.getApplicationLabel(appInfo).toString();
-                   String packageName = appInfo.packageName;
-                   Drawable icon = pm.getApplicationIcon(appInfo);
-                   return icon;
-               } else {
-                   return context.getResources().getDrawable(R.drawable.suffix_default);
-               }
-           default:
-               return context.getResources().getDrawable(R.drawable.suffix_default);
-       }
-   }
+    public static Drawable getFileIcon(String path, Context context) {
+        if (!path.contains(".")) {
+            return context.getResources().getDrawable(R.drawable.suffix_default);
+        }
+        String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
+        switch (suffix) {
+            case SUFFIX_APE:
+                return context.getResources().getDrawable(R.drawable.suffix_ape);
+            case SUFFIX_AVI:
+                return context.getResources().getDrawable(R.drawable.suffix_avi);
+            case SUFFIX_DOC:
+            case SUFFIX_DOCX:
+                return context.getResources().getDrawable(R.drawable.suffix_doc);
+            case SUFFIX_HTML:
+                return context.getResources().getDrawable(R.drawable.suffix_html);
+            case SUFFIX_MP3:
+                return context.getResources().getDrawable(R.drawable.suffix_mp3);
+            case SUFFIX_MP4:
+                return context.getResources().getDrawable(R.drawable.suffix_mp4);
+            case SUFFIX_PPT:
+            case SUFFIX_PPTX:
+                return context.getResources().getDrawable(R.drawable.suffix_ppt);
+            case SUFFIX_TXT:
+                return context.getResources().getDrawable(R.drawable.suffix_txt);
+            case SUFFIX_WAV:
+                return context.getResources().getDrawable(R.drawable.suffix_wav);
+            case SUFFIX_WMV:
+                return context.getResources().getDrawable(R.drawable.suffix_wmv);
+            case SUFFIX_XLS:
+            case SUFFIX_XLSX:
+                return context.getResources().getDrawable(R.drawable.suffix_xls);
+            case SUFFIX_PDF:
+                return context.getResources().getDrawable(R.drawable.suffix_pdf);
+            case SUFFIX_RM:
+                return context.getResources().getDrawable(R.drawable.suffix_rm);
+            case SUFFIX_RMVB:
+                return context.getResources().getDrawable(R.drawable.suffix_rmvb);
+            case SUFFIX_TAR:
+                return context.getResources().getDrawable(R.drawable.suffix_tar);
+            case SUFFIX_BZ2:
+                return context.getResources().getDrawable(R.drawable.suffix_bz2);
+            case SUFFIX_GZ:
+                return context.getResources().getDrawable(R.drawable.suffix_gz);
+            case SUFFIX_ZIP:
+                return context.getResources().getDrawable(R.drawable.suffix_zip);
+            case SUFFIX_RAR:
+                return context.getResources().getDrawable(R.drawable.suffix_rar);
+            case SUFFIX_3GP:
+                return context.getResources().getDrawable(R.drawable.suffix_3gp);
+            case SUFFIX_BMP:
+                return context.getResources().getDrawable(R.drawable.suffix_bmp);
+            case SUFFIX_PNG:
+                return context.getResources().getDrawable(R.drawable.suffix_png);
+            case SUFFIX_GIF:
+                return context.getResources().getDrawable(R.drawable.suffix_gif);
+            case SUFFIX_JPG:
+                return context.getResources().getDrawable(R.drawable.suffix_jpg);
+            case SUFFIX_JPEG:
+                return context.getResources().getDrawable(R.drawable.suffix_jpeg);
+            case SUFFIX_ISO:
+                return context.getResources().getDrawable(R.drawable.suffix_iso);
+            case SUFFIX_APK:
+                PackageManager pm = context.getPackageManager();
+                PackageInfo pkgInfo = pm.getPackageArchiveInfo(path,PackageManager.GET_ACTIVITIES);
+                if (pkgInfo != null) {
+                    ApplicationInfo appInfo = pkgInfo.applicationInfo;
+                    appInfo.sourceDir = path;
+                    appInfo.publicSourceDir = path;
+                    String appName = pm.getApplicationLabel(appInfo).toString();
+                    String packageName = appInfo.packageName;
+                    Drawable icon = pm.getApplicationIcon(appInfo);
+                    return icon;
+                } else {
+                    return context.getResources().getDrawable(R.drawable.suffix_default);
+                }
+            default:
+                return context.getResources().getDrawable(R.drawable.suffix_default);
+        }
+    }
 
     /**
      * getFileIcon: Get the Icon from the file name.

@@ -1,10 +1,12 @@
 package com.openthos.launcher.openthoslauncher.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,6 +62,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private int mSumNum;
     private CopyInfoDialog mCopyInfoDialog;
     private HashMap<String, Object> mBlankMap = new HashMap<>();
+    private SdReceiver mSdReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +127,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         File showFile = new File((String) msg.obj);
                         if (!showFile.exists()) {
                             return;
+                        }
+                        for (int i = 1; i < mDatas.size(); i++) {
+                            if ((mDatas.get(i).get("path")).equals(showFile.getAbsolutePath())) {
+                                return;
+                            }
                         }
                         for (int i = 1; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).get("path")).equals("")) {
@@ -199,6 +207,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
         };
+        mSdReceiver = new SdReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_DESKTOP_SHOW_FILE);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_DELETE_FILE);
+        registerReceiver(mSdReceiver, intentFilter);
     }
 
     private class CopyThread extends Thread {
@@ -697,6 +710,25 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public void onDestroy() {
         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+        unregisterReceiver(mSdReceiver);
         super.onDestroy();
+    }
+
+    private class SdReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String path = intent.getStringExtra(Intent.EXTRA_DESKTOP_PATH_TAG);
+            switch (intent.getAction()) {
+                case Intent.ACTION_DESKTOP_SHOW_FILE:
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.SHOW_FILE, path));
+                    break;
+                case Intent.ACTION_DESKTOP_DELETE_FILE:
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.DELETE_REFRESH, path));
+                    break;
+            }
+        }
     }
 }
