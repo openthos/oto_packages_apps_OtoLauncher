@@ -211,6 +211,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_DESKTOP_SHOW_FILE);
         intentFilter.addAction(Intent.ACTION_DESKTOP_DELETE_FILE);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_FOCUSED_STATE);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_UNFOCUSED_STATE);
         registerReceiver(mSdReceiver, intentFilter);
     }
 
@@ -727,6 +729,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 case Intent.ACTION_DESKTOP_DELETE_FILE:
                     MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.DELETE_REFRESH, path));
+                    break;
+                case Intent.ACTION_DESKTOP_FOCUSED_STATE:
+                    break;
+                case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
                     break;
             }
         }
