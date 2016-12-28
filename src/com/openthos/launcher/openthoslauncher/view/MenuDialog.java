@@ -118,6 +118,10 @@ public class MenuDialog extends Dialog {
         for (int i = 0; i < s.length; i++) {
             View mv;
             boolean isInitListener = false;
+            if (s[i].equals(context.getResources().getString(R.string.open_with))
+                                                                       && type == Type.DIRECTORY) {
+                continue;
+            }
             if ((s[i].equals(context.getResources().getString(R.string.decompression))
                         && !(path.endsWith(OtoConsts.SUFFIX_TAR)
                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
