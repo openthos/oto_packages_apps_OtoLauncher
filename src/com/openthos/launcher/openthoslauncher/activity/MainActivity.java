@@ -37,6 +37,7 @@ import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import android.view.KeyEvent;
 import android.text.ClipboardManager;
+import android.provider.Settings;
 
 import java.io.File;
 import java.io.IOException;
@@ -204,6 +205,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.CLEAN_CLIPBOARD:
                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                                                                                .setText("");
+                        break;
+                    case OtoConsts.INTERCEPT_ONKEYDOWN:
+                        Bundle bundle = msg.getData();
+                        int keyCode = bundle.getInt(OtoConsts.INTERCEPT_ONKEYDOWN_KEYCODE);
+                        KeyEvent event = bundle.getParcelable(OtoConsts.INTERCEPT_ONKEYDOWN_KEYEVENT);
+                        keyDealing(keyCode, event);
                         break;
                 }
             }
@@ -452,6 +459,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return keyDealing(keyCode, event);
+    }
+
+    private boolean keyDealing(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
             if (keyCode == KeyEvent.KEYCODE_D && mAdapter.pos != -1) {
                 Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
@@ -736,6 +747,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             OtoConsts.DELETE_REFRESH, path));
                     break;
                 case Intent.ACTION_DESKTOP_FOCUSED_STATE:
+                    Settings.Secure.putString(MainActivity.this.getContentResolver(),
+                                              Settings.Secure.DEFAULT_INPUT_METHOD,
+                                              OtoConsts.DESKTOP_INPUT);
                     break;
                 case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
                     break;

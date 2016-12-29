@@ -14,6 +14,10 @@ public class OtoConsts {
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
     public static final String WALLPAPER_PICKER = "com.android.settings.WallpaperPicker";
     public static final String DESKTOP_DATA = "com.android.launcher3.DesktopData";
+    public static final String DESKTOP_INPUT =
+                  "com.android.launcher3/com.openthos.launcher.openthoslauncher.activity.InputIME";
+    public static final String INTERCEPT_ONKEYDOWN_KEYCODE = "keyCode";
+    public static final String INTERCEPT_ONKEYDOWN_KEYEVENT = "event";
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
@@ -38,6 +42,7 @@ public class OtoConsts {
     public static final int CLEAN_CLIPBOARD = 0x00000018;
 
     public static final int SKIP_LINES = 10;
+    public static final int INTERCEPT_ONKEYDOWN = 99;
 
     public static final int INDEX_OPEN = 0;
     public static final int INDEX_ABOUT_COMPUTER = 1;
