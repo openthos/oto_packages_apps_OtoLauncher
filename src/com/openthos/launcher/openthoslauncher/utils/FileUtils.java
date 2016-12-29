@@ -1012,6 +1012,4 @@ public class FileUtils {
             {"zac", "application/x-zaurus-zac"},
             {"zip", "icon_zip"},
     };
-
-
 }

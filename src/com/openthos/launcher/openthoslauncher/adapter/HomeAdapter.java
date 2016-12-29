@@ -26,6 +26,7 @@ import android.view.Window;
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
@@ -184,60 +185,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                    && Math.abs(System.currentTimeMillis()
                                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
                                                    && mLastClickId == getAdapterPosition()) {
-                            switch ((Type) data.get(getAdapterPosition()).get("type")) {
-                                case COMPUTER:
-                                case RECYCLE:
-                                case DIRECTORY:
-                                    PackageManager packageManager = item.getContext()
-                                                                        .getPackageManager();
-                                    try {
-                                        Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                 OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                                        intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG,
-                                               (String) data.get(getAdapterPosition()).get(
-                                                                    Intent.EXTRA_DESKTOP_PATH_TAG));
-                                        item.getContext().startActivity(intent);
-                                    } catch (NullPointerException e) {
-                                        Intent intent = packageManager.getLaunchIntentForPackage(
-                                                                     OtoConsts.FILEMANAGER_PACKAGE);
-                                        intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG,
-                                                        (String) data.get(getAdapterPosition()).get(
-                                                                    Intent.EXTRA_DESKTOP_PATH_TAG));
-                                        item.getContext().startActivity(intent);
-                                    }
-                                    break;
-                                case FILE:
-                                    String filePath = (String)data.get(getAdapterPosition()).
-                                                                 get(Intent.EXTRA_DESKTOP_PATH_TAG);
-                                    String fileType = FileUtils.getMIMEType(new File(filePath));
-                                    List<ResolveInfo> resolveInfoList = new ArrayList<>();
-                                    PackageManager manager = item.getContext().getPackageManager();
-                                    Intent intent = new Intent();
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setAction(Intent.ACTION_VIEW);
-                                    intent.setDataAndType(Uri.fromFile(new File(filePath)),
-                                                                                 fileType);
-                                    resolveInfoList = manager.queryIntentActivities(intent,
-                                                                 PackageManager.MATCH_DEFAULT_ONLY);
-                                    if (resolveInfoList.size() > 0) {
-                                        Intent openFile = new Intent();
-                                        openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        openFile.setAction(Intent.ACTION_VIEW);
-                                        openFile.setDataAndType(
-                                                        Uri.fromFile(new File(filePath)), fileType);
-                                        openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
-                                                              ApplicationInfo.APPNAME_OTO_LAUNCHER);
-                                        item.getContext().startActivity(openFile);
-                                    } else {
-                                        OpenWithDialog openWithDialog = new OpenWithDialog(
-                                                                       item.getContext(), filePath);
-                                        openWithDialog.requestWindowFeature(
-                                                                        Window.FEATURE_NO_TITLE);
-                                        openWithDialog.showDialog();
-                                    }
-                                    break;
-                            }
-                            openAppBroadcast(item.getContext());
+                            OperateUtils.enter(item.getContext(),
+                                                (String) data.get(getAdapterPosition()).get("path"),
+                                                 (Type) data.get(getAdapterPosition()).get("type"));
                         } else {
                             if (null != mClick) {
                                 mClick.itemOnClick(getAdapterPosition(), v);
@@ -280,7 +230,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+            if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
+                        && v.hasFocus()) {
                 HashMap current = data.get(pos);
                 String path = (String)current.get("path");
                 String newName = String.valueOf(((EditText)v).getText());

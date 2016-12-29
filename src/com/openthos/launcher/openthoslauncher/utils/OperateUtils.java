@@ -1,0 +1,76 @@
+package com.openthos.launcher.openthoslauncher.utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.view.Window;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.openthos.launcher.openthoslauncher.entity.Type;
+import com.openthos.launcher.openthoslauncher.utils.FileUtils;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
+/**
+ * Created by Wang Zhixu on 2016/12/29.
+ */
+public class OperateUtils {
+    public static void openAppBroadcast(Context context) {
+        Intent openAppIntent = new Intent();
+        openAppIntent.setAction(Intent.ACTION_OPEN_APPLICATION);
+        context.sendBroadcast(openAppIntent);
+    }
+
+    public static void enter(Context context, String path, Type type) {
+        switch (type) {
+            case COMPUTER:
+            case RECYCLE:
+            case DIRECTORY:
+                PackageManager packageManager = context.getPackageManager();
+                try {
+                    Intent intent = packageManager.getLaunchIntentForPackage(
+                                             OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                    intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
+                    context.startActivity(intent);
+                } catch (NullPointerException e) {
+                    Intent intent = packageManager.getLaunchIntentForPackage(
+                                                 OtoConsts.FILEMANAGER_PACKAGE);
+                    intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
+                    context.startActivity(intent);
+                }
+                break;
+            case FILE:
+                String fileType = FileUtils.getMIMEType(new File(path));
+                List<ResolveInfo> resolveInfoList = new ArrayList<>();
+                PackageManager manager = context.getPackageManager();
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                resolveInfoList = manager.queryIntentActivities(intent,
+                                                                 PackageManager.MATCH_DEFAULT_ONLY);
+                if (resolveInfoList.size() > 0) {
+                    Intent openFile = new Intent();
+                    openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    openFile.setAction(Intent.ACTION_VIEW);
+                    openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                    openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
+                                          ApplicationInfo.APPNAME_OTO_LAUNCHER);
+                    context.startActivity(openFile);
+                } else {
+                    OpenWithDialog openWithDialog = new OpenWithDialog(
+                                                   context, path);
+                    openWithDialog.requestWindowFeature(
+                                                    Window.FEATURE_NO_TITLE);
+                    openWithDialog.showDialog();
+                }
+                break;
+        }
+        openAppBroadcast(context);
+    }
+}

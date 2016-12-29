@@ -28,6 +28,7 @@ import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
+import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
@@ -521,6 +522,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
+        } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
+                                                                            && mAdapter.pos != -1) {
+            OperateUtils.enter(this, (String) (mDatas.get(mAdapter.pos).get("path")),
+                                      (Type) (mDatas.get(mAdapter.pos).get("type")));
         }
         return super.onKeyDown(keyCode, event);
     }

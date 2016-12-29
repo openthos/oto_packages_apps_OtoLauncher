@@ -31,6 +31,7 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 
 import java.io.File;
@@ -204,42 +205,7 @@ public class MenuDialog extends Dialog {
             String[] all_menu = context.getResources().getStringArray(R.array.all_menu);
             if (text.equals(all_menu[OtoConsts.INDEX_OPEN])) {
                 //open
-                switch (type) {
-                    case COMPUTER:
-                    case RECYCLE:
-                    case DIRECTORY:
-                        PackageManager packageManager = getContext().getPackageManager();
-                        try {
-                            Intent openDir = packageManager.getLaunchIntentForPackage(
-                                                              OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                            openDir.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
-                            getContext().startActivity(openDir);
-                        } catch (NullPointerException e) {
-                            Intent openDir = packageManager.getLaunchIntentForPackage(
-                                                              OtoConsts.FILEMANAGER_PACKAGE);
-                            openDir.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
-                            getContext().startActivity(openDir);
-                        }
-                        break;
-                    case FILE:
-                        Intent openFile = new Intent();
-                        openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        openFile.setAction(Intent.ACTION_VIEW);
-                        String fileType = FileUtils.getMIMEType(new File(path));
-                        openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
-                        openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
-                                                            ApplicationInfo.APPNAME_OTO_LAUNCHER);
-                        try {
-                            getContext().startActivity(openFile);
-                        } catch (ActivityNotFoundException e) {
-                            Toast.makeText(getContext(),
-                                      getContext().getResources().getString(R.string.can_not_open),
-                                      Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        break;
-                }
-                HomeAdapter.openAppBroadcast(context);
+                OperateUtils.enter(getContext(), path,type);
             } else if (text.equals(all_menu[OtoConsts.INDEX_ABOUT_COMPUTER])) {
                 //about_computer
                 PackageManager packageManager = getContext().getPackageManager();
