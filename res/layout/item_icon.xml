@@ -26,7 +26,7 @@
             <EditText
                 android:id="@+id/texts"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@id/icon"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/icon_diver_size"
@@ -37,7 +37,7 @@
                 android:nextFocusLeft="@id/texts"
                 android:nextFocusRight="@id/texts"
                 android:nextFocusDown="@id/texts"
-                android:inputType="textNoSuggestions"
+                android:maxLines="3"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/icon_font_size" />
 
