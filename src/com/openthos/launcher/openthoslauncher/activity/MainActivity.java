@@ -174,7 +174,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         compressDialog.showDialog();
                         break;
                     case OtoConsts.DECOMPRESS:
-                        new DecompressThread((String) msg.obj).start();
+                        showDialogForDecompress((String) msg.obj);
                         break;
                     case OtoConsts.DELETE:
                         showDialogForMoveToRecycle((String) msg.obj);
@@ -633,6 +633,35 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 MainActivity.mHandler.sendMessage(deleteRefreshFile);
             }
         }
+    }
+
+    private void showDialogForDecompress(final String path) {
+        String[] files = DiskUtils.list(path);
+        for (String s : files) {
+            for (HashMap map : mDatas) {
+                if (map.get("name").equals(s)) {
+                    new AlertDialog.Builder(this)
+                         .setMessage(String.format(getResources().getString(
+                                                            R.string.dialog_decompress_text), s))
+                         .setPositiveButton(getResources().getString(R.string.dialog_delete_yes),
+                             new android.content.DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     new DecompressThread(path).start();
+                                 }
+                             })
+                         .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
+                             new android.content.DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     dialog.cancel();
+                                 }
+                             }).show();
+                    return;
+                }
+            }
+        }
+        new DecompressThread(path).start();
     }
 
     private class DecompressThread extends Thread {

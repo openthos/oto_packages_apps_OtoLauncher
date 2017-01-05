@@ -506,6 +506,7 @@ s -->
     <add-resource type="string" name="open_with" />
     <add-resource type="string" name="can_not_open" />
     <add-resource type="string" name="no_app_open_with" />
+    <add-resource type="string" name="dialog_decompress_text" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -566,4 +567,5 @@ s -->
     <string name="open_with">Open with</string>
     <string name="can_not_open">Could not find the appropriate application to open the file!</string>
     <string name="no_app_open_with">No application to open this file.\nPlease download in AppStore.</string>
+    <string name="dialog_decompress_text">"%1$s" is already exists at Desktop, whether to decompress (which will cover the duplicate file)?</string>
 </resources>
