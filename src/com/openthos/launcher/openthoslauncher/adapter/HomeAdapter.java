@@ -153,7 +153,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     }
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         if (isClicked != true && pos != -1) {
-                            data.get(pos).put("isChecked", false);
+                            selectCurrent(-1);
+                            selectData.clear();
                             pos = -1;
                             notifyDataSetChanged();
                         }
