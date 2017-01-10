@@ -49,7 +49,6 @@ public class CopyInfoDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         View v = View.inflate(mContext, R.layout.dialog_copy_info, null);
         setContentView(v);
-        getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
         mTextMessage = (TextView) v.findViewById(R.id.text_message);
         mTextTitle = (TextView) v.findViewById(R.id.text_title);
     }

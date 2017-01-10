@@ -35,8 +35,8 @@ public class NewFileDialog extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         setContentView(R.layout.dialog_new_file);
-        getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
         initBody();
         initFoot();
     }

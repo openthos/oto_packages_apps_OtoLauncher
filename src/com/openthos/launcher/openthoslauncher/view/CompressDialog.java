@@ -53,8 +53,8 @@ public class CompressDialog extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         setContentView(R.layout.dialog_compress);
-        getWindow().setBackgroundDrawable(mContext.getResources().getDrawable(R.color.transparent));
         initBody();
         initFoot();
     }

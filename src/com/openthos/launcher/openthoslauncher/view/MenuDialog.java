@@ -81,6 +81,7 @@ public class MenuDialog extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         setContentView(R.layout.dialog_menu);
         getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.color.transparent));
         String[] s = {};

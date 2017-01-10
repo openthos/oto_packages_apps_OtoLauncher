@@ -48,6 +48,7 @@ public class OpenWithDialog extends Dialog implements AdapterView.OnItemClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         setContentView(R.layout.open_with_dialog);
         initView();
         initListener();
