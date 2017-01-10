@@ -43,7 +43,7 @@ import java.util.ArrayList;
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
     private List<HashMap<String, Object>> data;
-
+    private List<Integer> selectData;
     private RecycleCallBack mRecycleClick;
 
     public int pos = -1;
@@ -52,9 +52,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private boolean isClicked = false;
     public boolean isRename = false;
 
+    private static final int LESS = 0;
+    private static final int MORE = 1;
+
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
         this.mRecycleClick = click;
+        selectData = new ArrayList<>();
     }
 
     public void setData(List<HashMap<String, Object>> data) {
@@ -124,7 +128,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (isRename == false) {
-                        listenProcess(v,event);
+                        ctrlProcess(v,event);
                     }
                     return false;
                 }
@@ -165,57 +169,171 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            listenProcess(v, event);
+            ctrlProcess(v, event);
             return true;
         }
 
-        private void listenProcess(View v, MotionEvent event) {
+        private void ctrlProcess(View v, MotionEvent event) {
             if (getAdapterPosition() != -1) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        MenuDialog dialog = new MenuDialog(item.getContext(),
-                                 (Type) data.get(getAdapterPosition()).get("type"),
-                                 (String) data.get(getAdapterPosition()).get("path"));
-                        dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                        MenuDialog.setExistMenu(true);
-                    }
-                    if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
-                        isClicked = true;
-                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
-                                                   && Math.abs(System.currentTimeMillis()
-                                                   - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
-                                                   && mLastClickId == getAdapterPosition()) {
-                            OperateUtils.enter(item.getContext(),
-                                                (String) data.get(getAdapterPosition()).get("path"),
-                                                 (Type) data.get(getAdapterPosition()).get("type"));
-                        } else {
-                            if (null != mClick) {
-                                mClick.itemOnClick(getAdapterPosition(), v);
+                        if (selectData != null) {
+                            switch (selectData.size()) {
+                                case 0:
+                                case 1:
+                                    selectLess(event);
+                                    break;
+                                default:
+                                    selectMore(event);
+                                    break;
                             }
-                            if (!(Boolean) data.get(getAdapterPosition()).get("isChecked")) {
-                                if (pos != -1 && pos != getAdapterPosition()
-                                    && (Boolean) data.get(pos).get("isChecked")) {
-                                    data.get(pos).put("isChecked", false);
-                                }
-                                data.get(getAdapterPosition()).put("isChecked", true);
-                                if (pos != getAdapterPosition()) {
-                                    pos = getAdapterPosition();
-                                } else {
-                                    pos = -1;
-                                }
-                                notifyDataSetChanged();
-                            }
-                            mLastClickTime = System.currentTimeMillis();
-                            mLastClickId = pos;
                         }
+                    } else if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
+                        if (MainActivity.mIsCtrlPress) {
+                            Type type = (Type) data.get(getAdapterPosition()).get("type");
+                            if (type == Type.COMPUTER || type == Type.RECYCLE) {
+                                boolean isChecked = (boolean) data.get(getAdapterPosition())
+                                                                                 .get("isChecked");
+                                data.get(getAdapterPosition()).put("isChecked", !isChecked);
+                            } else {
+                                boolean isSelect = false;
+                                for (int i = 0; i < selectData.size(); i++) {
+                                    if (selectData.get(i) == getAdapterPosition()) {
+                                        isSelect = true;
+                                        data.get(selectData.get(i)).put("isChecked", false);
+                                        pos = -1;
+                                        selectData.remove(i);
+                                        break;
+                                    }
+                                }
+                                if (!isSelect) {
+                                    pos = getAdapterPosition();
+                                    addSelData(getAdapterPosition());
+                                    data.get(getAdapterPosition()).put("isChecked", true);
+                                }
+                            }
+                        } else {
+                            if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
+                                    && Math.abs(System.currentTimeMillis()
+                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
+                                    && pos == getAdapterPosition()) {
+                                OperateUtils.enter(item.getContext(),
+                                                (String) data.get(getAdapterPosition()).get("path"),
+                                                (Type) data.get(getAdapterPosition()).get("type"));
+                            } else {
+                                selectCurrent(getAdapterPosition());
+                                selectData.clear();
+                                addSelData(getAdapterPosition());
+                                pos = getAdapterPosition();
+                            }
+                        }
+                        mLastClickTime = System.currentTimeMillis();
+                    } else {
+                        pos = -1;
+                        selectData.clear();
+                        selectCurrent(-1);
                     }
-                } else if ((Boolean) data.get(getAdapterPosition()).get("null")
-                                     && pos != -1 && pos != getAdapterPosition()
-                                     && (Boolean) data.get(pos).get("isChecked")) {
-                    data.get(pos).put("isChecked", false);
-                    pos = -1;
                     notifyDataSetChanged();
                 }
+            }
+        }
+
+        private void selectLess(MotionEvent event) {
+            if ((boolean) data.get(getAdapterPosition()).get("null")) {
+                pos = -1;
+                selectData.clear();
+                selectCurrent(-1);
+                showDialog(event, LESS);
+            } else {
+                pos = getAdapterPosition();
+                addSelData(getAdapterPosition());
+                selectCurrent(getAdapterPosition());
+                showDialog(event, LESS);
+            }
+            notifyDataSetChanged();
+        }
+
+        private void selectMore(MotionEvent event) {
+            if ((boolean) data.get(getAdapterPosition()).get("null")) {
+                pos = -1;
+                selectData.clear();
+                selectCurrent(-1);
+                showDialog(event, LESS);
+            } else {
+                boolean isSelect = false;
+                for (int i = 0; i < selectData.size(); i++) {
+                    if (selectData.get(i) == getAdapterPosition()) {
+                        isSelect = true;
+                        break;
+                    }
+                }
+                if (isSelect) {
+                    Type type = (Type) data.get(getAdapterPosition()).get("type");
+                    if (type == Type.COMPUTER || type == Type.RECYCLE) {
+                        pos = getAdapterPosition();
+                        selectCurrent(getAdapterPosition());
+                        selectData.clear();
+                        showDialog(event, LESS);
+                    } else {
+                        for (int i = 0; i < selectData.size(); i++) {
+                            Type types = (Type) data.get(i).get("type");
+                            if (types == Type.COMPUTER || types == Type.RECYCLE) {
+                                data.get(i).put("isChecked", false);
+                            }
+                        }
+                        showDialog(event, MORE);
+                    }
+                } else {
+                    pos = getAdapterPosition();
+                    selectData.clear();
+                    addSelData(getAdapterPosition());
+                    selectCurrent(getAdapterPosition());
+                    showDialog(event, LESS);
+                }
+            }
+            notifyDataSetChanged();
+        }
+
+        private void showDialog(MotionEvent event, int num) {
+            Type type = null;
+            String path = null;
+            switch (num) {
+                case LESS:
+                    type = (Type) data.get(getAdapterPosition()).get("type");
+                    path = (String) data.get(getAdapterPosition()).get("path");
+                    break;
+                case MORE:
+                    type = Type.MORE;
+                    path = "";
+                    for (int i = 0; i < selectData.size(); i++) {
+                        path = path + (String) data.get(selectData.get(i)).get("path");
+                        if (i + 1 < selectData.size()) {
+                            path = path + "///";
+                        }
+                    }
+                    break;
+            }
+            MenuDialog dialog = new MenuDialog((MainActivity) mRecycleClick, type, path);
+            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+            MenuDialog.setExistMenu(true);
+        }
+
+        private void selectCurrent(int current) {
+            if (data != null && data.size() > 0) {
+                for (int i = 0; i < data.size(); i++) {
+                    if (current == i) {
+                        data.get(i).put("isChecked", true);
+                        continue;
+                    }
+                    data.get(i).put("isChecked", false);
+                }
+            }
+        }
+
+        public void addSelData(int pos){
+            Type type = (Type)data.get(pos).get("type");
+            if (type != Type.COMPUTER && type !=Type.RECYCLE) {
+                selectData.add(pos);
             }
         }
     }
@@ -224,6 +342,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         Intent openAppIntent = new Intent();
         openAppIntent.setAction(Intent.ACTION_OPEN_APPLICATION);
         context.sendBroadcast(openAppIntent);
+    }
+
+    public List<Integer> getSelData() {
+        return selectData;
     }
 
     View.OnKeyListener keyListener = new View.OnKeyListener() {

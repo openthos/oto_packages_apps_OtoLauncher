@@ -8,6 +8,7 @@
     <add-resource type="array" name="menu_blank" />
     <add-resource type="array" name="menu_file" />
     <add-resource type="array" name="menu_recycle" />
+    <add-resource type="array" name="menu_more" />
     <add-resource type="array" name="all_menu" />
 
     <array name="default_icon_name">
@@ -53,7 +54,14 @@
         <item>@string/open</item>
         <item>@string/clean_recycle</item>
     </array>
-    <array name="all_menu">
+
+    <array name="menu_more">
+        <item>@string/copy</item>
+        <item>@string/crop</item>
+        <item>@string/delete</item>
+    </array>
+
+   <array name="all_menu">
         <item>@string/open</item>
         <item>@string/about_computer</item>
         <item>@string/compress</item>

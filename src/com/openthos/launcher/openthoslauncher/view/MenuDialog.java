@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -101,6 +102,9 @@ public class MenuDialog extends Dialog {
                 break;
             case BLANK:
                 s = context.getResources().getStringArray(R.array.menu_blank);
+                break;
+             case MORE:
+                s = context.getResources().getStringArray(R.array.menu_more);
                 break;
         }
 
@@ -229,11 +233,13 @@ public class MenuDialog extends Dialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(Intent.EXTRA_CROP_FILE_HEADER + path);
+                                        .setText(Intent.EXTRA_CROP_FILE_HEADER +
+                                              path.replace("///", Intent.EXTRA_CROP_FILE_HEADER));
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(Intent.EXTRA_FILE_HEADER + path);
+                                        .setText(Intent.EXTRA_FILE_HEADER +
+                                              path.replace("///", Intent.EXTRA_FILE_HEADER));
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
                 Message paste = new Message();
@@ -308,4 +314,16 @@ public class MenuDialog extends Dialog {
             dismiss();
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+      MainActivity.mIsCtrlPress = event.isCtrlPressed();
+      return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+      MainActivity.mIsCtrlPress = event.isCtrlPressed();
+      return super.onKeyUp(keyCode, event);
+    }
 }

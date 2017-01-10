@@ -57,6 +57,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
+    public static boolean mIsCtrlPress;
     private int mHeightNum;
     private boolean mIsClicked = false;
     private boolean mIsRename = false;
@@ -459,34 +460,30 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        mIsCtrlPress = event.isCtrlPressed();
         return keyDealing(keyCode, event);
     }
 
     private boolean keyDealing(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
-            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.pos != -1) {
-                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-                if (type == Type.DIRECTORY || type == Type.FILE) {
+            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelData() != null) {
+                if (getSelPath(OtoConsts.DELETE) != null) {
                     Message deleteFile = new Message();
-                    deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
+                    deleteFile.obj = getSelPath(OtoConsts.DELETE);
                     deleteFile.what = OtoConsts.DELETE;
                     mHandler.sendMessage(deleteFile);
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.pos != -1) {
-                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-                if (type == Type.DIRECTORY || type == Type.FILE) {
+            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelData() != null) {
+                if (getSelPath(OtoConsts.CROP_PASTE) != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                                              .setText(Intent.EXTRA_CROP_FILE_HEADER
-                                                       + mDatas.get(mAdapter.pos).get("path"));
+                            .setText(getSelPath(OtoConsts.CROP_PASTE));
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.pos != -1) {
-                Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-                if (type == Type.DIRECTORY || type == Type.FILE) {
+            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelData() != null) {
+                if (getSelPath(OtoConsts.CROP_PASTE) != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                                              .setText(Intent.EXTRA_FILE_HEADER
-                                                       + mDatas.get(mAdapter.pos).get("path"));
+                            .setText(getSelPath(OtoConsts.COPY_PASTE));
                 }
             }
             if (keyCode == KeyEvent.KEYCODE_V) {
@@ -513,12 +510,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendMessage(paste);
             }
             return true;
-        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.pos != -1) {
-            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
-            if (type == Type.DIRECTORY || type == Type.FILE) {
+        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.getSelData() != null) {
+            if (getSelPath(OtoConsts.DELETE) != null) {
                 Message deleteFile = new Message();
-                deleteFile.obj = mDatas.get(mAdapter.pos).get("path");
-                if (event.isShiftPressed()){
+                deleteFile.obj = getSelPath(OtoConsts.DELETE);
+                if (event.isShiftPressed()) {
                     deleteFile.what = OtoConsts.DELETE_DIRECT;
                 } else {
                     deleteFile.what = OtoConsts.DELETE;
@@ -539,6 +535,46 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                       (Type) (mDatas.get(mAdapter.pos).get("type")));
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private String getSelPath(int copyType) {
+        StringBuffer buff = new StringBuffer();
+        if (mAdapter.getSelData() != null && mAdapter.getSelData().size() > 0) {
+            for (int i = 0; i < mAdapter.getSelData().size(); i++) {
+                Type type = (Type) (mDatas.get(mAdapter.getSelData().get(i)).get("type"));
+                if (type == Type.DIRECTORY || type == Type.FILE) {
+                    switch (copyType) {
+                        case OtoConsts.COPY_PASTE:
+                            buff.append(Intent.EXTRA_FILE_HEADER
+                                    + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                            break;
+                        case OtoConsts.CROP_PASTE:
+                            buff.append(Intent.EXTRA_CROP_FILE_HEADER
+                                    + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                            break;
+                        case OtoConsts.DELETE:
+                            if (i == 0) {
+                                buff.append(mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                            } else {
+                                buff.append("///"
+                                        + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return buff.toString();
+        }
+        return null;
+    }
+
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        mIsCtrlPress = event.isCtrlPressed();
+        return super.onKeyUp(keyCode, event);
     }
 
     private void showDialogForMoveToRecycle(String path) {
@@ -594,12 +630,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             @Override
             public void run() {
                 super.run();
-                DiskUtils.moveFile(mPath, OtoConsts.RECYCLE_PATH);
-                Message deleteRefreshFile = new Message();
-                deleteRefreshFile.obj = mPath;
-                deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
-                MainActivity.mHandler.sendMessage(deleteRefreshFile);
-            }
+                String[] split = mPath.split("///");
+                for(int i = 0; i < split.length; i++){
+                    DiskUtils.moveFile(split[i], OtoConsts.RECYCLE_PATH);
+                    Message deleteRefreshFile = new Message();
+                    deleteRefreshFile.obj = split[i];
+                    deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
+                    MainActivity.mHandler.sendMessage(deleteRefreshFile);
+                }
+           }
         }
     }
 
@@ -626,11 +665,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             @Override
             public void run() {
                 super.run();
-                DiskUtils.delete(new File(mPath));
-                Message deleteRefreshFile = new Message();
-                deleteRefreshFile.obj = mPath;
-                deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
-                MainActivity.mHandler.sendMessage(deleteRefreshFile);
+                String[] split = mPath.split("///");
+                for(int i = 0; i < split.length; i++){
+                    DiskUtils.delete(new File(split[i]));
+                    Message deleteRefreshFile = new Message();
+                    deleteRefreshFile.obj = split[i];
+                    deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
+                    MainActivity.mHandler.sendMessage(deleteRefreshFile);
+                }
             }
         }
     }
