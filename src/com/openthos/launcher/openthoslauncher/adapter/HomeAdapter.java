@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.view.Window;
@@ -306,10 +307,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     type = Type.MORE;
                     path = "";
                     for (int i = 0; i < selectData.size(); i++) {
-                        path = path + (String) data.get(selectData.get(i)).get("path");
-                        if (i + 1 < selectData.size()) {
-                            path = path + "///";
-                        }
+                        path = path + Intent.EXTRA_DELETE_FILE_HEADER +
+                                            (String) data.get(selectData.get(i)).get("path");
                     }
                     break;
             }

@@ -233,13 +233,13 @@ public class MenuDialog extends Dialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(Intent.EXTRA_CROP_FILE_HEADER +
-                                              path.replace("///", Intent.EXTRA_CROP_FILE_HEADER));
+                                        .setText(path.replace(Intent.EXTRA_DELETE_FILE_HEADER,
+                                                             Intent.EXTRA_CROP_FILE_HEADER));
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(Intent.EXTRA_FILE_HEADER +
-                                              path.replace("///", Intent.EXTRA_FILE_HEADER));
+                                        .setText(path.replace(Intent.EXTRA_DELETE_FILE_HEADER,
+                                                             Intent.EXTRA_FILE_HEADER));
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
                 Message paste = new Message();
