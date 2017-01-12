@@ -466,6 +466,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private boolean keyDealing(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
+            if (keyCode == KeyEvent.KEYCODE_A) {
+                mAdapter.getSelData().clear();
+                for (int i = 0; i< mDatas.size(); i++) {
+                    if (((Boolean) (mDatas.get(i).get("null"))) == false){
+                        HashMap map = mDatas.get(i);
+                        map.put("isChecked", true);
+                        mDatas.set(i, map);
+                        mAdapter.getSelData().add(i);
+                    }
+                }
+                mAdapter.setData(mDatas);
+                mAdapter.notifyDataSetChanged();
+            }
             if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelData() != null) {
                 String deletePath = getSelPath(OtoConsts.DELETE);
                 if (deletePath != null) {
