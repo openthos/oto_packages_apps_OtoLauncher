@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.view.Window;
+import android.text.Editable;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -56,10 +57,34 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private static final int LESS = 0;
     private static final int MORE = 1;
 
+    private int mIndex;
+    private Editable mEdit;
+    private HomeViewHolder mHolder;
+    public boolean mIsRenameFirst;
+
     public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
         this.data = data;
         this.mRecycleClick = click;
         selectData = new ArrayList<>();
+    }
+
+    public void notifyText(String commitText) {
+        if (mIsRenameFirst) {
+            mHolder.tv.setText(null);
+        }
+        mIndex = mHolder.tv.getSelectionStart();
+        mEdit = mHolder.tv.getText();
+        if (Intent.EXTRA_DESKTOP_ENTER.equals(commitText)) {
+            mHolder.tv.dispatchKeyEvent(
+                new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+        } else if (Intent.EXTRA_DESKTOP_BACK.equals(commitText)) {
+            if (mIndex > 0) {
+                mEdit.delete(mIndex - 1, mIndex);
+            }
+        } else {
+            mEdit.insert(mIndex, commitText);
+        }
+        mIsRenameFirst = false;
     }
 
     public void setData(List<HashMap<String, Object>> data) {
@@ -101,6 +126,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             holder.tv.setFocusable(true);
             holder.tv.setFocusableInTouchMode(true);
             holder.tv.requestFocus();
+            mHolder = holder;
         } else {
             holder.tv.setFocusable(false);
             holder.tv.clearFocus();
@@ -128,6 +154,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    mIsRenameFirst = false;
                     if (isRename == false) {
                         ctrlProcess(v,event);
                     }

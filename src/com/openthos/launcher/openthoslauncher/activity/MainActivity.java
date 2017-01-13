@@ -66,6 +66,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private CopyInfoDialog mCopyInfoDialog;
     private HashMap<String, Object> mBlankMap = new HashMap<>();
     private SdReceiver mSdReceiver;
+    private String mCommitText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
+                        mAdapter.mIsRenameFirst = true;
                         mAdapter.notifyDataSetChanged();
                         break;
                     case OtoConsts.PROPERTY:
@@ -207,12 +209,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                                                                                .setText("");
                         break;
-                    case OtoConsts.INTERCEPT_ONKEYDOWN:
-                        Bundle bundle = msg.getData();
-                        int keyCode = bundle.getInt(OtoConsts.INTERCEPT_ONKEYDOWN_KEYCODE);
-                        KeyEvent event = bundle.getParcelable(OtoConsts.INTERCEPT_ONKEYDOWN_KEYEVENT);
-                        keyDealing(keyCode, event);
-                        break;
                 }
             }
         };
@@ -222,6 +218,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         intentFilter.addAction(Intent.ACTION_DESKTOP_DELETE_FILE);
         intentFilter.addAction(Intent.ACTION_DESKTOP_FOCUSED_STATE);
         intentFilter.addAction(Intent.ACTION_DESKTOP_UNFOCUSED_STATE);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_INTERCEPT);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_COMMIT_TEXT);
         registerReceiver(mSdReceiver, intentFilter);
     }
 
@@ -830,12 +828,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.DELETE_REFRESH, path));
                     break;
-                //case Intent.ACTION_DESKTOP_FOCUSED_STATE:
-                //    Settings.Secure.putString(MainActivity.this.getContentResolver(),
-                //                              Settings.Secure.DEFAULT_INPUT_METHOD,
-                //                              OtoConsts.DESKTOP_INPUT);
-                //    break;
-                case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
+                case Intent.ACTION_DESKTOP_INTERCEPT:
+                    Bundle bundle = intent.getParcelableExtra(Intent.EXTRA_DESKTOP_BUNDLE);
+                    int keyCode = bundle.getInt(Intent.EXTRA_DESKTOP_KEYCODE);
+                    KeyEvent event = bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT);
+                    boolean isKeyDown = bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN);
+                    if (isKeyDown) {
+                        keyDealing(keyCode, event);
+                    } else {
+                        mIsCtrlPress = event.isCtrlPressed();
+                    }
+                    break;
+                case Intent.ACTION_DESKTOP_COMMIT_TEXT:
+                    mCommitText = intent.getStringExtra(Intent.EXTRA_DESKTOP_RESULTTEXT);
+                    if (mAdapter.isRename) {
+                        mAdapter.notifyText(mCommitText);
+                    }
                     break;
             }
         }
