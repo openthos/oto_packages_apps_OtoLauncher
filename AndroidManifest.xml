@@ -265,5 +265,13 @@
 
         <meta-data android:name="android.nfc.disable_beam_default"
                        android:value="true" />
+        <service
+            android:name="com.openthos.launcher.openthoslauncher.activity.InputIME"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/method" />
+        </service>
     </application>
 </manifest>
