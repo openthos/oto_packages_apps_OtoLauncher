@@ -2203,11 +2203,12 @@ public class Launcher extends Activity
     public boolean startSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
-            //return mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData,
-            //        sourceBounds);
+            return mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData,
+                    sourceBounds);
         }
 
-        //startGlobalSearch(initialQuery, selectInitialQuery, appSearchData, sourceBounds);
+        startGlobalSearch(initialQuery, selectInitialQuery,
+                appSearchData, sourceBounds);
         return false;
     }
 
