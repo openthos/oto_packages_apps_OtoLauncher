@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.view.Window;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +75,28 @@ public class OperateUtils {
                 break;
         }
         openAppBroadcast(context);
+    }
+
+    public static void exec(String[] commands) {
+        Process pro;
+        BufferedReader in = null;
+        try {
+            pro = Runtime.getRuntime().exec(commands);
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                continue;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

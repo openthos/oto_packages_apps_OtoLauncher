@@ -71,6 +71,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOtoContentView(R.layout.activity_main);
+        File f = new File("/data/create/biao.xls");
+        if (!f.exists()) {
+            OperateUtils.exec(new String[]{"tar", "xvf", "/system/create.tar.gz", "-C", "/data"});
+            OperateUtils.exec(new String[]{"su", "-c", "chmod -R 777 /data/create"});
+        }
         mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
         mDatas = new ArrayList<>();
         mSumNum = getNum();
@@ -269,34 +274,45 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         file = new File(root, getResources().getString(R.string.new_folder) + j);
                     }
                     if (!file.exists()) {
-                        try {
-                            if (type == Type.FILE) {
-                                file.createNewFile();
-                            } else if (type == Type.DIRECTORY) {
-                                file.mkdir();
-                            }
-                            HashMap<String, Object> map = new HashMap<>();
-                            map.put("name", file.getName());
-                            map.put("path", file.getAbsolutePath());
-                            map.put("isChecked", false);
-                            map.put("null", false);
-                            if (type == Type.FILE) {
-                                map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath(),
-                                                                      this));
-                                map.put("type", Type.FILE);
-                            } else if (type == Type.DIRECTORY) {
-                                map.put("icon", getResources().getDrawable(
-                                                                    R.drawable.ic_directory));
-                                map.put("type", Type.DIRECTORY);
-                            }
-                            mDatas.set(i, map);
-                            return;
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (type == Type.FILE) {
+                            copyBaseFile(file, suffix);
+                        } else if (type == Type.DIRECTORY) {
+                            file.mkdir();
                         }
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("name", file.getName());
+                        map.put("path", file.getAbsolutePath());
+                        map.put("isChecked", false);
+                        map.put("null", false);
+                        if (type == Type.FILE) {
+                            map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath(), this));
+                            map.put("type", Type.FILE);
+                        } else if (type == Type.DIRECTORY) {
+                            map.put("icon", getResources().getDrawable(
+                                                                R.drawable.ic_directory));
+                            map.put("type", Type.DIRECTORY);
+                        }
+                        mDatas.set(i, map);
+                        return;
                     }
                 }
             }
+        }
+    }
+
+    private void copyBaseFile(File file, String end) {
+        if (getResources().getString(R.string.launcher_txt).equals(end)) {
+            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/ben.txt",
+                                           file.getAbsolutePath()});
+        } else if (getResources().getString(R.string.launcher_doc).equals(end)) {
+            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/wen.doc",
+                                           file.getAbsolutePath()});
+        } else if (getResources().getString(R.string.launcher_xls).equals(end)) {
+            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/biao.xls",
+                                           file.getAbsolutePath()});
+        } else {
+            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/yan.ppt",
+                                           file.getAbsolutePath()});
         }
     }
 
