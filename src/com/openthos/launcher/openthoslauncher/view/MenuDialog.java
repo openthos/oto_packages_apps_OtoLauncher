@@ -233,13 +233,15 @@ public class MenuDialog extends Dialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(path.replace(Intent.EXTRA_DELETE_FILE_HEADER,
-                                                             Intent.EXTRA_CROP_FILE_HEADER));
+                    .setText(path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
+                        path.replace(Intent.EXTRA_DELETE_FILE_HEADER, Intent.EXTRA_CROP_FILE_HEADER)
+                            : Intent.EXTRA_CROP_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                                        .setText(path.replace(Intent.EXTRA_DELETE_FILE_HEADER,
-                                                             Intent.EXTRA_FILE_HEADER));
+                    .setText(path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
+                        path.replace(Intent.EXTRA_DELETE_FILE_HEADER, Intent.EXTRA_FILE_HEADER)
+                            : Intent.EXTRA_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
                 Message paste = new Message();
@@ -281,7 +283,8 @@ public class MenuDialog extends Dialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_DELETE])) {
                 //delete
                 Message deleteFile = new Message();
-                deleteFile.obj = path;
+                deleteFile.obj = path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
+                                     path : Intent.EXTRA_DELETE_FILE_HEADER + path;
                 deleteFile.what = OtoConsts.DELETE;
                 MainActivity.mHandler.sendMessage(deleteFile);
             } else if (text.equals(all_menu[OtoConsts.INDEX_RENAME])) {
