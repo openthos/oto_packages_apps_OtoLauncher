@@ -477,7 +477,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mIsCtrlPress = event.isCtrlPressed();
-        return keyDealing(keyCode, event);
+        if (!mAdapter.isRename) {
+           return keyDealing(keyCode, event);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private boolean keyDealing(int keyCode, KeyEvent event) {
