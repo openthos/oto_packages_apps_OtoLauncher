@@ -210,7 +210,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 }
                                 if (!isSelect) {
                                     pos = getAdapterPosition();
-                                    addSelData(getAdapterPosition());
+                                    addSelectData(getAdapterPosition());
                                     data.get(getAdapterPosition()).put("isChecked", true);
                                 }
                             }
@@ -225,7 +225,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             } else {
                                 selectCurrent(getAdapterPosition());
                                 selectData.clear();
-                                addSelData(getAdapterPosition());
+                                addSelectData(getAdapterPosition());
                                 pos = getAdapterPosition();
                             }
                         }
@@ -248,7 +248,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 showDialog(event, LESS);
             } else {
                 pos = getAdapterPosition();
-                addSelData(getAdapterPosition());
+                selectData.clear();
+                addSelectData(getAdapterPosition());
                 selectCurrent(getAdapterPosition());
                 showDialog(event, LESS);
             }
@@ -288,7 +289,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 } else {
                     pos = getAdapterPosition();
                     selectData.clear();
-                    addSelData(getAdapterPosition());
+                    addSelectData(getAdapterPosition());
                     selectCurrent(getAdapterPosition());
                     showDialog(event, LESS);
                 }
@@ -329,14 +330,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 }
             }
         }
+    }
 
-        public void addSelData(int pos){
-            Type type = (Type)data.get(pos).get("type");
-            if (type != Type.COMPUTER && type !=Type.RECYCLE) {
-                selectData.add(pos);
-            }
+    public void addSelectData(int pos){
+        Type type = (Type)data.get(pos).get("type");
+        if (type != Type.COMPUTER && type !=Type.RECYCLE) {
+            selectData.add(pos);
         }
     }
+
 
     public static void openAppBroadcast(Context context) {
         Intent openAppIntent = new Intent();
@@ -344,7 +346,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         context.sendBroadcast(openAppIntent);
     }
 
-    public List<Integer> getSelData() {
+    public List<Integer> getSelectData() {
         return selectData;
     }
 

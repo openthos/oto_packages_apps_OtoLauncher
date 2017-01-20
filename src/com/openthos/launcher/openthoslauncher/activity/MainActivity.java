@@ -486,19 +486,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean keyDealing(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
             if (keyCode == KeyEvent.KEYCODE_A) {
-                mAdapter.getSelData().clear();
+                mAdapter.getSelectData().clear();
                 for (int i = 0; i< mDatas.size(); i++) {
                     if (((Boolean) (mDatas.get(i).get("null"))) == false){
                         HashMap map = mDatas.get(i);
                         map.put("isChecked", true);
                         mDatas.set(i, map);
-                        mAdapter.getSelData().add(i);
+                        mAdapter.addSelectData(i);
                     }
                 }
                 mAdapter.setData(mDatas);
                 mAdapter.notifyDataSetChanged();
             }
-            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectData() != null) {
                 String deletePath = getSelPath(OtoConsts.DELETE);
                 if (deletePath != null) {
                     Message deleteFile = new Message();
@@ -507,14 +507,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mHandler.sendMessage(deleteFile);
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectData() != null) {
                 String cropPath = getSelPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(cropPath);
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectData() != null) {
                 String copyPath = getSelPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
@@ -545,7 +545,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendMessage(paste);
             }
             return true;
-        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.getSelData() != null) {
+        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.getSelectData() != null) {
             String deletePath = getSelPath(OtoConsts.DELETE);
             if (deletePath != null) {
                 Message deleteFile = new Message();
@@ -575,22 +575,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private String getSelPath(int copyType) {
         StringBuffer buff = new StringBuffer();
-        if (mAdapter.getSelData() != null && mAdapter.getSelData().size() > 0) {
-            for (int i = 0; i < mAdapter.getSelData().size(); i++) {
-                Type type = (Type) (mDatas.get(mAdapter.getSelData().get(i)).get("type"));
+        if (mAdapter.getSelectData() != null && mAdapter.getSelectData().size() > 0) {
+            for (int i = 0; i < mAdapter.getSelectData().size(); i++) {
+                Type type = (Type) (mDatas.get(mAdapter.getSelectData().get(i)).get("type"));
                 if (type == Type.DIRECTORY || type == Type.FILE) {
                     switch (copyType) {
                         case OtoConsts.COPY_PASTE:
                             buff.append(Intent.EXTRA_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
                             break;
                         case OtoConsts.CROP_PASTE:
                             buff.append(Intent.EXTRA_CROP_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
                             break;
                         case OtoConsts.DELETE:
                             buff.append(Intent.EXTRA_DELETE_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelData().get(i)).get("path"));
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
                             break;
                         default:
                             break;
