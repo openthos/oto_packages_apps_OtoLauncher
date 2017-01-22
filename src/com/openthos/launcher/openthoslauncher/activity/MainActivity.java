@@ -19,6 +19,8 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -611,7 +613,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void showDialogForMoveToRecycle(String path) {
         MoveToRecycleClickListener listener = new MoveToRecycleClickListener(path);
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
              .setNegativeButton(getResources().getString(
@@ -621,12 +623,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                      public void onClick(DialogInterface dialog, int which) {
                          dialog.cancel();
                      }
-                 }).show();
+                 }).create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
     }
 
     private void showDialogForDirectDelete(String path) {
         DirectDeleteClickListener listener = new DirectDeleteClickListener(path);
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_direct_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
              .setNegativeButton(getResources().getString(
@@ -636,7 +640,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                      public void onClick(DialogInterface dialog, int which) {
                          dialog.cancel();
                      }
-                 }).show();
+                 }).create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
     }
 
     private class MoveToRecycleClickListener implements OnClickListener {
@@ -714,7 +720,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         for (String s : files) {
             for (HashMap map : mDatas) {
                 if (map.get("name").equals(s)) {
-                    new AlertDialog.Builder(this)
+                    AlertDialog dialog = new AlertDialog.Builder(this)
                          .setMessage(String.format(getResources().getString(
                                                             R.string.dialog_decompress_text), s))
                          .setPositiveButton(getResources().getString(R.string.dialog_delete_yes),
@@ -730,7 +736,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                  public void onClick(DialogInterface dialog, int which) {
                                      dialog.cancel();
                                  }
-                             }).show();
+                             }).create();
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    dialog.show();
                     return;
                 }
             }
