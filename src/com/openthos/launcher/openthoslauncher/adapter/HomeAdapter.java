@@ -31,6 +31,7 @@ import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
+import com.openthos.launcher.openthoslauncher.entity.IconEntity;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
 import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
 
@@ -43,7 +44,7 @@ import java.util.ArrayList;
  * Created by xu on 2016/8/8.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
-    private List<HashMap<String, Object>> data;
+    private List<IconEntity> data;
     private List<Integer> selectData;
     private RecycleCallBack mRecycleClick;
 
@@ -56,13 +57,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private static final int LESS = 0;
     private static final int MORE = 1;
 
-    public HomeAdapter(List<HashMap<String, Object>> data, RecycleCallBack click) {
+    public HomeAdapter(List<IconEntity> data, RecycleCallBack click) {
         this.data = data;
         this.mRecycleClick = click;
         selectData = new ArrayList<>();
     }
 
-    public void setData(List<HashMap<String, Object>> data) {
+    public void setData(List<IconEntity> data) {
         this.data = data;
     }
 
@@ -81,19 +82,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
-        holder.tv.setText(data.get(position).get("name").toString());
-        if ((Boolean) data.get(position).get("isChecked")) {
+        holder.tv.setText(data.get(position).getName());
+        if (data.get(position).isChecked()) {
             holder.item.setBackgroundResource(R.drawable.icon_background);
-        } else if (!(Boolean) data.get(position).get("isChecked")) {
+        } else if (!data.get(position).isChecked()) {
             holder.item.setBackgroundResource(R.drawable.icon_background_trans);
         }
-        if ((Boolean) data.get(position).get("null")) {
+        if (data.get(position).isBlank()) {
             holder.nullnull.setChecked(true);
-        } else if (!(Boolean) data.get(position).get("null")) {
+        } else if (!data.get(position).isBlank()) {
             holder.nullnull.setChecked(false);
         }
-        if ((Drawable) data.get(position).get("icon") != null) {
-            holder.iv.setImageDrawable((Drawable) data.get(position).get("icon"));
+        if (data.get(position).getIcon() != null) {
+            holder.iv.setImageDrawable(data.get(position).getIcon());
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }
@@ -190,19 +191,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     break;
                             }
                         }
-                    } else if (!(Boolean) data.get(getAdapterPosition()).get("null")) {
+                    } else if (!data.get(getAdapterPosition()).isBlank()) {
                         if (MainActivity.mIsCtrlPress) {
-                            Type type = (Type) data.get(getAdapterPosition()).get("type");
+                            Type type = data.get(getAdapterPosition()).getType();
                             if (type == Type.COMPUTER || type == Type.RECYCLE) {
-                                boolean isChecked = (boolean) data.get(getAdapterPosition())
-                                                                                 .get("isChecked");
-                                data.get(getAdapterPosition()).put("isChecked", !isChecked);
+                                boolean isChecked = data.get(getAdapterPosition()).isChecked();
+                                data.get(getAdapterPosition()).setIsChecked(!isChecked);
                             } else {
                                 boolean isSelect = false;
                                 for (int i = 0; i < selectData.size(); i++) {
                                     if (selectData.get(i) == getAdapterPosition()) {
                                         isSelect = true;
-                                        data.get(selectData.get(i)).put("isChecked", false);
+                                        data.get(selectData.get(i)).setIsChecked(false);
                                         pos = -1;
                                         selectData.remove(i);
                                         break;
@@ -211,7 +211,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 if (!isSelect) {
                                     pos = getAdapterPosition();
                                     addSelectData(getAdapterPosition());
-                                    data.get(getAdapterPosition()).put("isChecked", true);
+                                    data.get(getAdapterPosition()).setIsChecked(true);
                                 }
                             }
                         } else {
@@ -220,8 +220,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
                                     && pos == getAdapterPosition()) {
                                 OperateUtils.enter(item.getContext(),
-                                                (String) data.get(getAdapterPosition()).get("path"),
-                                                (Type) data.get(getAdapterPosition()).get("type"));
+                                                 data.get(getAdapterPosition()).getPath(),
+                                                 data.get(getAdapterPosition()).getType());
                             } else {
                                 selectCurrent(getAdapterPosition());
                                 selectData.clear();
@@ -241,7 +241,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
 
         private void selectLess(MotionEvent event) {
-            if ((boolean) data.get(getAdapterPosition()).get("null")) {
+            if (data.get(getAdapterPosition()).isBlank()) {
                 pos = -1;
                 selectData.clear();
                 selectCurrent(-1);
@@ -257,7 +257,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
 
         private void selectMore(MotionEvent event) {
-            if ((boolean) data.get(getAdapterPosition()).get("null")) {
+            if (data.get(getAdapterPosition()).isBlank()) {
                 pos = -1;
                 selectData.clear();
                 selectCurrent(-1);
@@ -271,7 +271,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     }
                 }
                 if (isSelect) {
-                    Type type = (Type) data.get(getAdapterPosition()).get("type");
+                    Type type = data.get(getAdapterPosition()).getType();
                     if (type == Type.COMPUTER || type == Type.RECYCLE) {
                         pos = getAdapterPosition();
                         selectCurrent(getAdapterPosition());
@@ -279,9 +279,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         showDialog(event, LESS);
                     } else {
                         for (int i = 0; i < selectData.size(); i++) {
-                            Type types = (Type) data.get(i).get("type");
+                            Type types = data.get(i).getType();
                             if (types == Type.COMPUTER || types == Type.RECYCLE) {
-                                data.get(i).put("isChecked", false);
+                                data.get(i).setIsChecked(false);
                             }
                         }
                         showDialog(event, MORE);
@@ -302,15 +302,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             String path = null;
             switch (num) {
                 case LESS:
-                    type = (Type) data.get(getAdapterPosition()).get("type");
-                    path = (String) data.get(getAdapterPosition()).get("path");
+                    type = data.get(getAdapterPosition()).getType();
+                    path = data.get(getAdapterPosition()).getPath();
                     break;
                 case MORE:
                     type = Type.MORE;
                     path = "";
                     for (int i = 0; i < selectData.size(); i++) {
                         path = path + Intent.EXTRA_DELETE_FILE_HEADER +
-                                            (String) data.get(selectData.get(i)).get("path");
+                                            data.get(selectData.get(i)).getPath();
                     }
                     break;
             }
@@ -323,17 +323,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (data != null && data.size() > 0) {
                 for (int i = 0; i < data.size(); i++) {
                     if (current == i) {
-                        data.get(i).put("isChecked", true);
+                        data.get(i).setIsChecked(true);
                         continue;
                     }
-                    data.get(i).put("isChecked", false);
+                    data.get(i).setIsChecked(false);
                 }
             }
         }
     }
 
     public void addSelectData(int pos){
-        Type type = (Type)data.get(pos).get("type");
+        Type type = data.get(pos).getType();
         if (type != Type.COMPUTER && type !=Type.RECYCLE) {
             selectData.add(pos);
         }
@@ -356,20 +356,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && v.hasFocus()) {
-                HashMap current = data.get(pos);
-                String path = (String)current.get("path");
-                String newName = String.valueOf(((EditText)v).getText());
+                IconEntity icon = data.get(pos);
+                String path = icon.getPath();
+                String newName = String.valueOf(((EditText) v).getText());
                 File oldFile = new File(path);
                 File newFile = new File(oldFile.getParent(), newName);
                 oldFile.renameTo(newFile);
-                current.put("name", newName);
-                current.put("path", newFile.getAbsolutePath());
-                data.set(pos,current);
+                icon.setName(newName);
+                icon.setPath(newFile.getAbsolutePath());
+                data.set(pos, icon);
                 notifyDataSetChanged();
-                HashMap mCurrent = ((MainActivity)mRecycleClick).mDatas.get(pos);
-                mCurrent.put("name", newName);
-                mCurrent.put("path", newFile.getAbsolutePath());
-                ((MainActivity)mRecycleClick).mDatas.set(pos, mCurrent);
+                IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(pos);
+                mIcon.setName(newName);
+                mIcon.setPath(newFile.getAbsolutePath());
+                ((MainActivity)mRecycleClick).mDatas.set(pos, mIcon);
                 v.setFocusable(false);
                 v.clearFocus();
                 isRename = false;

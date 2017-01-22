@@ -28,6 +28,7 @@ import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
 import com.openthos.launcher.openthoslauncher.adapter.ItemCallBack;
 import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
 import com.openthos.launcher.openthoslauncher.entity.Type;
+import com.openthos.launcher.openthoslauncher.entity.IconEntity;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
@@ -55,7 +56,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends Launcher implements RecycleCallBack {
     private RecyclerView mRecyclerView;
-    public List<HashMap<String, Object>> mDatas;
+    public List<IconEntity> mDatas;
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
@@ -66,7 +67,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private SharedPreferences mSp;
     private int mSumNum;
     private CopyInfoDialog mCopyInfoDialog;
-    private HashMap<String, Object> mBlankMap = new HashMap<>();
+    private IconEntity mBlankIcon = new IconEntity();
     private SdReceiver mSdReceiver;
 
     @Override
@@ -81,12 +82,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
         mDatas = new ArrayList<>();
         mSumNum = getNum();
-        mBlankMap.put("name", "");
-        mBlankMap.put("isChecked", false);
-        mBlankMap.put("icon", null);
-        mBlankMap.put("null", true);
-        mBlankMap.put("path", "");
-        mBlankMap.put("type", Type.BLANK);
+        mBlankIcon.setName("");
+        mBlankIcon.setIsChecked(false);
+        mBlankIcon.setIcon(null);
+        mBlankIcon.setIsBlank(true);
+        mBlankIcon.setPath("");
+        mBlankIcon.setType(Type.BLANK);
         if (savedInstanceState != null) {
             try {
                 mDatas = stringToData(savedInstanceState.getString(OtoConsts.DESKTOP_DATA));
@@ -112,8 +113,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.DELETE_REFRESH:
                         inner:
                         for (int i = 0; i < mDatas.size(); i++) {
-                            if ((mDatas.get(i).get("path")).equals(msg.obj)) {
-                                mDatas.set(i, mBlankMap);
+                            if ((mDatas.get(i).getPath()).equals(msg.obj)) {
+                                mDatas.set(i, mBlankIcon);
                                 break inner;
                             }
                         }
@@ -139,27 +140,27 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             return;
                         }
                         for (int i = 1; i < mDatas.size(); i++) {
-                            if ((mDatas.get(i).get("path")).equals(showFile.getAbsolutePath())) {
+                            if ((mDatas.get(i).getPath()).equals(showFile.getAbsolutePath())) {
                                 return;
                             }
                         }
                         for (int i = 1; i < mDatas.size(); i++) {
-                            if ((mDatas.get(i).get("path")).equals("")) {
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("name", showFile.getName());
-                                map.put("path", showFile.getAbsolutePath());
-                                map.put("isChecked", false);
-                                map.put("null", false);
+                            if ((mDatas.get(i).getPath()).equals("")) {
+                                IconEntity icon = new IconEntity();
+                                icon.setName(showFile.getName());
+                                icon.setPath(showFile.getAbsolutePath());
+                                icon.setIsChecked(false);
+                                icon.setIsBlank(false);
                                 if (showFile.isDirectory()) {
-                                    map.put("icon", MainActivity.this
+                                    icon.setIcon(MainActivity.this
                                              .getResources().getDrawable(R.drawable.ic_directory));
-                                    map.put("type", Type.DIRECTORY);
+                                    icon.setType(Type.DIRECTORY);
                                 } else {
-                                    map.put("icon", FileUtils.getFileIcon(
+                                    icon.setIcon(FileUtils.getFileIcon(
                                                    showFile.getAbsolutePath(), MainActivity.this));
-                                    map.put("type", Type.FILE);
+                                    icon.setType(Type.FILE);
                                 }
-                                mDatas.set(i, map);
+                                mDatas.set(i, icon);
                                 break;
                             }
                         }
@@ -250,11 +251,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                for (int i = 1; i < srcCropPaths.length; i++) {
                    DiskUtils.moveFile(srcCropPaths[i].replace(Intent.EXTRA_CROP_FILE_HEADER, ""),
                                       OtoConsts.DESKTOP_PATH);
-//               DiskUtils.moveFile(mPath, OtoConsts.DESKTOP_PATH);
                }
            } else {
                String[] srcCopyPaths = mPath.split(Intent.EXTRA_FILE_HEADER);
-//               DiskUtils.copyFile(mPath, OtoConsts.DESKTOP_PATH);
                for (int i = 1; i < srcCopyPaths.length; i++) {
                    DiskUtils.copyFile(srcCopyPaths[i].replace(Intent.EXTRA_FILE_HEADER, ""),
                                       OtoConsts.DESKTOP_PATH);
@@ -265,7 +264,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void createNewFileOrFolder(Type type, String suffix) {
         for (int i = 1; i < mDatas.size(); i++) {
-            if ((mDatas.get(i).get("path")).equals("")) {
+            if ((mDatas.get(i).getPath()).equals("")) {
                 File root = new File(OtoConsts.DESKTOP_PATH);
                 for (int j = 1; ; j++) {
                     File file = null;
@@ -281,20 +280,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         } else if (type == Type.DIRECTORY) {
                             file.mkdir();
                         }
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("name", file.getName());
-                        map.put("path", file.getAbsolutePath());
-                        map.put("isChecked", false);
-                        map.put("null", false);
+                        IconEntity icon = new IconEntity();
+                        icon.setName(file.getName());
+                        icon.setPath(file.getAbsolutePath());
+                        icon.setIsChecked(false);
+                        icon.setIsBlank(false);
                         if (type == Type.FILE) {
-                            map.put("icon", FileUtils.getFileIcon(file.getAbsolutePath(), this));
-                            map.put("type", Type.FILE);
+                            icon.setIcon(FileUtils.getFileIcon(file.getAbsolutePath(), this));
+                            icon.setType(Type.FILE);
                         } else if (type == Type.DIRECTORY) {
-                            map.put("icon", getResources().getDrawable(
-                                                                R.drawable.ic_directory));
-                            map.put("type", Type.DIRECTORY);
+                            icon.setIcon(getResources().getDrawable(R.drawable.ic_directory));
+                            icon.setType(Type.DIRECTORY);
                         }
-                        mDatas.set(i, map);
+                        mDatas.set(i, icon);
                         return;
                     }
                 }
@@ -342,18 +340,18 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
         Type[] defaultTypes = {Type.COMPUTER, Type.RECYCLE};
         for (int i = 0; i < defaultNames.length; i++) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("name", defaultNames[i]);
-            map.put("path", defaultPaths[i]);
-            map.put("isChecked", false);
-            map.put("null", false);
-            map.put("icon", getResources().getDrawable(
+            IconEntity icon = new IconEntity();
+            icon.setName(defaultNames[i]);
+            icon.setPath(defaultPaths[i]);
+            icon.setIsChecked(false);
+            icon.setIsBlank(false);
+            icon.setIcon(getResources().getDrawable(
                                            defaultIcons.getResourceId(i, R.mipmap.ic_launcher)));
-            map.put("type", defaultTypes[i]);
-            mDatas.add(map);
+            icon.setType(defaultTypes[i]);
+            mDatas.add(icon);
         }
         //desktop icon
-        List<HashMap<String, Object>> userDatas = new ArrayList<>();
+        List<IconEntity> userDatas = new ArrayList<>();
         File dir = new File(OtoConsts.DESKTOP_PATH);
         if (!dir.exists()) {
             dir.mkdir();
@@ -361,36 +359,35 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         File[] files = dir.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
-                HashMap<String, Object> map = new HashMap<>();
+                IconEntity icon = new IconEntity();
                 if (files[i].isDirectory()) {
-                    map.put("icon", getResources().getDrawable(R.drawable.ic_directory));
-                    map.put("type", Type.DIRECTORY);
+                    icon.setIcon(getResources().getDrawable(R.drawable.ic_directory));
+                    icon.setType(Type.DIRECTORY);
                 } else {
-                    map.put("icon", FileUtils.getFileIcon(files[i].getAbsolutePath(), this));
-                    map.put("type", Type.FILE);
+                    icon.setIcon(FileUtils.getFileIcon(files[i].getAbsolutePath(), this));
+                    icon.setType(Type.FILE);
                 }
-                map.put("name", files[i].getName());
-                map.put("path", files[i].getAbsolutePath());
-                map.put("isChecked", false);
-                map.put("null", false);
+                icon.setName(files[i].getName());
+                icon.setPath(files[i].getAbsolutePath());
+                icon.setIsChecked(false);
+                icon.setIsBlank(false);
                 if (userDatas.size() < (mSumNum - mDatas.size())) {
-                    userDatas.add(map);
+                    userDatas.add(icon);
                 }
             }
         }
-        Collections.sort(userDatas, new Comparator<HashMap<String, Object>>() {
+        Collections.sort(userDatas, new Comparator<IconEntity>() {
 
             @Override
-            public int compare(HashMap<String, Object> object,
-                               HashMap<String, Object> anotherObject) {
-                String anotherObjectName = (String) anotherObject.get("name");
-                String objectName = (String) object.get("name");
+            public int compare(IconEntity object, IconEntity anotherObject) {
+                String anotherObjectName =  anotherObject.getName();
+                String objectName = object.getName();
                 return objectName.compareTo(anotherObjectName);
             }
         });
         mDatas.addAll(userDatas);
         while (mDatas.size() < mSumNum) {
-            mDatas.add(mBlankMap);
+            mDatas.add(mBlankIcon);
         }
     }
 
@@ -427,7 +424,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                     }
                     if (!mIsClicked && mAdapter.pos != -1) {
-                        mDatas.get(mAdapter.pos).put("isChecked", false);
+                        mDatas.get(mAdapter.pos).setIsChecked(false);
                         mAdapter.pos = -1;
                         mAdapter.notifyDataSetChanged();
                     }
@@ -452,7 +449,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     @Override
     public void onMove(int from, int to) {
-        if (!(Boolean) mDatas.get(from).get("null")) {
+        if (!mDatas.get(from).isBlank()) {
             if (to > 0 && from > 0) {
                 synchronized (this) {
                     if (from > to) {
@@ -490,10 +487,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             if (keyCode == KeyEvent.KEYCODE_A) {
                 mAdapter.getSelectData().clear();
                 for (int i = 0; i< mDatas.size(); i++) {
-                    if (((Boolean) (mDatas.get(i).get("null"))) == false){
-                        HashMap map = mDatas.get(i);
-                        map.put("isChecked", true);
-                        mDatas.set(i, map);
+                    if (mDatas.get(i).isBlank() == false){
+                        IconEntity icon = mDatas.get(i);
+                        icon.setIsChecked(true);
+                        mDatas.set(i, icon);
                         mAdapter.addSelectData(i);
                     }
                 }
@@ -501,7 +498,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mAdapter.notifyDataSetChanged();
             }
             if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectData() != null) {
-                String deletePath = getSelPath(OtoConsts.DELETE);
+                String deletePath = getSelectedPath(OtoConsts.DELETE);
                 if (deletePath != null) {
                     Message deleteFile = new Message();
                     deleteFile.obj = deletePath;
@@ -510,14 +507,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
             if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectData() != null) {
-                String cropPath = getSelPath(OtoConsts.CROP_PASTE);
+                String cropPath = getSelectedPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(cropPath);
                 }
             }
             if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectData() != null) {
-                String copyPath = getSelPath(OtoConsts.COPY_PASTE);
+                String copyPath = getSelectedPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(copyPath);
@@ -538,17 +535,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 Message paste = new Message();
                 if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
-//                    paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
                 } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
                     paste.what = OtoConsts.CROP_PASTE;
-//                    paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
                 }
                 paste.obj = sourcePath;
                 mHandler.sendMessage(paste);
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.getSelectData() != null) {
-            String deletePath = getSelPath(OtoConsts.DELETE);
+            String deletePath = getSelectedPath(OtoConsts.DELETE);
             if (deletePath != null) {
                 Message deleteFile = new Message();
                 deleteFile.obj = deletePath;
@@ -563,38 +558,36 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } else if (keyCode == KeyEvent.KEYCODE_F5) {
             mHandler.sendEmptyMessage(OtoConsts.SORT);
         } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.pos != -1) {
-            Type type = (Type) (mDatas.get(mAdapter.pos).get("type"));
+            Type type = mDatas.get(mAdapter.pos).getType();
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
         } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                                                                             && mAdapter.pos != -1) {
-            OperateUtils.enter(this, (String) (mDatas.get(mAdapter.pos).get("path")),
-                                      (Type) (mDatas.get(mAdapter.pos).get("type")));
+            OperateUtils.enter(this, mDatas.get(mAdapter.pos).getPath(),
+                                     mDatas.get(mAdapter.pos).getType());
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private String getSelPath(int copyType) {
+    private String getSelectedPath(int copyType) {
         StringBuffer buff = new StringBuffer();
         if (mAdapter.getSelectData() != null && mAdapter.getSelectData().size() > 0) {
             for (int i = 0; i < mAdapter.getSelectData().size(); i++) {
-                Type type = (Type) (mDatas.get(mAdapter.getSelectData().get(i)).get("type"));
+                Type type = mDatas.get(mAdapter.getSelectData().get(i)).getType();
                 if (type == Type.DIRECTORY || type == Type.FILE) {
                     switch (copyType) {
                         case OtoConsts.COPY_PASTE:
                             buff.append(Intent.EXTRA_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
                             break;
                         case OtoConsts.CROP_PASTE:
                             buff.append(Intent.EXTRA_CROP_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
                             break;
                         case OtoConsts.DELETE:
                             buff.append(Intent.EXTRA_DELETE_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).get("path"));
-                            break;
-                        default:
+                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
                             break;
                     }
                 }
@@ -616,8 +609,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         AlertDialog dialog = new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
-             .setNegativeButton(getResources().getString(
-                                                  R.string.dialog_delete_no),
+             .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
                  new android.content.DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which) {
@@ -633,8 +625,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         AlertDialog dialog = new AlertDialog.Builder(this)
              .setMessage(getResources().getString(R.string.dialog_direct_delete_text))
              .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
-             .setNegativeButton(getResources().getString(
-                                                  R.string.dialog_delete_no),
+             .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
                  new android.content.DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which) {
@@ -718,8 +709,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private void showDialogForDecompress(final String path) {
         String[] files = DiskUtils.list(path);
         for (String s : files) {
-            for (HashMap map : mDatas) {
-                if (map.get("name").equals(s)) {
+            for (IconEntity icon : mDatas) {
+                if (icon.getName().equals(s)) {
                     AlertDialog dialog = new AlertDialog.Builder(this)
                          .setMessage(String.format(getResources().getString(
                                                             R.string.dialog_decompress_text), s))
@@ -771,61 +762,61 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         StringBuffer sb = new StringBuffer();
         sb.append("[");
         boolean first = true;
-        for (HashMap map : mDatas) {
+        for (IconEntity icon : mDatas) {
             if (!first){
                 sb.append(",");
             } else {
                 first = false;
             }
             sb.append("{\"type\":\"");
-            sb.append(map.get("type"));
+            sb.append(icon.getType());
             sb.append("\",\"name\":\"");
-            sb.append(map.get("name"));
+            sb.append(icon.getName());
             sb.append("\",\"path\":\"");
-            sb.append(map.get("path"));
+            sb.append(icon.getPath());
             sb.append("\"}");
         }
         sb.append("]");
         return sb.toString();
     }
 
-    private ArrayList<HashMap<String, Object>> stringToData(String s) throws JSONException {
+    private ArrayList<IconEntity> stringToData(String s) throws JSONException {
         JSONArray array = new JSONArray(s);
-        ArrayList<HashMap<String, Object>> list = new ArrayList();
+        ArrayList<IconEntity> list = new ArrayList();
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             Type type = Type.valueOf(obj.getString("type"));
             if (type == Type.BLANK) {
-                list.add(mBlankMap);
+                list.add(mBlankIcon);
                 continue;
             }
-            HashMap<String, Object> map = new HashMap<>();
+            IconEntity icon = new IconEntity();
             switch (type){
                 case COMPUTER:
-                    map.put("null", false);
-                    map.put("icon", getResources().getDrawable(R.drawable.ic_app_computer));
-                    map.put("name", getResources().getString(R.string.my_computer));
+                    icon.setIsBlank(false);
+                    icon.setIcon(getResources().getDrawable(R.drawable.ic_app_computer));
+                    icon.setName(getResources().getString(R.string.my_computer));
                     break;
                 case RECYCLE:
-                    map.put("null", false);
-                    map.put("icon", getResources().getDrawable(R.drawable.ic_app_recycle));
-                    map.put("name", getResources().getString(R.string.recycle));
+                    icon.setIsBlank(false);
+                    icon.setIcon(getResources().getDrawable(R.drawable.ic_app_recycle));
+                    icon.setName(getResources().getString(R.string.recycle));
                     break;
                 case FILE:
-                    map.put("null", false);
-                    map.put("icon", FileUtils.getFileIcon(obj.getString("path"), this));
-                    map.put("name", obj.getString("name"));
+                    icon.setIsBlank(false);
+                    icon.setIcon(FileUtils.getFileIcon(obj.getString("path"), this));
+                    icon.setName(obj.getString("name"));
                     break;
                 case DIRECTORY:
-                    map.put("null", false);
-                    map.put("icon", getResources().getDrawable(R.drawable.ic_directory));
-                    map.put("name", obj.getString("name"));
+                    icon.setIsBlank(false);
+                    icon.setIcon(getResources().getDrawable(R.drawable.ic_directory));
+                    icon.setName(obj.getString("name"));
                     break;
             }
-            map.put("isChecked", false);
-            map.put("path", obj.getString("path"));
-            map.put("type", type);
-            list.add(map);
+            icon.setIsChecked(false);
+            icon.setPath(obj.getString("path"));
+            icon.setType(type);
+            list.add(icon);
         }
         return list;
     }
