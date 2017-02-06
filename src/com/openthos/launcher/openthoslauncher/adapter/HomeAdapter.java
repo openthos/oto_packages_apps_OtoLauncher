@@ -1,7 +1,10 @@
 package com.openthos.launcher.openthoslauncher.adapter;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -355,13 +359,51 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
-                        && v.hasFocus()) {
+                        && v.hasFocus() && event.getAction() == KeyEvent.ACTION_DOWN) {
                 IconEntity icon = data.get(pos);
                 String path = icon.getPath();
                 String newName = String.valueOf(((EditText) v).getText());
+                for (IconEntity currentIcon : data) {
+                    if (currentIcon.getName().equals(newName)) {
+                        AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
+                             .setMessage(((MainActivity) mRecycleClick).getResources().getString(
+                                                                R.string.rename_fail_by_same))
+                             .setNegativeButton(((MainActivity) mRecycleClick).getResources()
+                                                        .getString(R.string.dialog_ok),
+                                 new android.content.DialogInterface.OnClickListener() {
+                                     @Override
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         dialog.cancel();
+                                     }
+                                 }).create();
+                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                        dialog.show();
+                        ((EditText) v).setText(icon.getName());
+                        ((EditText) v).selectAll();
+                        return true;
+                    }
+                }
                 File oldFile = new File(path);
                 File newFile = new File(oldFile.getParent(), newName);
-                oldFile.renameTo(newFile);
+                boolean isSuccess = oldFile.renameTo(newFile);
+                if (!isSuccess) {
+                    AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
+                         .setMessage(((MainActivity) mRecycleClick).getResources().getString(
+                                                            R.string.rename_fail))
+                         .setNegativeButton(((MainActivity) mRecycleClick).getResources()
+                                                    .getString(R.string.dialog_ok),
+                             new android.content.DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     dialog.cancel();
+                                 }
+                             }).create();
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    dialog.show();
+                    ((EditText) v).setText(icon.getName());
+                    ((EditText) v).selectAll();
+                    return true;
+                }
                 icon.setName(newName);
                 icon.setPath(newFile.getAbsolutePath());
                 data.set(pos, icon);

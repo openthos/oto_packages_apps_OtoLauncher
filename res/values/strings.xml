@@ -507,6 +507,9 @@ s -->
     <add-resource type="string" name="can_not_open" />
     <add-resource type="string" name="no_app_open_with" />
     <add-resource type="string" name="dialog_decompress_text" />
+    <add-resource type="string" name="rename_fail" />
+    <add-resource type="string" name="dialog_ok" />
+    <add-resource type="string" name="rename_fail_by_same" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -568,4 +571,7 @@ s -->
     <string name="can_not_open">Could not find the appropriate application to open the file!</string>
     <string name="no_app_open_with">No application to open this file.\nPlease download in AppStore.</string>
     <string name="dialog_decompress_text">"%1$s" is already exists at Desktop, whether to decompress (which will cover the duplicate file)?</string>
+    <string name="rename_fail">Rename failed</string>
+    <string name="rename_fail_by_same">Rename failed, because the directory is contains the same name file.</string>
+    <string name="dialog_ok">OK</string>
 </resources>

@@ -271,6 +271,9 @@
     <add-resource type="string" name="can_not_open" />
     <add-resource type="string" name="no_app_open_with" />
     <add-resource type="string" name="dialog_decompress_text" />
+    <add-resource type="string" name="rename_fail" />
+    <add-resource type="string" name="dialog_ok" />
+    <add-resource type="string" name="rename_fail_by_same" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -334,4 +337,7 @@
     <string name="can_not_open">找不到相应的打开应用程序</string>
     <string name="no_app_open_with">没有可以打开此文件的应用。\n请前往应用商店下载。</string>
     <string name="dialog_decompress_text">桌面已存在"%1$s"，是否继续解压缩（将会覆盖重名文件）？</string>
+    <string name="rename_fail">重命名失败</string>
+    <string name="dialog_ok">确定</string>
+    <string name="rename_fail_by_same">重命名失败，因为该目录包含相同的名称文件。</string>
 </resources>
