@@ -69,6 +69,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private CopyInfoDialog mCopyInfoDialog;
     private IconEntity mBlankIcon = new IconEntity();
     private SdReceiver mSdReceiver;
+    private String mCommitText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +171,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
+                        mAdapter.mIsRenameFirst = true;
                         mAdapter.notifyDataSetChanged();
                         break;
                     case OtoConsts.PROPERTY:
@@ -215,12 +217,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                                                                                .setText("");
                         break;
-                    case OtoConsts.INTERCEPT_ONKEYDOWN:
-                        Bundle bundle = msg.getData();
-                        int keyCode = bundle.getInt(OtoConsts.INTERCEPT_ONKEYDOWN_KEYCODE);
-                        KeyEvent event = bundle.getParcelable(OtoConsts.INTERCEPT_ONKEYDOWN_KEYEVENT);
-                        keyDealing(keyCode, event);
-                        break;
                 }
             }
         };
@@ -230,6 +226,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         intentFilter.addAction(Intent.ACTION_DESKTOP_DELETE_FILE);
         intentFilter.addAction(Intent.ACTION_DESKTOP_FOCUSED_STATE);
         intentFilter.addAction(Intent.ACTION_DESKTOP_UNFOCUSED_STATE);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_INTERCEPT);
+        intentFilter.addAction(Intent.ACTION_DESKTOP_COMMIT_TEXT);
         registerReceiver(mSdReceiver, intentFilter);
     }
 
@@ -563,9 +561,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
         } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
-                                                                            && mAdapter.pos != -1) {
+                        && mAdapter.pos != -1 && !mAdapter.isRename) {
             OperateUtils.enter(this, mDatas.get(mAdapter.pos).getPath(),
                                      mDatas.get(mAdapter.pos).getType());
+        } else {
+            String textEnglish = switchKeyCodeToString(keyCode);
+            if (mAdapter.isRename) {
+                mAdapter.notifyText(textEnglish);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -853,9 +856,60 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 //                              Settings.Secure.DEFAULT_INPUT_METHOD,
                 //                              OtoConsts.DESKTOP_INPUT);
                 //    break;
+                case Intent.ACTION_DESKTOP_INTERCEPT:
+                    Bundle bundle = intent.getParcelableExtra(Intent.EXTRA_DESKTOP_BUNDLE);
+                    int keyCode = bundle.getInt(Intent.EXTRA_DESKTOP_KEYCODE);
+                    KeyEvent event = bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT);
+                    boolean isKeyDown = bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN);
+                    if (isKeyDown) {
+                        keyDealing(keyCode, event);
+                    } else {
+                        mIsCtrlPress = event.isCtrlPressed();
+                    }
+                    break;
+                case Intent.ACTION_DESKTOP_COMMIT_TEXT:
+                    mCommitText = intent.getStringExtra(Intent.EXTRA_DESKTOP_RESULTTEXT);
+                    if (mAdapter.isRename) {
+                        mAdapter.notifyText(mCommitText);
+                    }
                 case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
                     break;
             }
         }
     }
+
+    private String switchKeyCodeToString(int keyCode) {
+        int keyChar = 0;
+        if (keyCode >= KeyEvent.KEYCODE_A && keyCode <= KeyEvent.KEYCODE_Z) {
+            keyChar = keyCode - KeyEvent.KEYCODE_A + 'a';
+        } else if (keyCode >= KeyEvent.KEYCODE_0
+                && keyCode <= KeyEvent.KEYCODE_9) {
+            keyChar = keyCode - KeyEvent.KEYCODE_0 + '0';
+        } else if (keyCode == KeyEvent.KEYCODE_COMMA) {
+            keyChar = ',';
+        } else if (keyCode == KeyEvent.KEYCODE_PERIOD) {
+            keyChar = '.';
+        } else if (keyCode == KeyEvent.KEYCODE_SPACE) {
+            keyChar = ' ';
+        } else if (keyCode == KeyEvent.KEYCODE_APOSTROPHE) {
+            keyChar = '\'';
+        } else if (keyCode == KeyEvent.KEYCODE_SLASH) {
+            keyChar = '/';
+        } else if (keyCode == KeyEvent.KEYCODE_SEMICOLON) {
+            keyChar = ';';
+        } else if (keyCode == KeyEvent.KEYCODE_BACKSLASH) {
+            keyChar = '\\';
+        } else if (keyCode == KeyEvent.KEYCODE_LEFT_BRACKET) {
+            keyChar = '[';
+        } else if (keyCode == KeyEvent.KEYCODE_RIGHT_BRACKET) {
+            keyChar = ']';
+        }
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            return Intent.EXTRA_DESKTOP_ENTER;
+        } else if (keyCode == KeyEvent.KEYCODE_DEL) {
+            return Intent.EXTRA_DESKTOP_BACK;
+        } else {
+            return String.valueOf((char) keyChar);
+        }
+   }
 }

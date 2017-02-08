@@ -27,6 +27,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.view.Window;
 import android.view.WindowManager;
+import android.text.Editable;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -61,6 +62,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private static final int LESS = 0;
     private static final int MORE = 1;
 
+    private int mIndex;
+    private Editable mEdit;
+    private HomeViewHolder mHolder;
+    public boolean mIsRenameFirst;
+
     public HomeAdapter(List<IconEntity> data, RecycleCallBack click) {
         this.data = data;
         this.mRecycleClick = click;
@@ -71,6 +77,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.data = data;
     }
 
+    public void notifyText(String commitText) {
+        if (mIsRenameFirst) {
+            mHolder.tv.setText(null);
+        }
+        mIndex = mHolder.tv.getSelectionStart();
+        mEdit = mHolder.tv.getText();
+        if (Intent.EXTRA_DESKTOP_ENTER.equals(commitText)) {
+            confirmRename(mHolder.tv, pos);
+        } else if (Intent.EXTRA_DESKTOP_BACK.equals(commitText)) {
+            if (mIndex > 0) {
+                mEdit.delete(mIndex - 1, mIndex);
+            }
+        } else {
+            mEdit.insert(mIndex, commitText);
+        }
+        mIsRenameFirst = false;
+    }
 
     @Override
     public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -106,6 +129,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             holder.tv.setFocusable(true);
             holder.tv.setFocusableInTouchMode(true);
             holder.tv.requestFocus();
+            mHolder = holder;
         } else {
             holder.tv.setFocusable(false);
             holder.tv.clearFocus();
@@ -133,6 +157,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    mIsRenameFirst = false;
                     if (isRename == false) {
                         ctrlProcess(v,event);
                     }
@@ -360,67 +385,74 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && v.hasFocus() && event.getAction() == KeyEvent.ACTION_DOWN) {
-                IconEntity icon = data.get(pos);
-                String path = icon.getPath();
-                String newName = String.valueOf(((EditText) v).getText());
-                for (IconEntity currentIcon : data) {
-                    if (currentIcon.getName().equals(newName)) {
-                        AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
-                             .setMessage(((MainActivity) mRecycleClick).getResources().getString(
-                                                                R.string.rename_fail_by_same))
-                             .setNegativeButton(((MainActivity) mRecycleClick).getResources()
-                                                        .getString(R.string.dialog_ok),
-                                 new android.content.DialogInterface.OnClickListener() {
-                                     @Override
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         dialog.cancel();
-                                     }
-                                 }).create();
-                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                        dialog.show();
-                        ((EditText) v).setText(icon.getName());
-                        ((EditText) v).selectAll();
-                        return true;
-                    }
-                }
-                File oldFile = new File(path);
-                File newFile = new File(oldFile.getParent(), newName);
-                boolean isSuccess = oldFile.renameTo(newFile);
-                if (!isSuccess) {
-                    AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
-                         .setMessage(((MainActivity) mRecycleClick).getResources().getString(
-                                                            R.string.rename_fail))
-                         .setNegativeButton(((MainActivity) mRecycleClick).getResources()
-                                                    .getString(R.string.dialog_ok),
-                             new android.content.DialogInterface.OnClickListener() {
-                                 @Override
-                                 public void onClick(DialogInterface dialog, int which) {
-                                     dialog.cancel();
-                                 }
-                             }).create();
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    dialog.show();
-                    ((EditText) v).setText(icon.getName());
-                    ((EditText) v).selectAll();
-                    return true;
-                }
-                icon.setName(newName);
-                icon.setPath(newFile.getAbsolutePath());
-                data.set(pos, icon);
-                notifyDataSetChanged();
-                IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(pos);
-                mIcon.setName(newName);
-                mIcon.setPath(newFile.getAbsolutePath());
-                ((MainActivity)mRecycleClick).mDatas.set(pos, mIcon);
-                v.setFocusable(false);
-                v.clearFocus();
-                isRename = false;
-                MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
-                return true;
+                return confirmRename((EditText) v, pos);
             }
             return false;
         }
     };
+
+    private boolean confirmRename(EditText v, int position) {
+        IconEntity icon = data.get(position);
+        String path = icon.getPath();
+        String newName = String.valueOf(v.getText());
+        for (IconEntity currentIcon : data) {
+            if (currentIcon.getName().equals(newName)) {
+                AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
+                     .setMessage(((MainActivity) mRecycleClick).getResources().getString(
+                                                        R.string.rename_fail_by_same))
+                     .setNegativeButton(((MainActivity) mRecycleClick).getResources()
+                                                .getString(R.string.dialog_ok),
+                         new android.content.DialogInterface.OnClickListener() {
+
+                             @Override
+                             public void onClick(DialogInterface dialog, int which) {
+                                 dialog.cancel();
+                             }
+                         }).create();
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                dialog.show();
+                v.setText(icon.getName());
+                v.selectAll();
+                return true;
+            }
+        }
+        File oldFile = new File(path);
+        File newFile = new File(oldFile.getParent(), newName);
+        boolean isSuccess = oldFile.renameTo(newFile);
+        if (!isSuccess) {
+            AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
+                 .setMessage(((MainActivity) mRecycleClick).getResources().getString(
+                                                    R.string.rename_fail))
+                 .setNegativeButton(((MainActivity) mRecycleClick).getResources()
+                                            .getString(R.string.dialog_ok),
+                     new android.content.DialogInterface.OnClickListener() {
+
+                         @Override
+                         public void onClick(DialogInterface dialog, int which) {
+                             dialog.cancel();
+                         }
+                     }).create();
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+            v.setText(icon.getName());
+            v.selectAll();
+            return true;
+        }
+        icon.setName(newName);
+        icon.setPath(newFile.getAbsolutePath());
+        data.set(position, icon);
+        notifyDataSetChanged();
+        IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(pos);
+        mIcon.setName(newName);
+        mIcon.setPath(newFile.getAbsolutePath());
+        ((MainActivity)mRecycleClick).mDatas.set(pos, mIcon);
+        v.setFocusable(false);
+        v.clearFocus();
+        isRename = false;
+        mHolder = null;
+        MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+        return true;
+    }
 
     View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
 
