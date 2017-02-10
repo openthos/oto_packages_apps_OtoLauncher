@@ -421,9 +421,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             MenuDialog.setExistMenu(false);
                         }
                     }
-                    if (!mIsClicked && mAdapter.pos != -1) {
-                        mDatas.get(mAdapter.pos).setIsChecked(false);
-                        mAdapter.pos = -1;
+                    if (!mIsClicked && mAdapter.getLastClickPos() != -1) {
+                        mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
+                        mAdapter.setSelectedCurrent(-1);
                         mAdapter.notifyDataSetChanged();
                     }
                     mIsClicked = false;
@@ -464,7 +464,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     }
                     mAdapter.setData(mDatas);
                     mAdapter.notifyItemMoved(from, to);
-                    mAdapter.pos = to;
                     mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                 }
             }
@@ -483,19 +482,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean keyDealing(int keyCode, KeyEvent event) {
         if (event.isCtrlPressed()) {
             if (keyCode == KeyEvent.KEYCODE_A) {
-                mAdapter.getSelectData().clear();
+                mAdapter.setSelectedCurrent(-1);
                 for (int i = 0; i< mDatas.size(); i++) {
                     if (mDatas.get(i).isBlank() == false){
                         IconEntity icon = mDatas.get(i);
                         icon.setIsChecked(true);
                         mDatas.set(i, icon);
-                        mAdapter.addSelectData(i);
+                        mAdapter.getSelectedPosList().add(i);
                     }
                 }
                 mAdapter.setData(mDatas);
                 mAdapter.notifyDataSetChanged();
             }
-            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectedPosList() != null) {
                 String deletePath = getSelectedPath(OtoConsts.DELETE);
                 if (deletePath != null) {
                     Message deleteFile = new Message();
@@ -504,14 +503,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mHandler.sendMessage(deleteFile);
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null) {
                 String cropPath = getSelectedPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(cropPath);
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectData() != null) {
+            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null) {
                 String copyPath = getSelectedPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
@@ -540,7 +539,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendMessage(paste);
             }
             return true;
-        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL && mAdapter.getSelectData() != null) {
+        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL
+                                                      && mAdapter.getSelectedPosList() != null) {
             String deletePath = getSelectedPath(OtoConsts.DELETE);
             if (deletePath != null) {
                 Message deleteFile = new Message();
@@ -555,15 +555,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_F5) {
             mHandler.sendEmptyMessage(OtoConsts.SORT);
-        } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.pos != -1) {
-            Type type = mDatas.get(mAdapter.pos).getType();
+        } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.getLastClickPos() != -1) {
+            Type type = mDatas.get(mAdapter.getLastClickPos()).getType();
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
         } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
-                        && mAdapter.pos != -1 && !mAdapter.isRename) {
-            OperateUtils.enter(this, mDatas.get(mAdapter.pos).getPath(),
-                                     mDatas.get(mAdapter.pos).getType());
+                        && mAdapter.getLastClickPos() != -1 && !mAdapter.isRename) {
+            OperateUtils.enter(this, mDatas.get(mAdapter.getLastClickPos()).getPath(),
+                                     mDatas.get(mAdapter.getLastClickPos()).getType());
         } else {
             String textEnglish = switchKeyCodeToString(keyCode);
             if (mAdapter.isRename) {
@@ -575,22 +575,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private String getSelectedPath(int copyType) {
         StringBuffer buff = new StringBuffer();
-        if (mAdapter.getSelectData() != null && mAdapter.getSelectData().size() > 0) {
-            for (int i = 0; i < mAdapter.getSelectData().size(); i++) {
-                Type type = mDatas.get(mAdapter.getSelectData().get(i)).getType();
+        if (mAdapter.getSelectedPosList() != null && mAdapter.getSelectedPosList().size() > 0) {
+            for (int i = 0; i < mAdapter.getSelectedPosList().size(); i++) {
+                Type type = mDatas.get(mAdapter.getSelectedPosList().get(i)).getType();
                 if (type == Type.DIRECTORY || type == Type.FILE) {
                     switch (copyType) {
                         case OtoConsts.COPY_PASTE:
                             buff.append(Intent.EXTRA_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
+                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
                             break;
                         case OtoConsts.CROP_PASTE:
                             buff.append(Intent.EXTRA_CROP_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
+                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
                             break;
                         case OtoConsts.DELETE:
                             buff.append(Intent.EXTRA_DELETE_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectData().get(i)).getPath());
+                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
                             break;
                     }
                 }
@@ -861,10 +861,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     int keyCode = bundle.getInt(Intent.EXTRA_DESKTOP_KEYCODE);
                     KeyEvent event = bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT);
                     boolean isKeyDown = bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN);
+                    mIsCtrlPress = event.isCtrlPressed();
                     if (isKeyDown) {
                         keyDealing(keyCode, event);
-                    } else {
-                        mIsCtrlPress = event.isCtrlPressed();
                     }
                     break;
                 case Intent.ACTION_DESKTOP_COMMIT_TEXT:

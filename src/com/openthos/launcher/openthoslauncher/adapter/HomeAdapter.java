@@ -50,10 +50,9 @@ import java.util.ArrayList;
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
     private List<IconEntity> data;
-    private List<Integer> selectData;
+    private List<Integer> selectedPositions;
     private RecycleCallBack mRecycleClick;
 
-    public int pos = -1;
     private int mLastClickId = -1;
     private long mLastClickTime = 0;
     private boolean isClicked = false;
@@ -70,7 +69,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public HomeAdapter(List<IconEntity> data, RecycleCallBack click) {
         this.data = data;
         this.mRecycleClick = click;
-        selectData = new ArrayList<>();
+        selectedPositions = new ArrayList<>();
     }
 
     public void setData(List<IconEntity> data) {
@@ -84,7 +83,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         mIndex = mHolder.tv.getSelectionStart();
         mEdit = mHolder.tv.getText();
         if (Intent.EXTRA_DESKTOP_ENTER.equals(commitText)) {
-            confirmRename(mHolder.tv, pos);
+            confirmRename(mHolder.tv, getLastClickPos());
         } else if (Intent.EXTRA_DESKTOP_BACK.equals(commitText)) {
             if (mIndex > 0) {
                 mEdit.delete(mIndex - 1, mIndex);
@@ -125,7 +124,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }
-        if (isRename == true && position == pos) {
+        if (isRename == true && position == getLastClickPos()) {
             holder.tv.setFocusable(true);
             holder.tv.setFocusableInTouchMode(true);
             holder.tv.requestFocus();
@@ -182,10 +181,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         }
                     }
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        if (isClicked != true && pos != -1) {
-                            selectCurrent(-1);
-                            selectData.clear();
-                            pos = -1;
+                        if (isClicked != true && getLastClickPos() != -1) {
+                            setSelectedCurrent(-1);
                             notifyDataSetChanged();
                         }
                         isClicked = false;
@@ -209,127 +206,95 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (getAdapterPosition() != -1) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        if (selectData != null) {
-                            switch (selectData.size()) {
-                                case 0:
-                                case 1:
-                                    selectLess(event);
-                                    break;
-                                default:
-                                    selectMore(event);
-                                    break;
+                        if (selectedPositions != null) {
+                            if (data.get(getAdapterPosition()).isBlank()) {
+                                setSelectedCurrent(-1);
+                                showDialog(event, LESS);
+                            } else {
+                                if (selectedPositions.size() > 1) {
+                                    showMoreDialog(event);
+                                } else {
+                                    showLessDialog(event);
+                                }
                             }
                         }
                     } else if (!data.get(getAdapterPosition()).isBlank()) {
                         if (MainActivity.mIsCtrlPress) {
-                            Type type = data.get(getAdapterPosition()).getType();
-                            if (type == Type.COMPUTER || type == Type.RECYCLE) {
-                                boolean isChecked = data.get(getAdapterPosition()).isChecked();
-                                data.get(getAdapterPosition()).setIsChecked(!isChecked);
-                            } else {
-                                boolean isSelect = false;
-                                for (int i = 0; i < selectData.size(); i++) {
-                                    if (selectData.get(i) == getAdapterPosition()) {
-                                        isSelect = true;
-                                        data.get(selectData.get(i)).setIsChecked(false);
-                                        pos = -1;
-                                        selectData.remove(i);
-                                        break;
-                                    }
+                            boolean isSelected = false;
+                            for (int i = 0; i < selectedPositions.size(); i++) {
+                                if (selectedPositions.get(i) == getAdapterPosition()) {
+                                    isSelected = true;
+                                    data.get(selectedPositions.get(i)).setIsChecked(false);
+                                    selectedPositions.remove(i);
+                                    break;
                                 }
-                                if (!isSelect) {
-                                    pos = getAdapterPosition();
-                                    addSelectData(getAdapterPosition());
-                                    data.get(getAdapterPosition()).setIsChecked(true);
-                                }
+                            }
+                            if (!isSelected) {
+                                selectedPositions.add(getAdapterPosition());
+                                data.get(getAdapterPosition()).setIsChecked(true);
                             }
                         } else {
                             if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
-                                    && Math.abs(System.currentTimeMillis()
-                                    - mLastClickTime) < OtoConsts.DOUBLE_CLICK_TIME
-                                    && pos == getAdapterPosition()) {
+                                    && (System.currentTimeMillis() - mLastClickTime)
+                                                                  < OtoConsts.DOUBLE_CLICK_TIME
+                                    && getLastClickPos() == getAdapterPosition()) {
                                 OperateUtils.enter(item.getContext(),
                                                  data.get(getAdapterPosition()).getPath(),
                                                  data.get(getAdapterPosition()).getType());
                             } else {
-                                selectCurrent(getAdapterPosition());
-                                selectData.clear();
-                                addSelectData(getAdapterPosition());
-                                pos = getAdapterPosition();
+                                setSelectedCurrent(getAdapterPosition());
+                                selectedPositions.add(getAdapterPosition());
                             }
                         }
                         mLastClickTime = System.currentTimeMillis();
                     } else {
-                        pos = -1;
-                        selectData.clear();
-                        selectCurrent(-1);
+                        setSelectedCurrent(-1);
                     }
                     notifyDataSetChanged();
                 }
             }
         }
 
-        private void selectLess(MotionEvent event) {
-            if (data.get(getAdapterPosition()).isBlank()) {
-                pos = -1;
-                selectData.clear();
-                selectCurrent(-1);
-                showDialog(event, LESS);
-            } else {
-                pos = getAdapterPosition();
-                selectData.clear();
-                addSelectData(getAdapterPosition());
-                selectCurrent(getAdapterPosition());
-                showDialog(event, LESS);
-            }
+        private void showLessDialog(MotionEvent event) {
+            setSelectedCurrent(getAdapterPosition());
+            selectedPositions.add(getAdapterPosition());
+            showDialog(event, LESS);
             notifyDataSetChanged();
         }
 
-        private void selectMore(MotionEvent event) {
-            if (data.get(getAdapterPosition()).isBlank()) {
-                pos = -1;
-                selectData.clear();
-                selectCurrent(-1);
-                showDialog(event, LESS);
-            } else {
-                boolean isSelect = false;
-                for (int i = 0; i < selectData.size(); i++) {
-                    if (selectData.get(i) == getAdapterPosition()) {
-                        isSelect = true;
-                        break;
-                    }
+        private void showMoreDialog(MotionEvent event) {
+            boolean isSelected = false;
+            for (int i = 0; i < selectedPositions.size(); i++) {
+                if (selectedPositions.get(i) == getAdapterPosition()) {
+                    isSelected = true;
+                    break;
                 }
-                if (isSelect) {
-                    Type type = data.get(getAdapterPosition()).getType();
-                    if (type == Type.COMPUTER || type == Type.RECYCLE) {
-                        pos = getAdapterPosition();
-                        selectCurrent(getAdapterPosition());
-                        selectData.clear();
-                        showDialog(event, LESS);
-                    } else {
-                        for (int i = 0; i < selectData.size(); i++) {
-                            Type types = data.get(i).getType();
-                            if (types == Type.COMPUTER || types == Type.RECYCLE) {
-                                data.get(i).setIsChecked(false);
-                            }
-                        }
-                        showDialog(event, MORE);
-                    }
-                } else {
-                    pos = getAdapterPosition();
-                    selectData.clear();
-                    addSelectData(getAdapterPosition());
-                    selectCurrent(getAdapterPosition());
+            }
+            if (isSelected) {
+                Type type = data.get(getAdapterPosition()).getType();
+                if (type == Type.COMPUTER || type == Type.RECYCLE) {
+                    setSelectedCurrent(getAdapterPosition());
                     showDialog(event, LESS);
+                } else {
+                    for (int i = 0; i < selectedPositions.size(); i++) {
+                        Type types = data.get(i).getType();
+                        if (types == Type.COMPUTER || types == Type.RECYCLE) {
+                            data.get(i).setIsChecked(false);
+                        }
+                    }
+                    showDialog(event, MORE);
                 }
+            } else {
+                showLessDialog(event);
+                return;
             }
             notifyDataSetChanged();
         }
 
-        private void showDialog(MotionEvent event, int num) {
+        private void showDialog(MotionEvent event, int selectedNum) {
             Type type = null;
             String path = null;
-            switch (num) {
+            switch (selectedNum) {
                 case LESS:
                     type = data.get(getAdapterPosition()).getType();
                     path = data.get(getAdapterPosition()).getPath();
@@ -337,9 +302,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 case MORE:
                     type = Type.MORE;
                     path = "";
-                    for (int i = 0; i < selectData.size(); i++) {
+                    for (int i = 0; i < selectedPositions.size(); i++) {
                         path = path + Intent.EXTRA_DELETE_FILE_HEADER +
-                                            data.get(selectData.get(i)).getPath();
+                                            data.get(selectedPositions.get(i)).getPath();
                     }
                     break;
             }
@@ -347,27 +312,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
             MenuDialog.setExistMenu(true);
         }
+    }
 
-        private void selectCurrent(int current) {
-            if (data != null && data.size() > 0) {
-                for (int i = 0; i < data.size(); i++) {
-                    if (current == i) {
-                        data.get(i).setIsChecked(true);
-                        continue;
-                    }
-                    data.get(i).setIsChecked(false);
-                }
+    public void setSelectedCurrent(int current) {
+        if (data != null && data.size() > 0) {
+            for (int i : selectedPositions) {
+                data.get(i).setIsChecked(false);
             }
         }
-    }
-
-    public void addSelectData(int pos){
-        Type type = data.get(pos).getType();
-        if (type != Type.COMPUTER && type !=Type.RECYCLE) {
-            selectData.add(pos);
+        selectedPositions.clear();
+        if (current >= 0 && current < data.size()){
+            data.get(current).setIsChecked(true);
         }
     }
-
 
     public static void openAppBroadcast(Context context) {
         Intent openAppIntent = new Intent();
@@ -375,8 +332,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         context.sendBroadcast(openAppIntent);
     }
 
-    public List<Integer> getSelectData() {
-        return selectData;
+    public List<Integer> getSelectedPosList() {
+        return selectedPositions;
     }
 
     View.OnKeyListener keyListener = new View.OnKeyListener() {
@@ -385,7 +342,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && v.hasFocus() && event.getAction() == KeyEvent.ACTION_DOWN) {
-                return confirmRename((EditText) v, pos);
+                return confirmRename((EditText) v, getLastClickPos());
             }
             return false;
         }
@@ -442,10 +399,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         icon.setPath(newFile.getAbsolutePath());
         data.set(position, icon);
         notifyDataSetChanged();
-        IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(pos);
+        IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(getLastClickPos());
         mIcon.setName(newName);
         mIcon.setPath(newFile.getAbsolutePath());
-        ((MainActivity)mRecycleClick).mDatas.set(pos, mIcon);
+        ((MainActivity)mRecycleClick).mDatas.set(getLastClickPos(), mIcon);
         v.setFocusable(false);
         v.clearFocus();
         isRename = false;
@@ -466,4 +423,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         }
     };
+
+    public int getLastClickPos(){
+        if (selectedPositions.size() == 0) {
+            return -1;
+        }
+        return selectedPositions.get(selectedPositions.size() - 1);
+    }
 }
