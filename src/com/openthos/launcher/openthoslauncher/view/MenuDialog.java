@@ -292,17 +292,23 @@ public class MenuDialog extends Dialog {
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.RENAME);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CLEAN_RECYCLE])) {
                 //clean_recycle
-                new Thread() {
+                DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
                     @Override
-                    public void run() {
-                        super.run();
-                        File recycle = new File(path);
-                        DiskUtils.delete(recycle);
-                        if (!recycle.exists()) {
-                            recycle.mkdir();
-                        }
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                super.run();
+                                File recycle = new File(path);
+                                DiskUtils.delete(recycle);
+                                if (!recycle.exists()) {
+                                    recycle.mkdir();
+                                }
+                            }
+                        }.start();
                     }
-                }.start();
+                };
+                OperateUtils.showBaseAlertDialog(context, R.string.dialog_clean_recycle, click);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PROPERTY])) {
                 //property
                 Message property = new Message();

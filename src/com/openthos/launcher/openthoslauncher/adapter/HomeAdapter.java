@@ -243,7 +243,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                  data.get(getAdapterPosition()).getType());
                             } else {
                                 setSelectedCurrent(getAdapterPosition());
-                                selectedPositions.add(getAdapterPosition());
                             }
                         }
                         mLastClickTime = System.currentTimeMillis();
@@ -257,7 +256,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         private void showLessDialog(MotionEvent event) {
             setSelectedCurrent(getAdapterPosition());
-            selectedPositions.add(getAdapterPosition());
             showDialog(event, LESS);
             notifyDataSetChanged();
         }
@@ -323,6 +321,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         selectedPositions.clear();
         if (current >= 0 && current < data.size()){
             data.get(current).setIsChecked(true);
+            selectedPositions.add(current);
         }
     }
 

@@ -1,12 +1,16 @@
 package com.openthos.launcher.openthoslauncher.utils;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.view.Window;
+import android.view.WindowManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
@@ -98,5 +103,21 @@ public class OperateUtils {
                 }
             }
         }
+    }
+
+    public static void showBaseAlertDialog(Context context, int messageId,
+                                                       DialogInterface.OnClickListener click) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+             .setMessage(context.getResources().getString(messageId))
+             .setPositiveButton(context.getResources().getString(R.string.dialog_delete_yes), click)
+             .setNegativeButton(context.getResources().getString(R.string.dialog_delete_no),
+                 new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         dialog.cancel();
+                     }
+                 }).create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
     }
 }

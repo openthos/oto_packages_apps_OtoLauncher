@@ -556,6 +556,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } else if (keyCode == KeyEvent.KEYCODE_F5) {
             mHandler.sendEmptyMessage(OtoConsts.SORT);
         } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.getLastClickPos() != -1) {
+            mAdapter.setSelectedCurrent(mAdapter.getLastClickPos());
             Type type = mDatas.get(mAdapter.getLastClickPos()).getType();
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);

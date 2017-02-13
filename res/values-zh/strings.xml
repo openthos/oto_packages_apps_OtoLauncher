@@ -274,6 +274,7 @@
     <add-resource type="string" name="rename_fail" />
     <add-resource type="string" name="dialog_ok" />
     <add-resource type="string" name="rename_fail_by_same" />
+    <add-resource type="string" name="dialog_clean_recycle" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -340,4 +341,5 @@
     <string name="rename_fail">重命名失败</string>
     <string name="dialog_ok">确定</string>
     <string name="rename_fail_by_same">重命名失败，因为该目录包含相同的名称文件。</string>
+    <string name="dialog_clean_recycle">确认清空回收站?</string>
 </resources>

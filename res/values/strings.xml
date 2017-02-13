@@ -510,6 +510,7 @@ s -->
     <add-resource type="string" name="rename_fail" />
     <add-resource type="string" name="dialog_ok" />
     <add-resource type="string" name="rename_fail_by_same" />
+    <add-resource type="string" name="dialog_clean_recycle" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -574,4 +575,5 @@ s -->
     <string name="rename_fail">Rename failed</string>
     <string name="rename_fail_by_same">Rename failed, because the directory is contains the same name file.</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_clean_recycle">Are you sure you want to clean the Recycle?</string>
 </resources>
