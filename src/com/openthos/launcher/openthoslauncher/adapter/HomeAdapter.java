@@ -55,7 +55,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private int mLastClickId = -1;
     private long mLastClickTime = 0;
-    private boolean isClicked = false;
+    public boolean isClicked = false;
     public boolean isRename = false;
 
     private static final int LESS = 0;
@@ -156,9 +156,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    mIsRenameFirst = false;
-                    if (isRename == false) {
-                        ctrlProcess(v,event);
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        isClicked = true;
+                        mIsRenameFirst = false;
+                        if (isRename == false || getLastClickPos() != getAdapterPosition()) {
+                            ctrlProcess(v,event);
+                        }
                     }
                     return false;
                 }
@@ -198,59 +201,60 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            ctrlProcess(v, event);
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                ctrlProcess(v, event);
+            }
             return true;
         }
 
         private void ctrlProcess(View v, MotionEvent event) {
             if (getAdapterPosition() != -1) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        if (selectedPositions != null) {
-                            if (data.get(getAdapterPosition()).isBlank()) {
-                                setSelectedCurrent(-1);
-                                showDialog(event, LESS);
-                            } else {
-                                if (selectedPositions.size() > 1) {
-                                    showMoreDialog(event);
-                                } else {
-                                    showLessDialog(event);
-                                }
-                            }
-                        }
-                    } else if (!data.get(getAdapterPosition()).isBlank()) {
-                        if (MainActivity.mIsCtrlPress) {
-                            boolean isSelected = false;
-                            for (int i = 0; i < selectedPositions.size(); i++) {
-                                if (selectedPositions.get(i) == getAdapterPosition()) {
-                                    isSelected = true;
-                                    data.get(selectedPositions.get(i)).setIsChecked(false);
-                                    selectedPositions.remove(i);
-                                    break;
-                                }
-                            }
-                            if (!isSelected) {
-                                selectedPositions.add(getAdapterPosition());
-                                data.get(getAdapterPosition()).setIsChecked(true);
-                            }
+                if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    if (selectedPositions != null) {
+                        if (data.get(getAdapterPosition()).isBlank()) {
+                            setSelectedCurrent(-1);
+                            showDialog(event, LESS);
                         } else {
-                            if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
-                                    && (System.currentTimeMillis() - mLastClickTime)
-                                                                  < OtoConsts.DOUBLE_CLICK_TIME
-                                    && getLastClickPos() == getAdapterPosition()) {
-                                OperateUtils.enter(item.getContext(),
-                                                 data.get(getAdapterPosition()).getPath(),
-                                                 data.get(getAdapterPosition()).getType());
+                            if (selectedPositions.size() > 1) {
+                                showMoreDialog(event);
                             } else {
-                                setSelectedCurrent(getAdapterPosition());
+                                showLessDialog(event);
                             }
                         }
-                        mLastClickTime = System.currentTimeMillis();
-                    } else {
-                        setSelectedCurrent(-1);
                     }
-                    notifyDataSetChanged();
+                } else if (!data.get(getAdapterPosition()).isBlank()) {
+                    isClicked = true;
+                    if (MainActivity.mIsCtrlPress) {
+                        boolean isSelected = false;
+                        for (int i = 0; i < selectedPositions.size(); i++) {
+                            if (selectedPositions.get(i) == getAdapterPosition()) {
+                                isSelected = true;
+                                data.get(selectedPositions.get(i)).setIsChecked(false);
+                                selectedPositions.remove(i);
+                                break;
+                            }
+                        }
+                        if (!isSelected) {
+                            selectedPositions.add(getAdapterPosition());
+                            data.get(getAdapterPosition()).setIsChecked(true);
+                        }
+                    } else {
+                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
+                                && (System.currentTimeMillis() - mLastClickTime)
+                                                              < OtoConsts.DOUBLE_CLICK_TIME
+                                && getLastClickPos() == getAdapterPosition()) {
+                            OperateUtils.enter(item.getContext(),
+                                             data.get(getAdapterPosition()).getPath(),
+                                             data.get(getAdapterPosition()).getType());
+                        } else {
+                            setSelectedCurrent(getAdapterPosition());
+                        }
+                    }
+                    mLastClickTime = System.currentTimeMillis();
+                } else {
+                    setSelectedCurrent(-1);
                 }
+                notifyDataSetChanged();
             }
         }
 
@@ -353,20 +357,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         String newName = String.valueOf(v.getText());
         for (IconEntity currentIcon : data) {
             if (currentIcon.getName().equals(newName)) {
-                AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
-                     .setMessage(((MainActivity) mRecycleClick).getResources().getString(
-                                                        R.string.rename_fail_by_same))
-                     .setNegativeButton(((MainActivity) mRecycleClick).getResources()
-                                                .getString(R.string.dialog_ok),
-                         new android.content.DialogInterface.OnClickListener() {
-
-                             @Override
-                             public void onClick(DialogInterface dialog, int which) {
-                                 dialog.cancel();
-                             }
-                         }).create();
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                dialog.show();
+                DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                };
+                OperateUtils.showSimpleAlertDialog((MainActivity) mRecycleClick,
+                                                           R.string.rename_fail_by_same, click);
                 v.setText(icon.getName());
                 v.selectAll();
                 return true;
@@ -376,20 +374,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         File newFile = new File(oldFile.getParent(), newName);
         boolean isSuccess = oldFile.renameTo(newFile);
         if (!isSuccess) {
-            AlertDialog dialog = new AlertDialog.Builder((MainActivity) mRecycleClick)
-                 .setMessage(((MainActivity) mRecycleClick).getResources().getString(
-                                                    R.string.rename_fail))
-                 .setNegativeButton(((MainActivity) mRecycleClick).getResources()
-                                            .getString(R.string.dialog_ok),
-                     new android.content.DialogInterface.OnClickListener() {
-
-                         @Override
-                         public void onClick(DialogInterface dialog, int which) {
-                             dialog.cancel();
-                         }
-                     }).create();
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            dialog.show();
+            DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            };
+            OperateUtils.showSimpleAlertDialog((MainActivity) mRecycleClick,
+                                                       R.string.rename_fail, click);
             v.setText(icon.getName());
             v.selectAll();
             return true;

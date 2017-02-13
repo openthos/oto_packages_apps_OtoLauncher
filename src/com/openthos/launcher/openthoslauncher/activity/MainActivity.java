@@ -62,8 +62,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public static Handler mHandler;
     public static boolean mIsCtrlPress;
     private int mHeightNum;
-    private boolean mIsClicked = false;
-    private boolean mIsRename = false;
     private SharedPreferences mSp;
     private int mSumNum;
     private CopyInfoDialog mCopyInfoDialog;
@@ -421,16 +419,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             MenuDialog.setExistMenu(false);
                         }
                     }
-                    if (!mIsClicked && mAdapter.getLastClickPos() != -1) {
+                    if (!mAdapter.isClicked && mAdapter.getLastClickPos() != -1) {
                         mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
                         mAdapter.setSelectedCurrent(-1);
                         mAdapter.notifyDataSetChanged();
+                        if (mAdapter.isRename) {
+                            mAdapter.isRename = false;
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
-                    mIsClicked = false;
-                    if (mIsRename) {
-                        mIsRename = false;
-                        mAdapter.notifyDataSetChanged();
-                    }
+                    mAdapter.isClicked = false;
                 }
                 return false;
             }
@@ -610,34 +608,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private void showDialogForMoveToRecycle(String path) {
         MoveToRecycleClickListener listener = new MoveToRecycleClickListener(path);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-             .setMessage(getResources().getString(R.string.dialog_delete_text))
-             .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
-             .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
-                 new android.content.DialogInterface.OnClickListener() {
-                     @Override
-                     public void onClick(DialogInterface dialog, int which) {
-                         dialog.cancel();
-                     }
-                 }).create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialog.show();
+        OperateUtils.showBaseAlertDialog(this, R.string.dialog_delete_text, listener);
     }
 
     private void showDialogForDirectDelete(String path) {
         DirectDeleteClickListener listener = new DirectDeleteClickListener(path);
-        AlertDialog dialog = new AlertDialog.Builder(this)
-             .setMessage(getResources().getString(R.string.dialog_direct_delete_text))
-             .setPositiveButton(getResources().getString(R.string.dialog_delete_yes), listener)
-             .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
-                 new android.content.DialogInterface.OnClickListener() {
-                     @Override
-                     public void onClick(DialogInterface dialog, int which) {
-                         dialog.cancel();
-                     }
-                 }).create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialog.show();
+        OperateUtils.showBaseAlertDialog(this, R.string.dialog_direct_delete_text, listener);
     }
 
     private class MoveToRecycleClickListener implements OnClickListener {
