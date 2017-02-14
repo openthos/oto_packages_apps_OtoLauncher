@@ -564,7 +564,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             OperateUtils.enter(this, mDatas.get(mAdapter.getLastClickPos()).getPath(),
                                      mDatas.get(mAdapter.getLastClickPos()).getType());
         } else {
-            String textEnglish = switchKeyCodeToString(keyCode);
+            String textEnglish = switchKeyCodeToString(event, keyCode);
             if (mAdapter.isRename) {
                 mAdapter.notifyText(textEnglish);
             }
@@ -854,12 +854,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
     }
 
-    private String switchKeyCodeToString(int keyCode) {
+    private String switchKeyCodeToString(KeyEvent event, int keyCode) {
         int keyChar = 0;
         if (keyCode >= KeyEvent.KEYCODE_A && keyCode <= KeyEvent.KEYCODE_Z) {
             keyChar = keyCode - KeyEvent.KEYCODE_A + 'a';
         } else if (keyCode >= KeyEvent.KEYCODE_0
-                && keyCode <= KeyEvent.KEYCODE_9) {
+                && keyCode <= KeyEvent.KEYCODE_9
+                && !event.isShiftPressed()) {
             keyChar = keyCode - KeyEvent.KEYCODE_0 + '0';
         } else if (keyCode == KeyEvent.KEYCODE_COMMA) {
             keyChar = ',';
@@ -879,6 +880,40 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             keyChar = '[';
         } else if (keyCode == KeyEvent.KEYCODE_RIGHT_BRACKET) {
             keyChar = ']';
+        } else if (keyCode == KeyEvent.KEYCODE_GRAVE && !event.isShiftPressed()) {
+            keyChar = '`';
+        } else if (keyCode == KeyEvent.KEYCODE_MINUS && !event.isShiftPressed()) {
+            keyChar = '-';
+        } else if (keyCode == KeyEvent.KEYCODE_EQUALS && !event.isShiftPressed()) {
+            keyChar = '=';
+        } else if (event.isShiftPressed()) {
+            if (keyCode == KeyEvent.KEYCODE_0) {
+                keyChar = ')';
+            } else if (keyCode == KeyEvent.KEYCODE_1) {
+                keyChar = '!';
+            } else if (keyCode == KeyEvent.KEYCODE_2) {
+                keyChar = '@';
+            } else if (keyCode == KeyEvent.KEYCODE_3) {
+                keyChar = '#';
+            } else if (keyCode == KeyEvent.KEYCODE_4) {
+                keyChar = '$';
+            } else if (keyCode == KeyEvent.KEYCODE_5) {
+                keyChar = '%';
+            } else if (keyCode == KeyEvent.KEYCODE_6) {
+                keyChar = '^';
+            } else if (keyCode == KeyEvent.KEYCODE_7) {
+                keyChar = '&';
+            } else if (keyCode == KeyEvent.KEYCODE_8) {
+                keyChar = '*';
+            } else if (keyCode == KeyEvent.KEYCODE_9) {
+                keyChar = '(';
+            } else if (keyCode == KeyEvent.KEYCODE_GRAVE) {
+                keyChar = '~';
+            } else if (keyCode == KeyEvent.KEYCODE_MINUS) {
+                keyChar = '_';
+            } else if (keyCode == KeyEvent.KEYCODE_EQUALS) {
+                keyChar = '+';
+            }
         }
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
             return Intent.EXTRA_DESKTOP_ENTER;

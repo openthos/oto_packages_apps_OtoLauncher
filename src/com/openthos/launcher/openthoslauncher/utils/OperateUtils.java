@@ -121,6 +121,16 @@ public class OperateUtils {
         dialog.show();
     }
 
+    public static void showChooseAlertDialog(Context context, int messageId,
+                       DialogInterface.OnClickListener ok, DialogInterface.OnClickListener cancel) {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+             .setMessage(context.getResources().getString(messageId))
+             .setPositiveButton(context.getResources().getString(R.string.dialog_delete_yes), ok)
+             .setNegativeButton(context.getResources().getString(R.string.dialog_delete_no), cancel)
+             .create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
+    }
     public static void showSimpleAlertDialog(Context context, int messageId,
                                                        DialogInterface.OnClickListener click) {
         AlertDialog dialog = new AlertDialog.Builder(context)

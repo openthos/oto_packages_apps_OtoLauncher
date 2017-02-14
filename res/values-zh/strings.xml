@@ -275,6 +275,9 @@
     <add-resource type="string" name="dialog_ok" />
     <add-resource type="string" name="rename_fail_by_same" />
     <add-resource type="string" name="dialog_clean_recycle" />
+    <add-resource type="string" name="file_name_illegal" />
+    <add-resource type="string" name="file_name_not_null" />
+    <add-resource type="string" name="file_name_warning" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -342,4 +345,7 @@
     <string name="dialog_ok">确定</string>
     <string name="rename_fail_by_same">重命名失败，因为该目录包含相同的名称文件。</string>
     <string name="dialog_clean_recycle">确认清空回收站?</string>
+    <string name="file_name_illegal">文件名含有非法字符 /</string>
+    <string name="file_name_not_null">文件名不能为空。</string>
+    <string name="file_name_warning">提示：\n请避免文件名使用以下字符开头：+ - .\n请避免文件名含有以下字符：@ # $ ^ &amp; * ( ) [ ] Space Tab\n\n确认使用此文件名？</string>
 </resources>

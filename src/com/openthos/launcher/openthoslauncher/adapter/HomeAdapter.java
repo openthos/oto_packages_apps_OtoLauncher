@@ -28,6 +28,7 @@ import android.content.pm.ResolveInfo;
 import android.view.Window;
 import android.view.WindowManager;
 import android.text.Editable;
+import android.text.TextUtils;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.activity.MainActivity;
@@ -351,12 +352,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
     };
 
-    private boolean confirmRename(EditText v, int position) {
-        IconEntity icon = data.get(position);
+    private boolean confirmRename(final EditText v, final int position) {
+        final IconEntity icon = data.get(position);
         String path = icon.getPath();
         String newName = String.valueOf(v.getText());
         for (IconEntity currentIcon : data) {
             if (currentIcon.getName().equals(newName)) {
+                if (!icon.getName().equals(newName)) {
                 DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -367,9 +369,68 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                            R.string.rename_fail_by_same, click);
                 v.setText(icon.getName());
                 v.selectAll();
+                } else {
+                    v.setFocusable(false);
+                    v.clearFocus();
+                    isRename = false;
+                    mHolder = null;
+                }
                 return true;
             }
         }
+        switch (isValidFileName(newName)) {
+            case OtoConsts.FILE_NAME_LEGAL:
+                rename(v, position);
+                break;
+            case OtoConsts.FILE_NAME_NULL:
+                DialogInterface.OnClickListener nullClick = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                };
+                OperateUtils.showSimpleAlertDialog((MainActivity) mRecycleClick,
+                                                   R.string.file_name_not_null, nullClick);
+                break;
+            case OtoConsts.FILE_NAME_ILLEGAL:
+                DialogInterface.OnClickListener illClick = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                };
+                OperateUtils.showSimpleAlertDialog((MainActivity) mRecycleClick,
+                                                   R.string.file_name_illegal, illClick);
+                break;
+            case OtoConsts.FILE_NAME_WARNING:
+                DialogInterface.OnClickListener okClick = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        rename(v, position);
+                        dialog.cancel();
+                    }
+                };
+                DialogInterface.OnClickListener cancel = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        v.setText(icon.getName());
+                        v.setSelection(icon.getName().length());
+                        dialog.cancel();
+                    }
+                };
+                OperateUtils.showChooseAlertDialog((MainActivity) mRecycleClick,
+                                                   R.string.file_name_warning, okClick, cancel);
+                break;
+        }
+        return true;
+    }
+
+    private void rename(EditText v, int position) {
+        IconEntity icon = data.get(position);
+        final String path = icon.getPath();
+        final String newName = String.valueOf(v.getText());
         File oldFile = new File(path);
         File newFile = new File(oldFile.getParent(), newName);
         boolean isSuccess = oldFile.renameTo(newFile);
@@ -384,7 +445,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                        R.string.rename_fail, click);
             v.setText(icon.getName());
             v.selectAll();
-            return true;
+            return;
         }
         icon.setName(newName);
         icon.setPath(newFile.getAbsolutePath());
@@ -399,7 +460,27 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         isRename = false;
         mHolder = null;
         MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
-        return true;
+    }
+
+    private int isValidFileName(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return OtoConsts.FILE_NAME_NULL;
+        } else {
+            if (fileName.indexOf("/") != -1) {
+                return OtoConsts.FILE_NAME_ILLEGAL;
+            }
+            for (int i = 0; i < OtoConsts.NAMESTART.length; i++) {
+                if (fileName.startsWith(OtoConsts.NAMESTART[i])) {
+                    return OtoConsts.FILE_NAME_WARNING;
+                }
+            }
+            for (int i = 0; i < OtoConsts.NAMEBODY.length; i++) {
+                if (fileName.indexOf(OtoConsts.NAMEBODY[i]) != -1) {
+                    return OtoConsts.FILE_NAME_WARNING;
+                }
+            }
+            return OtoConsts.FILE_NAME_LEGAL;
+        }
     }
 
     View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {

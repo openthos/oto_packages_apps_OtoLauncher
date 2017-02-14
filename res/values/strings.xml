@@ -511,6 +511,9 @@ s -->
     <add-resource type="string" name="dialog_ok" />
     <add-resource type="string" name="rename_fail_by_same" />
     <add-resource type="string" name="dialog_clean_recycle" />
+    <add-resource type="string" name="file_name_illegal" />
+    <add-resource type="string" name="file_name_not_null" />
+    <add-resource type="string" name="file_name_warning" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -576,4 +579,7 @@ s -->
     <string name="rename_fail_by_same">Rename failed, because the directory is contains the same name file.</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_clean_recycle">Are you sure you want to clean the Recycle?</string>
+    <string name="file_name_illegal">File name contains illegal character /</string>
+    <string name="file_name_not_null">File name must not be null.</string>
+    <string name="file_name_warning">Warning:\nAvoid starting with these chracters: + - .\nAvoid containing these chractors: @ # $ ^ &amp; * ( ) [ ] Space Tab.\nDo you determine use this file name?</string>
 </resources>
