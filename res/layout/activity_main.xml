@@ -6,12 +6,20 @@
     android:background="#00323232"
     tools:context=".activity.MainActivity">
 
-   <android.support.v7.widget.RecyclerView
-       android:scrollbars="none"
-       android:fadingEdge="none"
-       android:overScrollMode="never"
-       android:id="@+id/recyclerview"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginBottom="30dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.openthos.launcher.openthoslauncher.view.FrameSelectView
+            android:id="@+id/frame_select_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <android.support.v7.widget.RecyclerView
+            android:scrollbars="none"
+            android:fadingEdge="none"
+            android:overScrollMode="never"
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"/>
+    </RelativeLayout>
 </LinearLayout>

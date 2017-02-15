@@ -171,33 +171,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             nullnull = (CheckBox) view.findViewById(R.id.nullnull);
             item.setOnTouchListener(this);
             this.mClick = click;
-            itemView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        if (MenuDialog.isExistMenu() == false) {
-                            MenuDialog dialog = new MenuDialog(item.getContext(), Type.BLANK, "");
-                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                            MenuDialog.setExistMenu(true);
-                        } else {
-                            MenuDialog.setExistMenu(false);
-                        }
-                    }
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        if (isClicked != true && getLastClickPos() != -1) {
-                            setSelectedCurrent(-1);
-                            notifyDataSetChanged();
-                        }
-                        isClicked = false;
-                        if (isRename == true) {
-                            isRename = false;
-                            notifyDataSetChanged();
-                        }
-                    }
-                    return false;
-                }
-            });
         }
 
         @Override
@@ -209,6 +182,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
 
         private void ctrlProcess(View v, MotionEvent event) {
+            ((MainActivity) mRecycleClick).setIsSelected(true);
             if (getAdapterPosition() != -1) {
                 if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                     if (selectedPositions != null) {
@@ -253,6 +227,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     }
                     mLastClickTime = System.currentTimeMillis();
                 } else {
+                    isClicked = false;
+                    ((MainActivity) mRecycleClick).setIsSelected(false);
                     setSelectedCurrent(-1);
                 }
                 notifyDataSetChanged();

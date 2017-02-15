@@ -18,10 +18,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
@@ -34,6 +36,7 @@ import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
+import com.openthos.launcher.openthoslauncher.view.FrameSelectView;
 import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
 import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
@@ -68,6 +71,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private IconEntity mBlankIcon = new IconEntity();
     private SdReceiver mSdReceiver;
     private String mCommitText;
+    private FrameSelectView mFrameSelectView;
+    private float mDownX, mDownY, mMoveX, mMoveY;
+    private boolean mIsSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -402,6 +408,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void init() {
+        mFrameSelectView = (FrameSelectView) findViewById(R.id.frame_select_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
                                        StaggeredGridLayoutManager.HORIZONTAL));
@@ -428,8 +435,34 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mAdapter.notifyDataSetChanged();
                         }
                     }
-                    mAdapter.isClicked = false;
                 }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (!mIsSelected && !mAdapter.isClicked) {
+                            mDownX = event.getRawX();
+                            mDownY = event.getRawY();
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!mIsSelected && !mAdapter.isClicked) {
+                            mMoveX = event.getRawX();
+                            mMoveY = event.getRawY();
+                            mFrameSelectView.setPositionCoordinate(mDownX < mMoveX? mDownX : mMoveX,
+                                                                   mDownY < mMoveY? mDownY : mMoveY,
+                                                                   mDownX > mMoveX? mDownX : mMoveX,
+                                                                   mDownY > mMoveY? mDownY : mMoveY);
+                            mFrameSelectView.invalidate();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (!mIsSelected && !mAdapter.isClicked) {
+                            mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
+                            mFrameSelectView.invalidate();
+                        }
+                        mIsSelected = false;
+                        break;
+                }
+                mAdapter.isClicked = false;
                 return false;
             }
         });
@@ -922,5 +955,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } else {
             return String.valueOf((char) keyChar);
         }
+   }
+
+   public void setIsSelected(boolean isSelected) {
+       mIsSelected = isSelected;
    }
 }
