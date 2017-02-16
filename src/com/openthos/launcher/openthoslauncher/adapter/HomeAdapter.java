@@ -229,6 +229,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 } else {
                     isClicked = false;
                     ((MainActivity) mRecycleClick).setIsSelected(false);
+                    ((MainActivity) mRecycleClick).setLocation(event.getRawX(), event.getRawY());
                     setSelectedCurrent(-1);
                 }
                 notifyDataSetChanged();

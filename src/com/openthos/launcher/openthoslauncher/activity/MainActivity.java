@@ -74,6 +74,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private FrameSelectView mFrameSelectView;
     private float mDownX, mDownY, mMoveX, mMoveY;
     private boolean mIsSelected;
+    private ArrayList<IconParams> mPosList;
+    private ArrayList<Integer> mTempList;
+    private ArrayList<Integer> mPosTempList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -408,6 +411,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void init() {
+        mPosList = getParams();
+        mTempList = new ArrayList<>();
+        mPosTempList = new ArrayList<>();
         mFrameSelectView = (FrameSelectView) findViewById(R.id.frame_select_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
@@ -452,12 +458,52 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                                    mDownX > mMoveX? mDownX : mMoveX,
                                                                    mDownY > mMoveY? mDownY : mMoveY);
                             mFrameSelectView.invalidate();
+                            IconParams params;
+                            for (int i = 0; i < mPosList.size(); i++) {
+                                params = mPosList.get(i);
+                                if (frameSelectionJudge(params, mDownX, mDownY, mMoveX, mMoveY)) {
+                                    if (!mTempList.contains(new Integer(i))) {
+                                        mTempList.add(i);
+                                    }
+                                } else {
+                                    if (mTempList.contains(i)) {
+                                        mTempList.remove(new Integer(i));
+                                    }
+                                }
+                            }
+                            if (!(mPosTempList.containsAll(mTempList)
+                                                      && mPosTempList.size() == mTempList.size())) {
+                                for (int i : mTempList) {
+                                    if (mDatas.get(i).isBlank() == false){
+                                        IconEntity icon = mDatas.get(i);
+                                        icon.setIsChecked(true);
+                                        mDatas.set(i, icon);
+                                        mAdapter.getSelectedPosList().add(i);
+                                    }
+                                }
+                                for (int i : mPosTempList) {
+                                    if (!mTempList.contains(i)){
+                                        if (mDatas.get(i).isBlank() == false){
+                                            IconEntity icon = mDatas.get(i);
+                                            icon.setIsChecked(false);
+                                            mDatas.set(i, icon);
+                                            mAdapter.getSelectedPosList().add(i);
+                                        }
+                                    }
+                                }
+                                mAdapter.setData(mDatas);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            mPosTempList.clear();
+                            mPosTempList.addAll(mTempList);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         if (!mIsSelected && !mAdapter.isClicked) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
                             mFrameSelectView.invalidate();
+                            mPosTempList.clear();
+                            mTempList.clear();
                         }
                         mIsSelected = false;
                         break;
@@ -955,9 +1001,64 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } else {
             return String.valueOf((char) keyChar);
         }
-   }
+    }
 
-   public void setIsSelected(boolean isSelected) {
-       mIsSelected = isSelected;
-   }
+    public void setIsSelected(boolean isSelected) {
+        mIsSelected = isSelected;
+    }
+
+    class IconParams {
+        public int mLeft;
+        public int mRight;
+        public int mTop;
+        public int mBottom;
+
+        public IconParams(int left, int top, int right, int bottom) {
+            mLeft = left;
+            mTop = top;
+            mRight = right;
+            mBottom = bottom;
+        }
+    }
+
+    private ArrayList<IconParams> getParams() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int iconHeight = dm.heightPixels / mHeightNum;
+        int spaceH = (int) ((iconHeight
+                - getResources().getDimensionPixelSize(R.dimen.icon_size)) / 2 + 0.5);
+        int spaceW = (int) ((getResources().getDimensionPixelSize(R.dimen.icon_size)
+                - getResources().getDimensionPixelSize(R.dimen.icon_shadow_size)) / 2 + 0.5);
+        int height = getResources().getDimensionPixelSize(R.dimen.icon_size);
+        int width = getResources().getDimensionPixelSize(R.dimen.icon_shadow_size);
+        int left, right, top, bottom;
+        ArrayList<IconParams> list = new ArrayList<>();
+        for (int i = 0; i < mDatas.size(); i++) {
+            left = spaceW + (i / mHeightNum) * (2 * spaceW + width);
+            right = spaceW + width + (i / mHeightNum) * (2 * spaceW + width);
+            top = spaceH + (i % mHeightNum) * (2 * spaceH + height);
+            bottom = spaceH + height + (i % mHeightNum) * (2 * spaceH + height);
+            list.add(new IconParams(left, top, right, bottom));
+        }
+        return list;
+    }
+
+    private boolean frameSelectionJudge(IconParams icon, float downX, float downY,
+                                                                          float toX, float toY) {
+        return (((icon.mLeft >= Math.min(downX, toX) && icon.mLeft <= Math.max(downX, toX))
+              || (icon.mRight >= Math.min(downX, toX) && icon.mRight <= Math.max(downX, toX)))
+              && ((icon.mTop >= Math.min(downY, toY) && icon.mTop <= Math.max(downY, toY))
+              || (icon.mBottom >= Math.min(downY, toY) && icon.mBottom <= Math.max(downY, toY))))
+              || (((icon.mLeft <= Math.min(downX, toX) && icon.mRight >= Math.max(downX, toX))
+              && ((icon.mTop >= Math.min(downY, toY) && icon.mTop <= Math.max(downY, toY))
+              || (icon.mBottom >= Math.min(downY, toY) && icon.mBottom <= Math.max(downY, toY))))
+              || ((icon.mTop <= Math.min(downY, toY) && icon.mBottom >= Math.max(downY, toY))
+              && ((icon.mLeft >= Math.min(downX, toX) && icon.mLeft <= Math.max(downX, toX))
+              || (icon.mRight >= Math.min(downX, toX) && icon.mRight <= Math.max(downX, toX)))));
+    }
+
+    public void setLocation(float x, float y) {
+        mDownX = x;
+        mDownY = y;
+    }
 }
