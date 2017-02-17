@@ -290,7 +290,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
             MenuDialog dialog = new MenuDialog((MainActivity) mRecycleClick, type, path);
             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-            MenuDialog.setExistMenu(true);
         }
     }
 

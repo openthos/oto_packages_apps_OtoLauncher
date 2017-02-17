@@ -44,7 +44,6 @@ public class MenuDialog extends Dialog {
     private Type type;
     private String path;
     private int dialogHeight;
-    private static boolean existMenu;
     private String sourcePath = "";
 
     public MenuDialog(Context context) {
@@ -68,14 +67,6 @@ public class MenuDialog extends Dialog {
                          DialogInterface.OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         this.context = context;
-    }
-
-    public static void setExistMenu(boolean exist) {
-        existMenu = exist;
-    }
-
-    public static Boolean isExistMenu() {
-        return existMenu;
     }
 
     @Override

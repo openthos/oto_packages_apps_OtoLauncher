@@ -76,7 +76,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean mIsSelected;
     private ArrayList<IconParams> mPosList;
     private ArrayList<Integer> mTempList;
-    private ArrayList<Integer> mPosTempList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,7 +412,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private void init() {
         mPosList = getParams();
         mTempList = new ArrayList<>();
-        mPosTempList = new ArrayList<>();
         mFrameSelectView = (FrameSelectView) findViewById(R.id.frame_select_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
@@ -423,27 +421,21 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                        if (!MenuDialog.isExistMenu()) {
-                            MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
-                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                        } else {
-                            MenuDialog.setExistMenu(false);
-                        }
-                    }
-                    if (!mAdapter.isClicked && mAdapter.getLastClickPos() != -1) {
-                        mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
-                        mAdapter.setSelectedCurrent(-1);
-                        mAdapter.notifyDataSetChanged();
-                        if (mAdapter.isRename) {
-                            mAdapter.isRename = false;
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                            MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
+                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        }
+                        if (!mAdapter.isClicked && mAdapter.getLastClickPos() != -1) {
+                            mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
+                            mAdapter.setSelectedCurrent(-1);
+                            mAdapter.notifyDataSetChanged();
+                            if (mAdapter.isRename) {
+                                mAdapter.isRename = false;
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
                         if (!mIsSelected && !mAdapter.isClicked) {
                             mDownX = event.getRawX();
                             mDownY = event.getRawY();
@@ -453,56 +445,39 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if (!mIsSelected && !mAdapter.isClicked) {
                             mMoveX = event.getRawX();
                             mMoveY = event.getRawY();
-                            mFrameSelectView.setPositionCoordinate(mDownX < mMoveX? mDownX : mMoveX,
-                                                                   mDownY < mMoveY? mDownY : mMoveY,
-                                                                   mDownX > mMoveX? mDownX : mMoveX,
-                                                                   mDownY > mMoveY? mDownY : mMoveY);
-                            mFrameSelectView.invalidate();
-                            IconParams params;
+                            mFrameSelectView.setPositionCoordinate(mDownX < mMoveX ? mDownX : mMoveX,
+                                                                  mDownY < mMoveY ? mDownY : mMoveY,
+                                                                  mDownX > mMoveX ? mDownX : mMoveX,
+                                                                  mDownY > mMoveY ? mDownY : mMoveY);
+                            mTempList.clear();
                             for (int i = 0; i < mPosList.size(); i++) {
-                                params = mPosList.get(i);
-                                if (frameSelectionJudge(params, mDownX, mDownY, mMoveX, mMoveY)) {
-                                    if (!mTempList.contains(new Integer(i))) {
+                                if (frameSelectionJudge(
+                                                 mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
+                                    if (mDatas.get(i).isBlank() == false){
                                         mTempList.add(i);
-                                    }
-                                } else {
-                                    if (mTempList.contains(i)) {
-                                        mTempList.remove(new Integer(i));
                                     }
                                 }
                             }
-                            if (!(mPosTempList.containsAll(mTempList)
-                                                      && mPosTempList.size() == mTempList.size())) {
-                                for (int i : mTempList) {
-                                    if (mDatas.get(i).isBlank() == false){
-                                        IconEntity icon = mDatas.get(i);
-                                        icon.setIsChecked(true);
-                                        mDatas.set(i, icon);
-                                        mAdapter.getSelectedPosList().add(i);
-                                    }
+                            if (!(mAdapter.getSelectedPosList().containsAll(mTempList)
+                                     && mAdapter.getSelectedPosList().size() == mTempList.size())) {
+                                for (int i : mAdapter.getSelectedPosList()) {
+                                    mDatas.get(i).setIsChecked(false);
                                 }
-                                for (int i : mPosTempList) {
-                                    if (!mTempList.contains(i)){
-                                        if (mDatas.get(i).isBlank() == false){
-                                            IconEntity icon = mDatas.get(i);
-                                            icon.setIsChecked(false);
-                                            mDatas.set(i, icon);
-                                            mAdapter.getSelectedPosList().add(i);
-                                        }
-                                    }
+                                mAdapter.getSelectedPosList().clear();
+                                for (int i : mTempList) {
+                                    mDatas.get(i).setIsChecked(true);
+                                    mAdapter.getSelectedPosList().add(i);
                                 }
                                 mAdapter.setData(mDatas);
                                 mAdapter.notifyDataSetChanged();
                             }
-                            mPosTempList.clear();
-                            mPosTempList.addAll(mTempList);
+                            mFrameSelectView.invalidate();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         if (!mIsSelected && !mAdapter.isClicked) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
                             mFrameSelectView.invalidate();
-                            mPosTempList.clear();
                             mTempList.clear();
                         }
                         mIsSelected = false;
