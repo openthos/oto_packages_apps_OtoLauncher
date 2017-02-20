@@ -81,8 +81,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOtoContentView(R.layout.activity_main);
-        File f = new File("/data/create/biao.xls");
-        if (!f.exists()) {
+        if (!new File("/data/create/biao.xls").exists()) {
             OperateUtils.exec(new String[]{"tar", "xvf", "/system/create.tar.gz", "-C", "/data"});
             OperateUtils.exec(new String[]{"su", "-c", "chmod -R 777 /data/create"});
         }
@@ -113,7 +112,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.SORT:
                         mDatas.clear();
                         initDesktop();
-                        mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
@@ -125,19 +123,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 break inner;
                             }
                         }
-                        mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFOLDER:
                         createNewFileOrFolder(Type.DIRECTORY, null);
-                        mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFILE:
                         createNewFileOrFolder(Type.FILE, (String) msg.obj);
-                        mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
@@ -171,7 +166,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 break;
                             }
                         }
-                        mAdapter.setData(mDatas);
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
@@ -436,13 +430,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 mAdapter.notifyDataSetChanged();
                             }
                         }
-                        if (!mIsSelected && !mAdapter.isClicked) {
+                        if (!mIsSelected && !mAdapter.isClicked
+                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mDownX = event.getRawX();
                             mDownY = event.getRawY();
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (!mIsSelected && !mAdapter.isClicked) {
+                        if (!mIsSelected && !mAdapter.isClicked
+                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mMoveX = event.getRawX();
                             mMoveY = event.getRawY();
                             mFrameSelectView.setPositionCoordinate(mDownX < mMoveX ? mDownX : mMoveX,
@@ -468,14 +464,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                     mDatas.get(i).setIsChecked(true);
                                     mAdapter.getSelectedPosList().add(i);
                                 }
-                                mAdapter.setData(mDatas);
                                 mAdapter.notifyDataSetChanged();
                             }
                             mFrameSelectView.invalidate();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (!mIsSelected && !mAdapter.isClicked) {
+                        if (!mIsSelected && !mAdapter.isClicked
+                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
                             mFrameSelectView.invalidate();
                             mTempList.clear();
@@ -514,7 +510,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             Collections.swap(mDatas, from + i, from + i + 1);
                         }
                     }
-                    mAdapter.setData(mDatas);
                     mAdapter.notifyItemMoved(from, to);
                     mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                 }
@@ -543,7 +538,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mAdapter.getSelectedPosList().add(i);
                     }
                 }
-                mAdapter.setData(mDatas);
                 mAdapter.notifyDataSetChanged();
             }
             if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectedPosList() != null) {

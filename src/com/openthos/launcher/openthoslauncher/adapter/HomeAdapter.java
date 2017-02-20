@@ -50,7 +50,7 @@ import java.util.ArrayList;
  * Created by xu on 2016/8/8.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
-    private List<IconEntity> data;
+    private List<IconEntity> mDatas;
     private List<Integer> selectedPositions;
     private RecycleCallBack mRecycleClick;
 
@@ -67,14 +67,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private HomeViewHolder mHolder;
     public boolean mIsRenameFirst;
 
-    public HomeAdapter(List<IconEntity> data, RecycleCallBack click) {
-        this.data = data;
-        this.mRecycleClick = click;
+    public HomeAdapter(List<IconEntity> datas, RecycleCallBack click) {
+        mDatas = datas;
+        mRecycleClick = click;
         selectedPositions = new ArrayList<>();
-    }
-
-    public void setData(List<IconEntity> data) {
-        this.data = data;
     }
 
     public void notifyText(String commitText) {
@@ -104,24 +100,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mDatas.size();
     }
 
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
-        holder.tv.setText(data.get(position).getName());
-        if (data.get(position).isChecked()) {
+        holder.tv.setText(mDatas.get(position).getName());
+        if (mDatas.get(position).isChecked()) {
             holder.item.setBackgroundResource(R.drawable.icon_background);
-        } else if (!data.get(position).isChecked()) {
+        } else if (!mDatas.get(position).isChecked()) {
             holder.item.setBackgroundResource(R.drawable.icon_background_trans);
         }
-        if (data.get(position).isBlank()) {
+        if (mDatas.get(position).isBlank()) {
             holder.nullnull.setChecked(true);
-        } else if (!data.get(position).isBlank()) {
+        } else if (!mDatas.get(position).isBlank()) {
             holder.nullnull.setChecked(false);
         }
-        if (data.get(position).getIcon() != null) {
-            holder.iv.setImageDrawable(data.get(position).getIcon());
+        if (mDatas.get(position).getIcon() != null) {
+            holder.iv.setImageDrawable(mDatas.get(position).getIcon());
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }
@@ -186,7 +182,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (getAdapterPosition() != -1) {
                 if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                     if (selectedPositions != null) {
-                        if (data.get(getAdapterPosition()).isBlank()) {
+                        if (mDatas.get(getAdapterPosition()).isBlank()) {
                             setSelectedCurrent(-1);
                             showDialog(event, LESS);
                         } else {
@@ -197,21 +193,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             }
                         }
                     }
-                } else if (!data.get(getAdapterPosition()).isBlank()) {
+                } else if (!mDatas.get(getAdapterPosition()).isBlank()) {
                     isClicked = true;
                     if (MainActivity.mIsCtrlPress) {
                         boolean isSelected = false;
                         for (int i = 0; i < selectedPositions.size(); i++) {
                             if (selectedPositions.get(i) == getAdapterPosition()) {
                                 isSelected = true;
-                                data.get(selectedPositions.get(i)).setIsChecked(false);
+                                mDatas.get(selectedPositions.get(i)).setIsChecked(false);
                                 selectedPositions.remove(i);
                                 break;
                             }
                         }
                         if (!isSelected) {
                             selectedPositions.add(getAdapterPosition());
-                            data.get(getAdapterPosition()).setIsChecked(true);
+                            mDatas.get(getAdapterPosition()).setIsChecked(true);
                         }
                     } else {
                         if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
@@ -219,8 +215,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                               < OtoConsts.DOUBLE_CLICK_TIME
                                 && getLastClickPos() == getAdapterPosition()) {
                             OperateUtils.enter(item.getContext(),
-                                             data.get(getAdapterPosition()).getPath(),
-                                             data.get(getAdapterPosition()).getType());
+                                             mDatas.get(getAdapterPosition()).getPath(),
+                                             mDatas.get(getAdapterPosition()).getType());
                         } else {
                             setSelectedCurrent(getAdapterPosition());
                         }
@@ -251,15 +247,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 }
             }
             if (isSelected) {
-                Type type = data.get(getAdapterPosition()).getType();
+                Type type = mDatas.get(getAdapterPosition()).getType();
                 if (type == Type.COMPUTER || type == Type.RECYCLE) {
                     setSelectedCurrent(getAdapterPosition());
                     showDialog(event, LESS);
                 } else {
                     for (int i = 0; i < selectedPositions.size(); i++) {
-                        Type types = data.get(i).getType();
+                        Type types = mDatas.get(i).getType();
                         if (types == Type.COMPUTER || types == Type.RECYCLE) {
-                            data.get(i).setIsChecked(false);
+                            mDatas.get(i).setIsChecked(false);
                         }
                     }
                     showDialog(event, MORE);
@@ -276,15 +272,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             String path = null;
             switch (selectedNum) {
                 case LESS:
-                    type = data.get(getAdapterPosition()).getType();
-                    path = data.get(getAdapterPosition()).getPath();
+                    type = mDatas.get(getAdapterPosition()).getType();
+                    path = mDatas.get(getAdapterPosition()).getPath();
                     break;
                 case MORE:
                     type = Type.MORE;
                     path = "";
                     for (int i = 0; i < selectedPositions.size(); i++) {
                         path = path + Intent.EXTRA_DELETE_FILE_HEADER +
-                                            data.get(selectedPositions.get(i)).getPath();
+                                            mDatas.get(selectedPositions.get(i)).getPath();
                     }
                     break;
             }
@@ -294,14 +290,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     }
 
     public void setSelectedCurrent(int current) {
-        if (data != null && data.size() > 0) {
+        if (mDatas != null && mDatas.size() > 0) {
             for (int i : selectedPositions) {
-                data.get(i).setIsChecked(false);
+                mDatas.get(i).setIsChecked(false);
             }
         }
         selectedPositions.clear();
-        if (current >= 0 && current < data.size()){
-            data.get(current).setIsChecked(true);
+        if (current >= 0 && current < mDatas.size()){
+            mDatas.get(current).setIsChecked(true);
             selectedPositions.add(current);
         }
     }
@@ -329,10 +325,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     };
 
     private boolean confirmRename(final EditText v, final int position) {
-        final IconEntity icon = data.get(position);
+        final IconEntity icon = mDatas.get(position);
         String path = icon.getPath();
         String newName = String.valueOf(v.getText());
-        for (IconEntity currentIcon : data) {
+        for (IconEntity currentIcon : mDatas) {
             if (currentIcon.getName().equals(newName)) {
                 if (!icon.getName().equals(newName)) {
                 DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
@@ -404,7 +400,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     }
 
     private void rename(EditText v, int position) {
-        IconEntity icon = data.get(position);
+        IconEntity icon = mDatas.get(position);
         final String path = icon.getPath();
         final String newName = String.valueOf(v.getText());
         File oldFile = new File(path);
@@ -425,12 +421,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         icon.setName(newName);
         icon.setPath(newFile.getAbsolutePath());
-        data.set(position, icon);
+        mDatas.set(position, icon);
         notifyDataSetChanged();
-        IconEntity mIcon = ((MainActivity) mRecycleClick).mDatas.get(getLastClickPos());
+        IconEntity mIcon = mDatas.get(getLastClickPos());
         mIcon.setName(newName);
         mIcon.setPath(newFile.getAbsolutePath());
-        ((MainActivity)mRecycleClick).mDatas.set(getLastClickPos(), mIcon);
         v.setFocusable(false);
         v.clearFocus();
         isRename = false;
