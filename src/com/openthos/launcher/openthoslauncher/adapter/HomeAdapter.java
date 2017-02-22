@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * Created by xu on 2016/8/8.
@@ -440,15 +441,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             if (fileName.indexOf("/") != -1) {
                 return OtoConsts.FILE_NAME_ILLEGAL;
             }
-            for (int i = 0; i < OtoConsts.NAMESTART.length; i++) {
-                if (fileName.startsWith(OtoConsts.NAMESTART[i])) {
-                    return OtoConsts.FILE_NAME_WARNING;
-                }
-            }
-            for (int i = 0; i < OtoConsts.NAMEBODY.length; i++) {
-                if (fileName.indexOf(OtoConsts.NAMEBODY[i]) != -1) {
-                    return OtoConsts.FILE_NAME_WARNING;
-                }
+            if (!Pattern.compile("[^@#\\$\\^&*\\(\\)\\[\\]]*").matcher(fileName).matches()) {
+                return OtoConsts.FILE_NAME_WARNING;
             }
             return OtoConsts.FILE_NAME_LEGAL;
         }

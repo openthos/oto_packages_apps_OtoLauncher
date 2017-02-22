@@ -347,5 +347,5 @@
     <string name="dialog_clean_recycle">确认清空回收站?</string>
     <string name="file_name_illegal">文件名含有非法字符 /</string>
     <string name="file_name_not_null">文件名不能为空。</string>
-    <string name="file_name_warning">提示：\n请避免文件名使用以下字符开头：+ - .\n请避免文件名含有以下字符：@ # $ ^ &amp; * ( ) [ ]\n\n确认使用此文件名？</string>
+    <string name="file_name_warning">提示：\n请避免文件名含有以下字符：@ # $ ^ &amp; * ( ) [ ]\n\n确认使用此文件名？</string>
 </resources>

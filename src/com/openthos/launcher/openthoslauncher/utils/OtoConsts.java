@@ -92,6 +92,4 @@ public class OtoConsts {
     public static final int FILE_NAME_NULL = 1;
     public static final int FILE_NAME_ILLEGAL = 2;
     public static final int FILE_NAME_WARNING = 3;
-    public static final String[] NAMESTART = {"+", "-", "."};
-    public static final String[] NAMEBODY = {"@", "#", "$", "^", "&", "*", "(", ")", "[", "]"};
 }
