@@ -88,6 +88,7 @@ public class OtoConsts {
     public static final String SUFFIX_TAR_GZIP = ".gz";
     public static final String SUFFIX_TAR_BZIP2 = ".bz2";
     public static final String SUFFIX_ZIP = ".zip";
+    public static final String SUFFIX_RAR = ".rar";
     public static final int FILE_NAME_LEGAL = 0;
     public static final int FILE_NAME_NULL = 1;
     public static final int FILE_NAME_ILLEGAL = 2;

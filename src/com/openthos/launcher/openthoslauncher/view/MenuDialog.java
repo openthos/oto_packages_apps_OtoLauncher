@@ -119,15 +119,18 @@ public class MenuDialog extends Dialog {
                                                                        && type == Type.DIRECTORY) {
                 continue;
             }
+            String endPath = path.toLowerCase();
             if ((s[i].equals(context.getResources().getString(R.string.decompression))
-                        && !(path.endsWith(OtoConsts.SUFFIX_TAR)
-                         || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
-                         || path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
-                         || path.endsWith(OtoConsts.SUFFIX_ZIP)))
+                        && !(endPath.endsWith(OtoConsts.SUFFIX_TAR)
+                         || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                         || endPath.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                         || endPath.endsWith(OtoConsts.SUFFIX_ZIP)
+                         || endPath.endsWith(OtoConsts.SUFFIX_RAR)))
                 || (s[i].equals(context.getResources().getString(R.string.compress))
-                        && (path.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
-                          || path.endsWith(OtoConsts.SUFFIX_ZIP)
-                          || path.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)))
+                        && (endPath.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
+                          || endPath.endsWith(OtoConsts.SUFFIX_ZIP)
+                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
+                          || endPath.endsWith(OtoConsts.SUFFIX_RAR)))
                 || (s[i].equals(context.getResources().getString(R.string.paste))
                         && !((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
                                || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))) {
