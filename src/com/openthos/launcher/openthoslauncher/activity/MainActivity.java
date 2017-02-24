@@ -539,8 +539,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-            }
-            if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectedPosList() != null) {
+            } else if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectedPosList() != null) {
                 String deletePath = getSelectedPath(OtoConsts.DELETE);
                 if (deletePath != null) {
                     Message deleteFile = new Message();
@@ -548,22 +547,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     deleteFile.what = OtoConsts.DELETE;
                     mHandler.sendMessage(deleteFile);
                 }
-            }
-            if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null) {
+            } else if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null) {
                 String cropPath = getSelectedPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(cropPath);
                 }
-            }
-            if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null) {
+            } else if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null) {
                 String copyPath = getSelectedPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
                     ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                             .setText(copyPath);
                 }
-            }
-            if (keyCode == KeyEvent.KEYCODE_V) {
+            } else if (keyCode == KeyEvent.KEYCODE_V) {
                 String sourcePath = "";
                 try {
                     sourcePath = (String)
@@ -646,7 +642,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
         return null;
     }
-
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {

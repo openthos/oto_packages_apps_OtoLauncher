@@ -265,6 +265,10 @@
     <add-resource type="string" name="launcher_doc" />
     <add-resource type="string" name="launcher_ppt" />
     <add-resource type="string" name="launcher_xls" />
+    <add-resource type="string" name="launcher_txt_info" />
+    <add-resource type="string" name="launcher_doc_info" />
+    <add-resource type="string" name="launcher_ppt_info" />
+    <add-resource type="string" name="launcher_xls_info" />
     <add-resource type="string" name="dialog_new_file_title" />
     <add-resource type="string" name="copy_info" />
     <add-resource type="string" name="open_with" />
@@ -336,6 +340,10 @@
     <string name="launcher_doc">.doc</string>
     <string name="launcher_xls">.xls</string>
     <string name="launcher_ppt">.ppt</string>
+    <string name="launcher_txt_info">TXT文本文档</string>
+    <string name="launcher_doc_info">Word文本文档</string>
+    <string name="launcher_xls_info">Excel表格文档</string>
+    <string name="launcher_ppt_info">PowerPoint幻灯片文档</string>
     <string name="dialog_new_file_title">请选择要创建的文件的格式</string>
     <string name="open_with">打开方式</string>
     <string name="can_not_open">找不到相应的打开应用程序</string>

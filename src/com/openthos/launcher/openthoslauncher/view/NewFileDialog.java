@@ -49,14 +49,22 @@ public class NewFileDialog extends Dialog {
         View.OnClickListener click= new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int id = -1;
                 switch (v.getId()) {
                     case R.id.txt:
+                        id = R.string.launcher_txt;
+                        break;
                     case R.id.doc:
+                        id = R.string.launcher_doc;
+                        break;
                     case R.id.ppt:
+                        id = R.string.launcher_ppt;
+                        break;
                     case R.id.xls:
-                        mFormat = ((RadioButton) v).getText().toString();
+                        id = R.string.launcher_xls;
                         break;
                 }
+                mFormat = mContext.getString(id);
             }
         };
         txt.setOnClickListener(click);
