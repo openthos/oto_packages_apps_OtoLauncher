@@ -172,6 +172,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
                         mAdapter.mIsRenameFirst = true;
+                        mAdapter.mRenamePos = mAdapter.getLastClickPos();
                         mAdapter.notifyDataSetChanged();
                         break;
                     case OtoConsts.PROPERTY:
@@ -424,11 +425,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if (!mAdapter.isClicked && mAdapter.getLastClickPos() != -1) {
                             mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
                             mAdapter.setSelectedCurrent(-1);
-                            mAdapter.notifyDataSetChanged();
                             if (mAdapter.isRename) {
                                 mAdapter.isRename = false;
-                                mAdapter.notifyDataSetChanged();
                             }
+                            mAdapter.notifyDataSetChanged();
                         }
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
