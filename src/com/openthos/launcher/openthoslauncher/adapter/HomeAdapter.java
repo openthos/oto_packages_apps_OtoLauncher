@@ -60,6 +60,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public boolean isClicked = false;
     public boolean isRename = false;
     public int mRenamePos = -1;
+    public int mShiftPos = -1;
 
     private static final int LESS = 0;
     private static final int MORE = 1;
@@ -141,6 +142,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         CheckBox checkBox;
         CheckBox nullnull;
         private RecycleCallBack mClick;
+        private boolean mIsSelected = false;
 
         public HomeViewHolder(View view, RecycleCallBack click) {
             super(view);
@@ -200,38 +202,67 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     }
                 } else if (!mDatas.get(getAdapterPosition()).isBlank()) {
                     isClicked = true;
-                    if (MainActivity.mIsCtrlPress) {
-                        boolean isSelected = false;
-                        for (int i = 0; i < selectedPositions.size(); i++) {
-                            if (selectedPositions.get(i) == getAdapterPosition()) {
-                                isSelected = true;
-                                mDatas.get(selectedPositions.get(i)).setIsChecked(false);
-                                selectedPositions.remove(i);
-                                break;
+                    if (MainActivity.mIsShiftPress) {
+                        if (mShiftPos == -1) {
+                            mShiftPos = getAdapterPosition();
+                        }
+                        setSelectedCurrent(mShiftPos);
+                        if (mShiftPos != getAdapterPosition()) {
+                            for (int i = Math.min(mShiftPos, getAdapterPosition());
+                                       i <= Math.max(mShiftPos, getAdapterPosition()); i++) {
+                                if (i == mShiftPos || mDatas.get(i).isBlank()) {
+                                    continue;
+                                }
+                                for (int j = 0; j < selectedPositions.size(); j++) {
+                                    if (selectedPositions.get(j) == i) {
+                                        mIsSelected = true;
+                                        break;
+                                    }
+                                }
+                                if (!mIsSelected) {
+                                    selectedPositions.add(i);
+                                    mDatas.get(i).setIsChecked(true);
+                                    mIsSelected = false;
+                                }
                             }
                         }
-                        if (!isSelected) {
-                            selectedPositions.add(getAdapterPosition());
-                            mDatas.get(getAdapterPosition()).setIsChecked(true);
-                        }
                     } else {
-                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
-                                && (System.currentTimeMillis() - mLastClickTime)
-                                                              < OtoConsts.DOUBLE_CLICK_TIME
-                                && getLastClickPos() == getAdapterPosition()) {
-                            OperateUtils.enter(item.getContext(),
-                                             mDatas.get(getAdapterPosition()).getPath(),
-                                             mDatas.get(getAdapterPosition()).getType());
+                        mShiftPos = getAdapterPosition();
+                        if (MainActivity.mIsCtrlPress) {
+                            for (int i = 0; i < selectedPositions.size(); i++) {
+                                if (selectedPositions.get(i) == getAdapterPosition()) {
+                                    mIsSelected = true;
+                                    mDatas.get(selectedPositions.get(i)).setIsChecked(false);
+                                    selectedPositions.remove(i);
+                                    break;
+                                }
+                            }
+                            if (!mIsSelected) {
+                                selectedPositions.add(getAdapterPosition());
+                                mDatas.get(getAdapterPosition()).setIsChecked(true);
+                                mIsSelected = false;
+                            }
                         } else {
-                            setSelectedCurrent(getAdapterPosition());
+                            if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
+                                    && (System.currentTimeMillis() - mLastClickTime)
+                                                                  < OtoConsts.DOUBLE_CLICK_TIME
+                                    && getLastClickPos() == getAdapterPosition()) {
+                                OperateUtils.enter(item.getContext(),
+                                                 mDatas.get(getAdapterPosition()).getPath(),
+                                                 mDatas.get(getAdapterPosition()).getType());
+                            } else {
+                                setSelectedCurrent(getAdapterPosition());
+                            }
                         }
+                        mLastClickTime = System.currentTimeMillis();
                     }
-                    mLastClickTime = System.currentTimeMillis();
                 } else {
-                    isClicked = false;
-                    ((MainActivity) mRecycleClick).setIsSelected(false);
-                    ((MainActivity) mRecycleClick).setLocation(event.getRawX(), event.getRawY());
-                    setSelectedCurrent(-1);
+                    if (!MainActivity.mIsCtrlPress && !MainActivity.mIsShiftPress) {
+                        isClicked = false;
+                        ((MainActivity) mRecycleClick).setIsSelected(false);
+                        ((MainActivity) mRecycleClick).setLocation(event.getRawX(), event.getRawY());
+                        setSelectedCurrent(-1);
+                    }
                 }
                 notifyDataSetChanged();
             }
@@ -304,6 +335,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         if (current >= 0 && current < mDatas.size()){
             mDatas.get(current).setIsChecked(true);
             selectedPositions.add(current);
+        } else {
+            mShiftPos = -1;
         }
     }
 

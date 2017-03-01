@@ -64,6 +64,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private ItemTouchHelper mItemTouchHelper;
     public static Handler mHandler;
     public static boolean mIsCtrlPress;
+    public static boolean mIsShiftPress;
     private int mHeightNum;
     private SharedPreferences mSp;
     private int mSumNum;
@@ -418,6 +419,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        if (mIsCtrlPress || mIsShiftPress) {
+                            break;
+                        }
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
@@ -437,6 +441,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        if (mIsCtrlPress || mIsShiftPress) {
+                            break;
+                        }
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mMoveX = event.getRawX();
@@ -470,6 +477,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        if (mIsCtrlPress || mIsShiftPress) {
+                            break;
+                        }
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
@@ -520,6 +530,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mIsCtrlPress = event.isCtrlPressed();
+        mIsShiftPress = event.isShiftPressed();
         if (!mAdapter.isRename) {
            return keyDealing(keyCode, event);
         }
@@ -646,6 +657,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         mIsCtrlPress = event.isCtrlPressed();
+        mIsShiftPress = event.isShiftPressed();
         return super.onKeyUp(keyCode, event);
     }
 
@@ -882,6 +894,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     KeyEvent event = bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT);
                     boolean isKeyDown = bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN);
                     mIsCtrlPress = event.isCtrlPressed();
+                    mIsShiftPress = event.isShiftPressed();
                     if (isKeyDown) {
                         keyDealing(keyCode, event);
                     }
@@ -892,6 +905,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mAdapter.notifyText(mCommitText);
                     }
                 case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
+                    mIsCtrlPress = false;
+                    mIsShiftPress = false;
                     break;
             }
         }
