@@ -35,6 +35,7 @@ import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
+import com.openthos.launcher.openthoslauncher.utils.RenameUtils;
 import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.FrameSelectView;
 import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
@@ -538,7 +539,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private boolean keyDealing(int keyCode, KeyEvent event) {
-        if (event.isCtrlPressed()) {
+        if (event.isCtrlPressed() && !mAdapter.isRename) {
             if (keyCode == KeyEvent.KEYCODE_A) {
                 mAdapter.setSelectedCurrent(-1);
                 for (int i = 0; i< mDatas.size(); i++) {
@@ -593,7 +594,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL
-                                                      && mAdapter.getSelectedPosList() != null) {
+                       && mAdapter.getSelectedPosList() != null && !mAdapter.isRename) {
             String deletePath = getSelectedPath(OtoConsts.DELETE);
             if (deletePath != null) {
                 Message deleteFile = new Message();
@@ -619,9 +620,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             OperateUtils.enter(this, mDatas.get(mAdapter.getLastClickPos()).getPath(),
                                      mDatas.get(mAdapter.getLastClickPos()).getType());
         } else {
-            String textEnglish = switchKeyCodeToString(event, keyCode);
-            if (mAdapter.isRename) {
+            String textEnglish = RenameUtils.switchKeyCodeToString(event, keyCode);
+            if (mAdapter.isRename && textEnglish != null) {
                 mAdapter.notifyText(textEnglish);
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -909,76 +911,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mIsShiftPress = false;
                     break;
             }
-        }
-    }
-
-    private String switchKeyCodeToString(KeyEvent event, int keyCode) {
-        int keyChar = 0;
-        if (keyCode >= KeyEvent.KEYCODE_A && keyCode <= KeyEvent.KEYCODE_Z) {
-            keyChar = keyCode - KeyEvent.KEYCODE_A + 'a';
-        } else if (keyCode >= KeyEvent.KEYCODE_0
-                && keyCode <= KeyEvent.KEYCODE_9
-                && !event.isShiftPressed()) {
-            keyChar = keyCode - KeyEvent.KEYCODE_0 + '0';
-        } else if (keyCode == KeyEvent.KEYCODE_COMMA) {
-            keyChar = ',';
-        } else if (keyCode == KeyEvent.KEYCODE_PERIOD) {
-            keyChar = '.';
-        } else if (keyCode == KeyEvent.KEYCODE_SPACE) {
-            keyChar = ' ';
-        } else if (keyCode == KeyEvent.KEYCODE_APOSTROPHE) {
-            keyChar = '\'';
-        } else if (keyCode == KeyEvent.KEYCODE_SLASH) {
-            keyChar = '/';
-        } else if (keyCode == KeyEvent.KEYCODE_SEMICOLON) {
-            keyChar = ';';
-        } else if (keyCode == KeyEvent.KEYCODE_BACKSLASH) {
-            keyChar = '\\';
-        } else if (keyCode == KeyEvent.KEYCODE_LEFT_BRACKET) {
-            keyChar = '[';
-        } else if (keyCode == KeyEvent.KEYCODE_RIGHT_BRACKET) {
-            keyChar = ']';
-        } else if (keyCode == KeyEvent.KEYCODE_GRAVE && !event.isShiftPressed()) {
-            keyChar = '`';
-        } else if (keyCode == KeyEvent.KEYCODE_MINUS && !event.isShiftPressed()) {
-            keyChar = '-';
-        } else if (keyCode == KeyEvent.KEYCODE_EQUALS && !event.isShiftPressed()) {
-            keyChar = '=';
-        } else if (event.isShiftPressed()) {
-            if (keyCode == KeyEvent.KEYCODE_0) {
-                keyChar = ')';
-            } else if (keyCode == KeyEvent.KEYCODE_1) {
-                keyChar = '!';
-            } else if (keyCode == KeyEvent.KEYCODE_2) {
-                keyChar = '@';
-            } else if (keyCode == KeyEvent.KEYCODE_3) {
-                keyChar = '#';
-            } else if (keyCode == KeyEvent.KEYCODE_4) {
-                keyChar = '$';
-            } else if (keyCode == KeyEvent.KEYCODE_5) {
-                keyChar = '%';
-            } else if (keyCode == KeyEvent.KEYCODE_6) {
-                keyChar = '^';
-            } else if (keyCode == KeyEvent.KEYCODE_7) {
-                keyChar = '&';
-            } else if (keyCode == KeyEvent.KEYCODE_8) {
-                keyChar = '*';
-            } else if (keyCode == KeyEvent.KEYCODE_9) {
-                keyChar = '(';
-            } else if (keyCode == KeyEvent.KEYCODE_GRAVE) {
-                keyChar = '~';
-            } else if (keyCode == KeyEvent.KEYCODE_MINUS) {
-                keyChar = '_';
-            } else if (keyCode == KeyEvent.KEYCODE_EQUALS) {
-                keyChar = '+';
-            }
-        }
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            return Intent.EXTRA_DESKTOP_ENTER;
-        } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            return Intent.EXTRA_DESKTOP_BACK;
-        } else {
-            return String.valueOf((char) keyChar);
         }
     }
 

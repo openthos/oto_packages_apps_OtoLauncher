@@ -36,6 +36,7 @@ import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
+import com.openthos.launcher.openthoslauncher.utils.RenameUtils;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.entity.IconEntity;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
@@ -82,14 +83,42 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         mIndex = mHolder.tv.getSelectionStart();
         mEdit = mHolder.tv.getText();
-        if (Intent.EXTRA_DESKTOP_ENTER.equals(commitText)) {
-            confirmRename(mHolder.tv, mRenamePos);
-        } else if (Intent.EXTRA_DESKTOP_BACK.equals(commitText)) {
-            if (mIndex > 0) {
-                mEdit.delete(mIndex - 1, mIndex);
-            }
-        } else {
-            mEdit.insert(mIndex, commitText);
+        switch (commitText) {
+            case Intent.EXTRA_DESKTOP_ENTER:
+                mHolder.tv.setFocusable(false);
+                mHolder.tv.clearFocus();
+                isRename = false;
+                mHolder = null;
+                break;
+            case Intent.EXTRA_DESKTOP_BACK:
+                if (mIndex > 0) {
+                    mEdit.delete(mIndex - 1, mIndex);
+                }
+                break;
+            case RenameUtils.DELETE_CHAR:
+                if (mIndex < mEdit.length()) {
+                    mEdit.delete(mIndex, mIndex + 1);
+                }
+                break;
+            case RenameUtils.HOME:
+                mHolder.tv.setSelection(0);
+                break;
+            case RenameUtils.END:
+                mHolder.tv.setSelection(mEdit.length());
+                break;
+            case RenameUtils.LEFT:
+                if ((mIndex -1) >= 0) {
+                    mHolder.tv.setSelection(mIndex - 1);
+                }
+                break;
+            case RenameUtils.RIGHT:
+                if ((mIndex + 1) <= mEdit.length()) {
+                    mHolder.tv.setSelection(mIndex + 1);
+                }
+                break;
+            default:
+                mEdit.insert(mIndex, commitText);
+                break;
         }
         mIsRenameFirst = false;
     }

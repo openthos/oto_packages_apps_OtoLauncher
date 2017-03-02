@@ -16,8 +16,6 @@ public class OtoConsts {
     public static final String DESKTOP_DATA = "com.android.launcher3.DesktopData";
     public static final String DESKTOP_INPUT =
                   "com.android.launcher3/com.openthos.launcher.openthoslauncher.activity.InputIME";
-    public static final String INTERCEPT_ONKEYDOWN_KEYCODE = "keyCode";
-    public static final String INTERCEPT_ONKEYDOWN_KEYEVENT = "event";
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
