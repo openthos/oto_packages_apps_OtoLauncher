@@ -456,6 +456,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         icon.setName(newName);
         icon.setPath(newFile.getAbsolutePath());
+        icon.setIcon(FileUtils.getFileIcon(newFile.getAbsolutePath(),
+                                                       (MainActivity) mRecycleClick));
         mDatas.set(position, icon);
         MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
         return true;
