@@ -579,6 +579,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 } catch (ClassCastException e) {
                     sourcePath = "";
                 }
+                if (sourcePath == null) {
+                    sourcePath = "";
+                }
                 if(!(sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)
                                    || sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))){
                    return true;

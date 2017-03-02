@@ -317,11 +317,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     setSelectedCurrent(getAdapterPosition());
                     showDialog(event, LESS);
                 } else {
+                    int computerPos = -1;
+                    int recyclePos = -1;
                     for (int i = 0; i < selectedPositions.size(); i++) {
                         Type types = mDatas.get(i).getType();
-                        if (types == Type.COMPUTER || types == Type.RECYCLE) {
+                        if (types == Type.COMPUTER) {
                             mDatas.get(i).setIsChecked(false);
+                            computerPos = i;
+                        } else if (types == Type.RECYCLE) {
+                            mDatas.get(i).setIsChecked(false);
+                            recyclePos = i;
                         }
+                    }
+                    if (recyclePos != -1) {
+                        selectedPositions.remove(recyclePos);
+                    }
+                    if (computerPos != -1) {
+                        selectedPositions.remove(computerPos);
                     }
                     showDialog(event, MORE);
                 }
