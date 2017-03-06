@@ -320,7 +320,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     int computerPos = -1;
                     int recyclePos = -1;
                     for (int i = 0; i < selectedPositions.size(); i++) {
-                        Type types = mDatas.get(i).getType();
+                        Type types = mDatas.get(selectedPositions.get(i)).getType();
                         if (types == Type.COMPUTER) {
                             mDatas.get(i).setIsChecked(false);
                             computerPos = i;
@@ -497,8 +497,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         icon.setName(newName);
         icon.setPath(newFile.getAbsolutePath());
-        icon.setIcon(FileUtils.getFileIcon(newFile.getAbsolutePath(),
+        if (icon.getType() == Type.FILE) {
+            icon.setIcon(FileUtils.getFileIcon(newFile.getAbsolutePath(),
                                                        (MainActivity) mRecycleClick));
+        }
         mDatas.set(position, icon);
         MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
         return true;

@@ -298,6 +298,7 @@ public class MenuDialog extends Dialog {
                                 if (!recycle.exists()) {
                                     recycle.mkdir();
                                 }
+                                MainActivity.getResolver().delete(MainActivity.getUri(), null, null);
                             }
                         }.start();
                     }

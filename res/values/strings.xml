@@ -518,6 +518,8 @@ s -->
     <add-resource type="string" name="file_name_illegal" />
     <add-resource type="string" name="file_name_not_null" />
     <add-resource type="string" name="file_name_warning" />
+    <add-resource type="string" name="confirm_limit" />
+    <add-resource type="string" name="dialog_count" />
 
     <string name="app_name">OpenthosLauncher</string>
     <string name="my_computer">My Computer</string>
@@ -590,4 +592,6 @@ s -->
     <string name="file_name_illegal">File name contains illegal character /</string>
     <string name="file_name_not_null">File name must not be null.</string>
     <string name="file_name_warning">Warning:\nAvoid containing these chractors: @ # $ ^ &amp; * ( ) [ ].\nDo you determine use this file name?</string>
+    <string name="confirm_limit">Are you sure you want to change the file permissions?\nSome files may not be modified because of system protection!</string>
+    <string name="dialog_count">In calculation……</string>
 </resources>

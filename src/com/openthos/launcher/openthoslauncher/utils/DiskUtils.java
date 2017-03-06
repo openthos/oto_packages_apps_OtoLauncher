@@ -1,6 +1,8 @@
 package com.openthos.launcher.openthoslauncher.utils;
 
 import android.os.Environment;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 
 import android.os.Message;
 import java.io.File;
@@ -167,6 +169,12 @@ public class DiskUtils {
                 }
             }
         }
+        if (destDir.equals(OtoConsts.RECYCLE_PATH)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("source", OtoConsts.DESKTOP_PATH);
+            contentValues.put("filename", destFile.getName());
+            MainActivity.getResolver().insert(MainActivity.getUri(), contentValues);
+        }
     }
 
     public static String formatFileSize(long fileSize) {
@@ -182,6 +190,9 @@ public class DiskUtils {
             fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_GB) + "G";
         }else {
             fileSizeString = df.format((double) fileSize / OtoConsts.SIZE_TB) + "T";
+        }
+        if (fileSizeString.equals(".00B")) {
+            fileSizeString = "0.00B";
         }
         return fileSizeString;
     }

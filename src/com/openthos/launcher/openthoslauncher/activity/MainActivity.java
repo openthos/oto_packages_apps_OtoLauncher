@@ -2,6 +2,7 @@ package com.openthos.launcher.openthoslauncher.activity;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -78,6 +80,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private boolean mIsSelected;
     private ArrayList<IconParams> mPosList;
     private ArrayList<Integer> mTempList;
+    private static ContentResolver mContentResolver;
+    private static Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +236,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         intentFilter.addAction(Intent.ACTION_DESKTOP_INTERCEPT);
         intentFilter.addAction(Intent.ACTION_DESKTOP_COMMIT_TEXT);
         registerReceiver(mSdReceiver, intentFilter);
+        mContentResolver = getContentResolver();
+        mUri = Uri.parse("content://com.openthos.filemanager/recycle");
     }
 
     private class CopyThread extends Thread {
@@ -974,5 +980,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public void setLocation(float x, float y) {
         mDownX = x;
         mDownY = y;
+    }
+
+    public static ContentResolver getResolver() {
+        return mContentResolver;
+    }
+
+    public static Uri getUri() {
+        return mUri;
     }
 }
