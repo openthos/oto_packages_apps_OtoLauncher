@@ -79,7 +79,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private float mDownX, mDownY, mMoveX, mMoveY;
     private boolean mIsSelected;
     private ArrayList<IconParams> mPosList;
-    private ArrayList<Integer> mTempList;
+    private ArrayList<IconEntity> mTempList;
     private static ContentResolver mContentResolver;
     private static Uri mUri;
 
@@ -464,19 +464,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 if (frameSelectionJudge(
                                                  mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
                                     if (mDatas.get(i).isBlank() == false){
-                                        mTempList.add(i);
+                                        mTempList.add(mDatas.get(i));
                                     }
                                 }
                             }
                             if (!(mAdapter.getSelectedPosList().containsAll(mTempList)
                                      && mAdapter.getSelectedPosList().size() == mTempList.size())) {
-                                for (int i : mAdapter.getSelectedPosList()) {
-                                    mDatas.get(i).setIsChecked(false);
+                                for (IconEntity icon : mAdapter.getSelectedPosList()) {
+                                    icon.setIsChecked(false);
                                 }
                                 mAdapter.getSelectedPosList().clear();
-                                for (int i : mTempList) {
-                                    mDatas.get(i).setIsChecked(true);
-                                    mAdapter.getSelectedPosList().add(i);
+                                for (IconEntity icon : mTempList) {
+                                    icon.setIsChecked(true);
+                                    mAdapter.getSelectedPosList().add(icon);
                                 }
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -552,8 +552,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     if (mDatas.get(i).isBlank() == false){
                         IconEntity icon = mDatas.get(i);
                         icon.setIsChecked(true);
-                        mDatas.set(i, icon);
-                        mAdapter.getSelectedPosList().add(i);
+                        mAdapter.getSelectedPosList().add(icon);
                     }
                 }
                 mAdapter.notifyDataSetChanged();
@@ -642,20 +641,20 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         StringBuffer buff = new StringBuffer();
         if (mAdapter.getSelectedPosList() != null && mAdapter.getSelectedPosList().size() > 0) {
             for (int i = 0; i < mAdapter.getSelectedPosList().size(); i++) {
-                Type type = mDatas.get(mAdapter.getSelectedPosList().get(i)).getType();
+                Type type = mAdapter.getSelectedPosList().get(i).getType();
                 if (type == Type.DIRECTORY || type == Type.FILE) {
                     switch (copyType) {
                         case OtoConsts.COPY_PASTE:
                             buff.append(Intent.EXTRA_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
+                                    + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                         case OtoConsts.CROP_PASTE:
                             buff.append(Intent.EXTRA_CROP_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
+                                    + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                         case OtoConsts.DELETE:
                             buff.append(Intent.EXTRA_DELETE_FILE_HEADER
-                                    + mDatas.get(mAdapter.getSelectedPosList().get(i)).getPath());
+                                    + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                     }
                 }

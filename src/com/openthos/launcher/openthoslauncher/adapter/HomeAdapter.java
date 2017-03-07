@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
     private List<IconEntity> mDatas;
-    private List<Integer> selectedPositions;
+    private List<IconEntity> selectedPositions;
     private RecycleCallBack mRecycleClick;
 
     private int mLastClickId = -1;
@@ -243,13 +243,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     continue;
                                 }
                                 for (int j = 0; j < selectedPositions.size(); j++) {
-                                    if (selectedPositions.get(j) == i) {
+                                    if (selectedPositions.get(j) == mDatas.get(i)) {
                                         mIsSelected = true;
                                         break;
                                     }
                                 }
                                 if (!mIsSelected) {
-                                    selectedPositions.add(i);
+                                    selectedPositions.add(mDatas.get(i));
                                     mDatas.get(i).setIsChecked(true);
                                     mIsSelected = false;
                                 }
@@ -259,15 +259,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         mShiftPos = getAdapterPosition();
                         if (MainActivity.mIsCtrlPress) {
                             for (int i = 0; i < selectedPositions.size(); i++) {
-                                if (selectedPositions.get(i) == getAdapterPosition()) {
+                                if (mDatas.indexOf(selectedPositions.get(i))
+                                                                         == getAdapterPosition()) {
                                     mIsSelected = true;
-                                    mDatas.get(selectedPositions.get(i)).setIsChecked(false);
+                                    selectedPositions.get(i).setIsChecked(false);
                                     selectedPositions.remove(i);
                                     break;
                                 }
                             }
                             if (!mIsSelected) {
-                                selectedPositions.add(getAdapterPosition());
+                                selectedPositions.add(mDatas.get(getAdapterPosition()));
                                 mDatas.get(getAdapterPosition()).setIsChecked(true);
                                 mIsSelected = false;
                             }
@@ -306,7 +307,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         private void showMoreDialog(MotionEvent event) {
             boolean isSelected = false;
             for (int i = 0; i < selectedPositions.size(); i++) {
-                if (selectedPositions.get(i) == getAdapterPosition()) {
+                if (selectedPositions.get(i) == mDatas.get(getAdapterPosition())) {
                     isSelected = true;
                     break;
                 }
@@ -317,23 +318,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     setSelectedCurrent(getAdapterPosition());
                     showDialog(event, LESS);
                 } else {
-                    int computerPos = -1;
-                    int recyclePos = -1;
-                    for (int i = 0; i < selectedPositions.size(); i++) {
-                        Type types = mDatas.get(selectedPositions.get(i)).getType();
-                        if (types == Type.COMPUTER) {
-                            mDatas.get(i).setIsChecked(false);
-                            computerPos = i;
-                        } else if (types == Type.RECYCLE) {
-                            mDatas.get(i).setIsChecked(false);
-                            recyclePos = i;
+                    IconEntity computerTemp = null;
+                    IconEntity recycleTemp = null;
+                    for (IconEntity icon : selectedPositions) {
+                        if (icon.getType() == Type.COMPUTER) {
+                            icon.setIsChecked(false);
+                            computerTemp = icon;
+                        } else if (icon.getType() == Type.RECYCLE) {
+                            icon.setIsChecked(false);
+                            recycleTemp = icon;
                         }
                     }
-                    if (recyclePos != -1) {
-                        selectedPositions.remove(recyclePos);
+                    if (computerTemp != null) {
+                        selectedPositions.remove(computerTemp);
                     }
-                    if (computerPos != -1) {
-                        selectedPositions.remove(computerPos);
+                    if (recycleTemp != null) {
+                        selectedPositions.remove(recycleTemp);
                     }
                     showDialog(event, MORE);
                 }
@@ -356,8 +356,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     type = Type.MORE;
                     path = "";
                     for (int i = 0; i < selectedPositions.size(); i++) {
-                        path = path + Intent.EXTRA_DELETE_FILE_HEADER +
-                                            mDatas.get(selectedPositions.get(i)).getPath();
+                        path = path + Intent.EXTRA_DELETE_FILE_HEADER
+                                                              + selectedPositions.get(i).getPath();
                     }
                     break;
             }
@@ -368,14 +368,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public void setSelectedCurrent(int current) {
         if (mDatas != null && mDatas.size() > 0) {
-            for (int i : selectedPositions) {
-                mDatas.get(i).setIsChecked(false);
+            for (IconEntity icon : selectedPositions) {
+                icon.setIsChecked(false);
             }
         }
         selectedPositions.clear();
         if (current >= 0 && current < mDatas.size()){
             mDatas.get(current).setIsChecked(true);
-            selectedPositions.add(current);
+            selectedPositions.add(mDatas.get(current));
         } else {
             mShiftPos = -1;
         }
@@ -387,7 +387,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         context.sendBroadcast(openAppIntent);
     }
 
-    public List<Integer> getSelectedPosList() {
+    public List<IconEntity> getSelectedPosList() {
         return selectedPositions;
     }
 
@@ -535,6 +535,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         if (selectedPositions.size() == 0) {
             return -1;
         }
-        return selectedPositions.get(selectedPositions.size() - 1);
+        return mDatas.indexOf(selectedPositions.get(selectedPositions.size() - 1));
     }
 }
