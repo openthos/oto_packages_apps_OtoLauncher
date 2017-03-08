@@ -237,9 +237,15 @@ public class DiskUtils {
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COMPRESS_INFO_SHOW);
+            int i = 0;
             while ((line = in.readLine()) != null) {
-                MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                if (i == 0) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.COPY_INFO, line));
+                    i = OtoConsts.SKIP_LINES;
+                } else {
+                    i--;
+                }
             }
             isOk = true;
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
@@ -277,9 +283,15 @@ public class DiskUtils {
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.DECOMPRESS_INFO_SHOW);
+            int i = 0;
             while ((line = in.readLine()) != null) {
-                MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                if (i == 0) {
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.COPY_INFO, line));
+                    i = OtoConsts.SKIP_LINES;
+                } else {
+                    i--;
+                }
             }
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
         } catch (IOException e) {
@@ -321,19 +333,21 @@ public class DiskUtils {
                     }
                     if (!isRar) {
                         line = line.substring(OtoConsts.INDEX_7Z_FILENAME);
-                        System.out.println(line);
-                        if (line.contains("/")) {
-                            line = line.replace(line.substring(line.indexOf("/")), "");
-                            if (!fileList.contains(line)) {
-                                fileList.add(line);
-                            }
-                        } else {
-                             fileList.add(line);
-                        }
                     } else if (row % 2 != 0) {
-                        fileList.add(line.substring(1));
+                        line = line.substring(1);
+                        row++;
+                    } else {
+                        row++;
+                        continue;
                     }
-                    row++;
+                    if (line.contains("/")) {
+                        line = line.replace(line.substring(line.indexOf("/")), "");
+                        if (!fileList.contains(line)) {
+                            fileList.add(line);
+                        }
+                    } else {
+                         fileList.add(line);
+                    }
                 }
                 if (line.contains("-----")) {
                     isPrint = true;
