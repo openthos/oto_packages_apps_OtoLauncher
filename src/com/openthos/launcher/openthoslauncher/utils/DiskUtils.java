@@ -50,8 +50,10 @@ public class DiskUtils {
                 Process pro = runtime.exec(new String[]{command, arg, file.getAbsolutePath()});
                 in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
                 String line;
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.DELETE_INFO_SHOW);
                 while ((line = in.readLine()) != null) {
                 }
+                MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -234,7 +236,7 @@ public class DiskUtils {
                                       new String[]{COMMAND_7ZA, "a", tarPath, arg, path, "-bb3", "-y"});
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
-            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COMPRESS_INFO_SHOW);
             while ((line = in.readLine()) != null) {
                 MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.COPY_INFO, line));
@@ -274,7 +276,7 @@ public class DiskUtils {
             }
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
-            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
+            MainActivity.mHandler.sendEmptyMessage(OtoConsts.DECOMPRESS_INFO_SHOW);
             while ((line = in.readLine()) != null) {
                 MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
                             OtoConsts.COPY_INFO, line));

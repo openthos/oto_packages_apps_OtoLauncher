@@ -29,6 +29,8 @@ public class CopyInfoDialog extends Dialog {
     private TextView mTextMessage;
     private TextView mTextTitle;
     private static CopyInfoDialog dialog = null;
+    private GifView mGif;
+    private int mRawId;
 
     public CopyInfoDialog(Activity context) {
         super(context);
@@ -51,9 +53,12 @@ public class CopyInfoDialog extends Dialog {
         setContentView(v);
         mTextMessage = (TextView) v.findViewById(R.id.text_message);
         mTextTitle = (TextView) v.findViewById(R.id.text_title);
+        mGif = (GifView) v.findViewById(R.id.gif);
     }
 
-    public void showDialog() {
+    public void showDialog(int rawId) {
+        mRawId = rawId;
+        setGif();
         show();
         Window dialogWindow = getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
@@ -63,6 +68,7 @@ public class CopyInfoDialog extends Dialog {
     }
 
     public void changeMsg(final String s) {
+        setGif();
         if ("main".equals(Thread.currentThread().getName())) {
             mTextMessage.setText(s);
         } else {
@@ -76,6 +82,15 @@ public class CopyInfoDialog extends Dialog {
     }
 
     public void changeTitle(final String s) {
+        setGif();
         mTextTitle.setText(s);
+    }
+
+    public void setGif() {
+        if (mGif == null) {
+            mGif = (GifView) View.inflate(mContext, R.layout.dialog_copy_info, null)
+                                                             .findViewById(R.id.gif);
+        }
+        mGif.setMovieResource(mRawId);
     }
 }

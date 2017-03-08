@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="380dp"
-    android:layout_height="300dp"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-    <View
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
         android:layout_width="380dp"
-        android:layout_height="300dp" />
-
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:padding="10dp"/>
-
-    <TextView
-        android:id="@+id/text_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_below="@id/text_title"
-        android:padding="10dp"/>
-
-</RelativeLayout>
+        android:layout_height="200dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:padding="10dp"/>
+        <com.openthos.launcher.openthoslauncher.view.GifView
+            android:id="@+id/gif"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:enabled="false"/>
+        <TextView
+            android:id="@+id/text_message"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:lines="2"
+            android:ellipsize="end"
+            android:padding="10dp"/>
+    </LinearLayout>
+</FrameLayout>

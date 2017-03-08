@@ -210,7 +210,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         new CopyThread((String) msg.obj, true).start();
                         break;
                     case OtoConsts.COPY_INFO_SHOW:
-                        mCopyInfoDialog.showDialog();
+                        mCopyInfoDialog.showDialog(R.raw.paste);
+                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
+                                                                .getString(R.string.copy_info));
+                        break;
+                    case OtoConsts.DELETE_INFO_SHOW:
+                        mCopyInfoDialog.showDialog(R.raw.delete);
+                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
+                                                                .getString(R.string.copy_info));
+                        break;
+                    case OtoConsts.COMPRESS_INFO_SHOW:
+                        mCopyInfoDialog.showDialog(R.raw.compress);
+                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
+                                                                .getString(R.string.copy_info));
+                        break;
+                    case OtoConsts.DECOMPRESS_INFO_SHOW:
+                        mCopyInfoDialog.showDialog(R.raw.decompress);
                         mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
                                                                 .getString(R.string.copy_info));
                         break;
