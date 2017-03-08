@@ -899,15 +899,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 //                              OtoConsts.DESKTOP_INPUT);
                 //    break;
                 case Intent.ACTION_DESKTOP_INTERCEPT:
-                    Bundle bundle = intent.getParcelableExtra(Intent.EXTRA_DESKTOP_BUNDLE);
-                    if (bundle == null) {
-                        mIsCtrlPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISCTRLPRESS,
-                                                              false);
-                        mIsShiftPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISSHIFTPRESS,
-                                                               false);
-                    } else if (bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN)) {
-                        keyDealing(bundle.getInt(Intent.EXTRA_DESKTOP_KEYCODE),
-                                   (KeyEvent) bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT));
+                    mIsCtrlPress = intent.getBooleanExtra(OtoConsts.CTRL_ISPRESSED_INFO, false);
+                    mIsShiftPress = intent.getBooleanExtra(OtoConsts.SHIFT_ISPRESSED_INFO, false);
+                    Bundle bundle = intent.getParcelableExtra(OtoConsts.BUNDLE_KEYEVENT);
+                    if (bundle != null && bundle.getBoolean(OtoConsts.KEY_ACTION_DOWN)) {
+                        keyDealing((bundle.getInt(OtoConsts.KEY_CODE)),
+                                              (KeyEvent) bundle.getParcelable(OtoConsts.KEY_EVENT));
                     }
                     break;
                 case Intent.ACTION_DESKTOP_COMMIT_TEXT:

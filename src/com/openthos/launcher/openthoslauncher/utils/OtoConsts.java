@@ -1,5 +1,7 @@
 package com.openthos.launcher.openthoslauncher.utils;
 
+import android.content.Intent;
+
 /**
  * Created by xu on 2016/8/12.
  */
@@ -91,4 +93,21 @@ public class OtoConsts {
     public static final int FILE_NAME_NULL = 1;
     public static final int FILE_NAME_ILLEGAL = 2;
     public static final int FILE_NAME_WARNING = 3;
+
+
+    /**
+        public static final String CTRL_ISPRESSED_INFO = "isCtrl";
+        public static final String SHIFT_ISPRESSED_INFO = "isShift";
+        public static final String KEY_CODE = "Keycode";
+        public static final String KEY_EVENT = "Keyevent";
+        public static final String KEY_ACTION_DOWN = "Onkeydown";
+        public static final String BUNDLE_KEYEVENT = "Bundle";
+    */
+
+    public static final String CTRL_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISCTRLPRESS;
+    public static final String SHIFT_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISSHIFTPRESS;
+    public static final String KEY_CODE = Intent.EXTRA_DESKTOP_KEYCODE;
+    public static final String KEY_EVENT = Intent.EXTRA_DESKTOP_KEYEVENT;
+    public static final String KEY_ACTION_DOWN = Intent.EXTRA_DESKTOP_ONKEYDOWN;
+    public static final String BUNDLE_KEYEVENT = Intent.EXTRA_DESKTOP_BUNDLE;
 }

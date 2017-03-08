@@ -318,18 +318,4 @@ public class MenuDialog extends Dialog {
             dismiss();
         }
     };
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-      MainActivity.mIsCtrlPress = event.isCtrlPressed();
-      MainActivity.mIsShiftPress = event.isShiftPressed();
-      return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-      MainActivity.mIsCtrlPress = event.isCtrlPressed();
-      MainActivity.mIsShiftPress = event.isShiftPressed();
-      return super.onKeyUp(keyCode, event);
-    }
 }
