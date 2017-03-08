@@ -901,11 +901,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 case Intent.ACTION_DESKTOP_INTERCEPT:
                     Bundle bundle = intent.getParcelableExtra(Intent.EXTRA_DESKTOP_BUNDLE);
                     if (bundle == null) {
-                        mIsCtrlPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISCTRLPRESS, false);
-                        mIsShiftPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISSHIFTPRESS, false);
+                        mIsCtrlPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISCTRLPRESS,
+                                                              false);
+                        mIsShiftPress = intent.getBooleanExtra(Intent.EXTRA_DESKTOP_ISSHIFTPRESS,
+                                                               false);
                     } else if (bundle.getBoolean(Intent.EXTRA_DESKTOP_ONKEYDOWN)) {
                         keyDealing(bundle.getInt(Intent.EXTRA_DESKTOP_KEYCODE),
-                                   bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT));
+                                   (KeyEvent) bundle.getParcelable(Intent.EXTRA_DESKTOP_KEYEVENT));
                     }
                     break;
                 case Intent.ACTION_DESKTOP_COMMIT_TEXT:
