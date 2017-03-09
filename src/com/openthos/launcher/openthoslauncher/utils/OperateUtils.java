@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.android.launcher3.R;
+import com.openthos.launcher.openthoslauncher.activity.MainActivity;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
@@ -118,6 +120,7 @@ public class OperateUtils {
                      }
                  }).create();
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.setOnKeyListener(new BaseKeyEvent());
         dialog.show();
     }
 
@@ -129,6 +132,7 @@ public class OperateUtils {
              .setNegativeButton(context.getResources().getString(R.string.dialog_delete_no), cancel)
              .create();
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.setOnKeyListener(new BaseKeyEvent());
         dialog.show();
     }
 
@@ -140,5 +144,14 @@ public class OperateUtils {
              .create();
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialog.show();
+    }
+
+    public static class BaseKeyEvent implements DialogInterface.OnKeyListener {
+
+        @Override
+        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+            MainActivity.setState(event.isCtrlPressed(), event.isShiftPressed());
+            return false;
+        }
     }
 }

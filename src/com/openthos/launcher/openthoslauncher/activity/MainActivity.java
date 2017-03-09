@@ -125,6 +125,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         inner:
                         for (int i = 0; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).getPath()).equals(msg.obj)) {
+                                mAdapter.getSelectedPosList().remove(mDatas.get(i));
                                 mDatas.set(i, mBlankIcon);
                                 break inner;
                             }
@@ -789,6 +790,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                  }
                              }).create();
                     dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    dialog.setOnKeyListener(new OperateUtils.BaseKeyEvent());
                     dialog.show();
                     return;
                 }
@@ -1000,5 +1002,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     public static Uri getUri() {
         return mUri;
+    }
+
+    public static void setState(boolean isCtrlPress, boolean isShiftPress) {
+        mIsCtrlPress = isCtrlPress;
+        mIsShiftPress = isShiftPress;
     }
 }

@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Created by xu on 2016/11/2.
  */
-public class NewFileDialog extends Dialog {
+public class NewFileDialog extends BaseDialog {
     private Context mContext;
     private String mFormat = ".txt";
 

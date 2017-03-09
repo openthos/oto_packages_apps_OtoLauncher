@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Created by xu on 2016/11/2.
  */
-public class CompressDialog extends Dialog {
+public class CompressDialog extends BaseDialog {
     private Context mContext;
     private String mPath;
     private CompressFormatType mFormatType = CompressFormatType.ZIP;

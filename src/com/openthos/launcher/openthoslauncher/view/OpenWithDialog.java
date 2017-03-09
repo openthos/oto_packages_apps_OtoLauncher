@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenWithDialog extends Dialog implements AdapterView.OnItemClickListener {
+public class OpenWithDialog extends BaseDialog implements AdapterView.OnItemClickListener {
     private Context mContext;
     private ListView mListView;
     private TextView mTextView;

@@ -35,7 +35,7 @@ import java.util.TimeZone;
 /**
  * Created by xu on 2016/8/11.
  */
-public class PropertyDialog extends Dialog implements View.OnClickListener,
+public class PropertyDialog extends BaseDialog implements View.OnClickListener,
                                                CompoundButton.OnCheckedChangeListener {
     private Context mContext;
     private String mPath;

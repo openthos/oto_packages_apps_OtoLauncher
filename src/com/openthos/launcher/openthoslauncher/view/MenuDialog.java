@@ -39,7 +39,7 @@ import java.io.File;
 /**
  * Created by xu on 2016/8/11.
  */
-public class MenuDialog extends Dialog {
+public class MenuDialog extends BaseDialog {
     private Context context;
     private Type type;
     private String path;

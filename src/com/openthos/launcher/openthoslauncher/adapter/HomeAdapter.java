@@ -232,6 +232,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 } else if (!mDatas.get(getAdapterPosition()).isBlank()) {
                     isClicked = true;
                     if (MainActivity.mIsShiftPress) {
+                        if (selectedPositions.size() == 0) {
+                            mShiftPos = -1;
+                        }
                         if (mShiftPos == -1) {
                             mShiftPos = getAdapterPosition();
                         }
