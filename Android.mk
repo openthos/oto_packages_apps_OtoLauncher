@@ -110,3 +110,11 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/util/etc/launcher_protoutil | $(ACP)
 	$(hide) chmod 755 $@
 
 INTERNAL_DALVIK_MODULES += $(LOCAL_INSTALLED_MODULE)
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_SRC_FILES := create.tar.gz
+LOCAL_MODULE := create.tar.gz
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT)
+include $(BUILD_PREBUILT)
