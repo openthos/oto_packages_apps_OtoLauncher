@@ -70,6 +70,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private Editable mEdit;
     private HomeViewHolder mHolder;
     public boolean mIsRenameFirst;
+    private boolean mIsRenameRefresh = false;
 
     public HomeAdapter(List<IconEntity> datas, RecycleCallBack click) {
         mDatas = datas;
@@ -85,10 +86,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         mEdit = mHolder.tv.getText();
         switch (commitText) {
             case Intent.EXTRA_DESKTOP_ENTER:
+                mIsRenameRefresh = true;
                 mHolder.tv.setFocusable(false);
                 mHolder.tv.clearFocus();
-                isRename = false;
                 mHolder = null;
+                isRename = false;
                 break;
             case Intent.EXTRA_DESKTOP_BACK:
                 if (mIndex > 0) {
@@ -213,6 +215,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         private void ctrlProcess(View v, MotionEvent event) {
             ((MainActivity) mRecycleClick).setIsSelected(true);
             if (isRename) {
+                mIsRenameRefresh = false;
                 isRename = false;
             }
             if (getAdapterPosition() != -1) {
@@ -400,10 +403,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && v.hasFocus() && event.getAction() == KeyEvent.ACTION_DOWN) {
+                mIsRenameRefresh =true;
                 v.setFocusable(false);
                 v.clearFocus();
-                isRename = false;
                 mHolder = null;
+                isRename = false;
                 return true;
             }
             return false;
@@ -506,6 +510,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         mDatas.set(position, icon);
         MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+        if (mIsRenameRefresh) {
+            notifyItemChanged(mRenamePos);
+            mIsRenameRefresh = false;
+        }
         return true;
     }
 
@@ -527,8 +535,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) { // TODO: will add code, next.
-            } else {
+            if (!hasFocus) {
                 confirmRename((EditText) v, mRenamePos);
             }
         }
