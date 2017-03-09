@@ -82,6 +82,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private ArrayList<IconEntity> mTempList;
     private static ContentResolver mContentResolver;
     private static Uri mUri;
+    public static boolean mIsMove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -464,11 +465,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (mIsCtrlPress || mIsShiftPress) {
+                        if ((mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
                         }
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
+                            mIsMove = true;
                             mMoveX = event.getRawX();
                             mMoveY = event.getRawY();
                             mFrameSelectView.setPositionCoordinate(mDownX < mMoveX ? mDownX : mMoveX,
@@ -500,15 +502,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (mIsCtrlPress || mIsShiftPress) {
-                            break;
-                        }
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
                             mFrameSelectView.invalidate();
                             mTempList.clear();
                         }
+                        mIsMove = false;
                         mIsSelected = false;
                         break;
                 }
