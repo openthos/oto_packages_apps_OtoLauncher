@@ -639,6 +639,88 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            if (mAdapter.getSelectedPosList().size() == 0) {
+                selectFirstIcon();
+            } else {
+                for (int i = mAdapter.getLastClickPos() - 1; i >= 0; i--) {
+                    if (!mDatas.get(i).isBlank()) {
+                        mAdapter.setSelectedCurrent(i);
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (mAdapter.getSelectedPosList().size() == 0) {
+                selectFirstIcon();
+            } else {
+                if (mAdapter.getLastClickPos() == mAdapter.getItemCount()) {
+                    mAdapter.setSelectedCurrent(mAdapter.getItemCount());
+                } else {
+                    for (int i = mAdapter.getLastClickPos() + 1; i < mAdapter.getItemCount(); i++) {
+                        if (!mDatas.get(i).isBlank()) {
+                            mAdapter.setSelectedCurrent(i);
+                            mAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            if (mAdapter.getSelectedPosList().size() == 0) {
+                selectFirstIcon();
+            } else {
+                int currentPostion = mAdapter.getLastClickPos();
+                int currentRow = currentPostion / mHeightNum + 1;
+                if (currentPostion - mHeightNum >= 0) {
+                    EXIT:
+                    for (int i = currentRow - 1; i >= 0; i--) {
+                        currentPostion = currentPostion - mHeightNum;
+                        for (int j = currentPostion; j >= mHeightNum * (i - 1); j--) {
+                            if (!mDatas.get(j).isBlank()) {
+                                mAdapter.setSelectedCurrent(j);
+                                mAdapter.notifyDataSetChanged();
+                                break EXIT;
+                            }
+                        }
+                        for (int j = currentPostion; j <= mHeightNum * i - 1; j++) {
+                            if (!mDatas.get(j).isBlank()) {
+                                mAdapter.setSelectedCurrent(j);
+                                mAdapter.notifyDataSetChanged();
+                                break EXIT;
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (mAdapter.getSelectedPosList().size() == 0) {
+                selectFirstIcon();
+            } else {
+                int currentPostion = mAdapter.getLastClickPos();
+                int currentRow = currentPostion / mHeightNum + 1;
+                if (currentPostion + mHeightNum <= mAdapter.getItemCount()) {
+                    EXIT:
+                    for (int i = currentRow + 1; i <= mSumNum / mHeightNum; i++) {
+                        currentPostion = currentPostion + mHeightNum;
+                        for (int j = currentPostion; j >= mHeightNum * (i - 1); j--) {
+                            if (!mDatas.get(j).isBlank()) {
+                                mAdapter.setSelectedCurrent(j);
+                                mAdapter.notifyDataSetChanged();
+                                break EXIT;
+                            }
+                        }
+                        for (int j = currentPostion; j <= mHeightNum * i - 1; j++) {
+                            if (!mDatas.get(j).isBlank()) {
+                                mAdapter.setSelectedCurrent(j);
+                                mAdapter.notifyDataSetChanged();
+                                break EXIT;
+                            }
+                        }
+                    }
+                }
+            }
         } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && mAdapter.getLastClickPos() != -1 && !mAdapter.isRename) {
             OperateUtils.enter(this, mDatas.get(mAdapter.getLastClickPos()).getPath(),
@@ -651,6 +733,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void selectFirstIcon() {
+        for (int i = 0; i < mDatas.size(); i++) {
+            if (!mDatas.get(i).isBlank()) {
+                mAdapter.setSelectedCurrent(i);
+                mAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
     private String getSelectedPath(int copyType) {
