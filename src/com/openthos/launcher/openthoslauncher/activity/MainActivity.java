@@ -84,6 +84,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private static Uri mUri;
     public static boolean mIsMove;
 
+    private long mPressTime;
+    private Type mPressType;
+    private String mPressPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -446,6 +450,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if (mIsCtrlPress || mIsShiftPress) {
                             break;
                         }
+                        setPressInfo(event.getEventTime(), Type.BLANK, "");
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
@@ -508,6 +513,13 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mFrameSelectView.invalidate();
                             mTempList.clear();
                         }
+                        if (mPressTime != 0 && !mIsMove
+                            && event.getEventTime() - mPressTime > OtoConsts.DOUBLE_CLICK_TIME) {
+                            MenuDialog dialog = new MenuDialog(
+                                MainActivity.this, mPressType, mPressPath);
+                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        }
+                        mPressTime = 0;
                         mIsMove = false;
                         mIsSelected = false;
                         break;
@@ -1099,5 +1111,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public static void setState(boolean isCtrlPress, boolean isShiftPress) {
         mIsCtrlPress = isCtrlPress;
         mIsShiftPress = isShiftPress;
+    }
+
+    public void setPressInfo(long time, Type type, String path) {
+        mPressTime = time;
+        mPressType = type;
+        mPressPath = path;
     }
 }

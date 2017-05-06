@@ -192,6 +192,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         isClicked = true;
                         mIsRenameFirst = false;
                         if (!isRename || getLastClickPos() != getAdapterPosition()) {
+                            if (getAdapterPosition() != -1) {
+                                ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
+                                    mDatas.get(getAdapterPosition()).getType(),
+                                    mDatas.get(getAdapterPosition()).getPath());
+                            }
                             ctrlProcess(v,event);
                         }
                     }
@@ -207,6 +212,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (getAdapterPosition() != -1) {
+                    ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
+                        mDatas.get(getAdapterPosition()).getType(),
+                        mDatas.get(getAdapterPosition()).getPath());
+                }
                 ctrlProcess(v, event);
             }
             return true;
