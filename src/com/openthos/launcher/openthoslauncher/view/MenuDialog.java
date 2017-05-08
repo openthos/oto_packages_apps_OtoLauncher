@@ -94,7 +94,7 @@ public class MenuDialog extends BaseDialog {
             case BLANK:
                 s = context.getResources().getStringArray(R.array.menu_blank);
                 break;
-             case MORE:
+            case MORE:
                 s = context.getResources().getStringArray(R.array.menu_more);
                 break;
         }

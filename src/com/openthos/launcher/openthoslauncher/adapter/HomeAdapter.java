@@ -141,9 +141,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void onBindViewHolder(HomeViewHolder holder, int position) {
         holder.tv.setText(mDatas.get(position).getName());
         if (mDatas.get(position).isChecked()) {
-            holder.item.setBackgroundResource(R.drawable.icon_background);
+            holder.item.setSelected(true);
         } else if (!mDatas.get(position).isChecked()) {
-            holder.item.setBackgroundResource(R.drawable.icon_background_trans);
+            holder.item.setSelected(false);
         }
         if (mDatas.get(position).isBlank()) {
             holder.nullnull.setChecked(true);

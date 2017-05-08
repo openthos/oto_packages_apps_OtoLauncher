@@ -9,6 +9,7 @@
         android:id="@+id/item"
         android:layout_width="@dimen/icon_shadow_size"
         android:layout_height="@dimen/icon_size"
+        android:background="@drawable/icon_selector"
         android:layout_centerInParent="true">
 
         <RelativeLayout
