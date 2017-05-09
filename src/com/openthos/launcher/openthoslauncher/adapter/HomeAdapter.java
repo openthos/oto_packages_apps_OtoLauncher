@@ -142,9 +142,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.tv.setText(mDatas.get(position).getName());
         if (mDatas.get(position).isChecked()) {
             holder.item.setSelected(true);
-        } else if (!mDatas.get(position).isChecked()) {
+        } else {
             holder.item.setSelected(false);
         }
+        mDatas.get(position).setView(holder.item);
         if (mDatas.get(position).isBlank()) {
             holder.nullnull.setChecked(true);
         } else if (!mDatas.get(position).isBlank()) {
@@ -385,11 +386,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void setSelectedCurrent(int current) {
         if (mDatas != null && mDatas.size() > 0) {
             for (IconEntity icon : selectedPositions) {
-                icon.setIsChecked(false);
+                if (icon.isChecked()) {
+                    icon.getView().setSelected(false);
+                    icon.setIsChecked(false);
+                }
             }
         }
         selectedPositions.clear();
         if (current >= 0 && current < mDatas.size()){
+            mDatas.get(current).getView().setSelected(true);
             mDatas.get(current).setIsChecked(true);
             selectedPositions.add(mDatas.get(current));
         } else {

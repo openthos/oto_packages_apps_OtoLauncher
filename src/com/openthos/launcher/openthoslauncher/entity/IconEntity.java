@@ -1,6 +1,7 @@
 package com.openthos.launcher.openthoslauncher.entity;
 
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import com.openthos.launcher.openthoslauncher.entity.Type;
 /**
  * Created by xu on 2017/01/22.
@@ -13,6 +14,7 @@ public class IconEntity {
     private int mIconRes;
     private boolean mIsBlank;
     private Type mType;
+    private View mView;
 
     public IconEntity() {
     }
@@ -71,5 +73,13 @@ public class IconEntity {
 
     public void setType(Type type) {
         mType = type;
+    }
+
+    public View getView() {
+        return mView;
+    }
+
+    public void setView(View view) {
+        mView = view;
     }
 }

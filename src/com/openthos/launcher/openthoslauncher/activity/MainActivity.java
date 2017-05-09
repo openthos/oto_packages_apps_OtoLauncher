@@ -482,28 +482,28 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                                   mDownY < mMoveY ? mDownY : mMoveY,
                                                                   mDownX > mMoveX ? mDownX : mMoveX,
                                                                   mDownY > mMoveY ? mDownY : mMoveY);
+                            mFrameSelectView.invalidate();
                             mTempList.clear();
                             for (int i = 0; i < mPosList.size(); i++) {
                                 if (frameSelectionJudge(
                                                  mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
-                                    if (mDatas.get(i).isBlank() == false){
+                                    if (!mDatas.get(i).isBlank()){
                                         mTempList.add(mDatas.get(i));
+                                        mDatas.get(i).setIsChecked(true);
+                                        mDatas.get(i).getView().setSelected(true);
+                                    }
+                                } else {
+                                    if (!mDatas.get(i).isBlank()){
+                                        mDatas.get(i).setIsChecked(false);
+                                        mDatas.get(i).getView().setSelected(false);
                                     }
                                 }
                             }
                             if (!(mAdapter.getSelectedPosList().containsAll(mTempList)
                                      && mAdapter.getSelectedPosList().size() == mTempList.size())) {
-                                for (IconEntity icon : mAdapter.getSelectedPosList()) {
-                                    icon.setIsChecked(false);
-                                }
                                 mAdapter.getSelectedPosList().clear();
-                                for (IconEntity icon : mTempList) {
-                                    icon.setIsChecked(true);
-                                    mAdapter.getSelectedPosList().add(icon);
-                                }
-                                mAdapter.notifyDataSetChanged();
+                                mAdapter.getSelectedPosList().addAll(mTempList);
                             }
-                            mFrameSelectView.invalidate();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -658,7 +658,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 for (int i = mAdapter.getLastClickPos() - 1; i >= 0; i--) {
                     if (!mDatas.get(i).isBlank()) {
                         mAdapter.setSelectedCurrent(i);
-                        mAdapter.notifyDataSetChanged();
                         break;
                     }
                 }
@@ -673,7 +672,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     for (int i = mAdapter.getLastClickPos() + 1; i < mAdapter.getItemCount(); i++) {
                         if (!mDatas.get(i).isBlank()) {
                             mAdapter.setSelectedCurrent(i);
-                            mAdapter.notifyDataSetChanged();
                             break;
                         }
                     }
@@ -692,14 +690,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         for (int j = currentPostion; j >= mHeightNum * (i - 1); j--) {
                             if (!mDatas.get(j).isBlank()) {
                                 mAdapter.setSelectedCurrent(j);
-                                mAdapter.notifyDataSetChanged();
                                 break EXIT;
                             }
                         }
                         for (int j = currentPostion; j <= mHeightNum * i - 1; j++) {
                             if (!mDatas.get(j).isBlank()) {
                                 mAdapter.setSelectedCurrent(j);
-                                mAdapter.notifyDataSetChanged();
                                 break EXIT;
                             }
                         }
@@ -719,14 +715,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         for (int j = currentPostion; j >= mHeightNum * (i - 1); j--) {
                             if (!mDatas.get(j).isBlank()) {
                                 mAdapter.setSelectedCurrent(j);
-                                mAdapter.notifyDataSetChanged();
                                 break EXIT;
                             }
                         }
                         for (int j = currentPostion; j <= mHeightNum * i - 1; j++) {
                             if (!mDatas.get(j).isBlank()) {
                                 mAdapter.setSelectedCurrent(j);
-                                mAdapter.notifyDataSetChanged();
                                 break EXIT;
                             }
                         }
