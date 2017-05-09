@@ -651,7 +651,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             if (type == Type.DIRECTORY || type == Type.FILE) {
                 mHandler.sendEmptyMessage(OtoConsts.RENAME);
             }
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP && !mAdapter.isRename) {
             if (mAdapter.getSelectedPosList().size() == 0) {
                 selectFirstIcon();
             } else {
@@ -662,7 +662,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     }
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !mAdapter.isRename) {
             if (mAdapter.getSelectedPosList().size() == 0) {
                 selectFirstIcon();
             } else {
@@ -677,7 +677,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     }
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && !mAdapter.isRename) {
             if (mAdapter.getSelectedPosList().size() == 0) {
                 selectFirstIcon();
             } else {
@@ -702,7 +702,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     }
                 }
             }
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !mAdapter.isRename) {
             if (mAdapter.getSelectedPosList().size() == 0) {
                 selectFirstIcon();
             } else {
