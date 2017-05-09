@@ -59,6 +59,7 @@
         <item>@string/copy</item>
         <item>@string/crop</item>
         <item>@string/delete</item>
+        <item>@string/compress</item>
     </array>
 
    <array name="all_menu">

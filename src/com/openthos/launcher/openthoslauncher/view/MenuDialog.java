@@ -125,12 +125,14 @@ public class MenuDialog extends BaseDialog {
                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
                          || endPath.endsWith(OtoConsts.SUFFIX_ZIP)
-                         || endPath.endsWith(OtoConsts.SUFFIX_RAR)))
+                         || endPath.endsWith(OtoConsts.SUFFIX_RAR)
+                         || endPath.endsWith(OtoConsts.SUFFIX_7Z)))
                 || (s[i].equals(context.getResources().getString(R.string.compress))
                         && (endPath.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
                           || endPath.endsWith(OtoConsts.SUFFIX_ZIP)
                           || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
-                          || endPath.endsWith(OtoConsts.SUFFIX_RAR)))
+                          || endPath.endsWith(OtoConsts.SUFFIX_RAR)
+                          || endPath.endsWith(OtoConsts.SUFFIX_7Z)))
                 || (s[i].equals(context.getResources().getString(R.string.paste))
                         && !((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
                                || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))) {
@@ -214,16 +216,26 @@ public class MenuDialog extends BaseDialog {
                 getContext().startActivity(about);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
-                Message compress = new Message();
+                /*Message compress = new Message();
                 compress.obj = path;
                 compress.what = OtoConsts.COMPRESS;
-                MainActivity.mHandler.sendMessage(compress);
+                MainActivity.mHandler.sendMessage(compress);*/
+                path = path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
+                    path : (Intent.EXTRA_DELETE_FILE_HEADER + path);
+                Intent intent = new Intent(OtoConsts.COMPRESS_FILES);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(OtoConsts.COMPRESS_PATH_TAG, path);
+                context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
-                Message decompress = new Message();
+                /*Message decompress = new Message();
                 decompress.obj = path;
                 decompress.what = OtoConsts.DECOMPRESS;
-                MainActivity.mHandler.sendMessage(decompress);
+                MainActivity.mHandler.sendMessage(decompress);*/
+                Intent intent = new Intent(OtoConsts.DECOMPRESS_FILE);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(OtoConsts.COMPRESS_PATH_TAG, path);
+                context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))

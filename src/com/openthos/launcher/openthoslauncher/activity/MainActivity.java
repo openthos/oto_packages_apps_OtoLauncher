@@ -193,12 +193,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         propertyDialog.showDialog();
                         break;
                     case OtoConsts.COMPRESS:
-                        CompressDialog compressDialog = new CompressDialog(MainActivity.this,
+                        /**CompressDialog compressDialog = new CompressDialog(MainActivity.this,
                                                                           (String) msg.obj);
-                        compressDialog.showDialog();
+                        compressDialog.showDialog();**/
                         break;
                     case OtoConsts.DECOMPRESS:
-                        showDialogForDecompress((String) msg.obj);
+                        //showDialogForDecompress((String) msg.obj);
                         break;
                     case OtoConsts.DELETE:
                         showDialogForMoveToRecycle((String) msg.obj);

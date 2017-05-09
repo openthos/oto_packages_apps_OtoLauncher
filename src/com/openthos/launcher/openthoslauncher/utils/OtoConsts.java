@@ -21,6 +21,9 @@ public class OtoConsts {
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
+    public static final String COMPRESS_FILES = "com.openthos.compress.compress";
+    public static final String DECOMPRESS_FILE = "com.openthos.compress.decompress";
+    public static final String COMPRESS_PATH_TAG = "paths";
     //MainActivity Handler Message'what
     public static final int SAVEDATA = 0x00000001;
     public static final int SORT = 0x0000002;
@@ -92,6 +95,7 @@ public class OtoConsts {
     public static final String SUFFIX_TAR_BZIP2 = ".bz2";
     public static final String SUFFIX_ZIP = ".zip";
     public static final String SUFFIX_RAR = ".rar";
+    public static final String SUFFIX_7Z = ".7z";
     public static final int FILE_NAME_LEGAL = 0;
     public static final int FILE_NAME_NULL = 1;
     public static final int FILE_NAME_ILLEGAL = 2;
