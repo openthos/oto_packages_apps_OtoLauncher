@@ -87,6 +87,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private long mPressTime;
     private Type mPressType;
     private String mPressPath;
+    private int mPressX;
+    private int mPressY;
+    private boolean mIsLongPress;
+    private LongPressRunnable mLongPressRunnable = new LongPressRunnable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -450,7 +454,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if (mIsCtrlPress || mIsShiftPress) {
                             break;
                         }
-                        setPressInfo(event.getEventTime(), Type.BLANK, "");
+                        setPressInfo(event.getEventTime(), Type.BLANK, "",
+                                     (int) event.getRawX(), (int) event.getRawY());
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
@@ -470,7 +475,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if ((mIsCtrlPress || mIsShiftPress) && !mIsMove) {
+                        if (!mIsLongPress) {
+                            mHandler.removeCallbacks(mLongPressRunnable);
+                        }
+                        if ((mIsLongPress || mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
                         }
                         if (!mIsSelected && !mAdapter.isClicked
@@ -513,11 +521,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mFrameSelectView.invalidate();
                             mTempList.clear();
                         }
-                        if (mPressTime != 0 && !mIsMove
-                            && event.getEventTime() - mPressTime > OtoConsts.DOUBLE_CLICK_TIME) {
-                            MenuDialog dialog = new MenuDialog(
-                                MainActivity.this, mPressType, mPressPath);
-                            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
+                        if (mPressTime == 0 || mIsMove
+                            || event.getEventTime() - mPressTime < OtoConsts.DOUBLE_CLICK_TIME) {
+                            mHandler.removeCallbacks(mLongPressRunnable);
                         }
                         mPressTime = 0;
                         mIsMove = false;
@@ -1107,9 +1113,23 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mIsShiftPress = isShiftPress;
     }
 
-    public void setPressInfo(long time, Type type, String path) {
+    private class LongPressRunnable implements Runnable {
+
+        @Override
+        public void run() {
+                MenuDialog dialog = new MenuDialog(MainActivity.this, mPressType, mPressPath);
+                dialog.showDialog(mPressX, mPressY);
+                mIsLongPress = true;
+        }
+    }
+
+    public void setPressInfo(long time, Type type, String path, int x, int y) {
         mPressTime = time;
         mPressType = type;
         mPressPath = path;
+        mPressX = x;
+        mPressY = y;
+        mIsLongPress = false;
+        mHandler.postDelayed(mLongPressRunnable, OtoConsts.DOUBLE_CLICK_TIME);
     }
 }

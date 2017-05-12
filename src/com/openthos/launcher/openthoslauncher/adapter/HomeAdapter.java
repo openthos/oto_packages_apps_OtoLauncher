@@ -80,7 +80,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public void notifyText(String commitText) {
         if (mIsRenameFirst) {
-            mHolder.tv.setText(null);
+            mHolder.tv.requestFocus();
+            if (commitText.equals(RenameUtils.LEFT)) {
+                mHolder.tv.setSelection(0);
+            } else if (commitText.equals(RenameUtils.RIGHT)) {
+                mHolder.tv.setSelection(mHolder.tv.getText().length());
+            } else {
+                mHolder.tv.setText(null);
+            }
         }
         mIndex = mHolder.tv.getSelectionStart();
         mEdit = mHolder.tv.getText();
@@ -193,11 +200,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         isClicked = true;
                         mIsRenameFirst = false;
                         if (!isRename || getLastClickPos() != getAdapterPosition()) {
-                            if (getAdapterPosition() != -1) {
-                                ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
-                                    mDatas.get(getAdapterPosition()).getType(),
-                                    mDatas.get(getAdapterPosition()).getPath());
-                            }
                             ctrlProcess(v,event);
                         }
                     }
@@ -213,11 +215,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (getAdapterPosition() != -1) {
-                    ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
-                        mDatas.get(getAdapterPosition()).getType(),
-                        mDatas.get(getAdapterPosition()).getPath());
-                }
                 ctrlProcess(v, event);
             }
             return true;
@@ -230,6 +227,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 isRename = false;
             }
             if (getAdapterPosition() != -1) {
+                ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
+                    mDatas.get(getAdapterPosition()).getType(),
+                    mDatas.get(getAdapterPosition()).getPath(),
+                    (int) event.getRawX(), (int) event.getRawY());
                 if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                     if (selectedPositions != null) {
                         if (mDatas.get(getAdapterPosition()).isBlank()) {
