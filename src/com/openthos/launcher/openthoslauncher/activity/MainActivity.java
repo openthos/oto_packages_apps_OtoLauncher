@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Message;
 import android.net.Uri;
@@ -20,12 +21,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.FrameLayout;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
@@ -38,22 +36,18 @@ import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
 import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
 import com.openthos.launcher.openthoslauncher.utils.RenameUtils;
-import com.openthos.launcher.openthoslauncher.view.CompressDialog;
 import com.openthos.launcher.openthoslauncher.view.FrameSelectView;
-import com.openthos.launcher.openthoslauncher.view.NewFileDialog;
 import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
 import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
 import com.openthos.launcher.openthoslauncher.view.MenuDialog;
+
 import android.view.KeyEvent;
 import android.text.ClipboardManager;
-import android.provider.Settings;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -65,6 +59,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public List<IconEntity> mDatas;
     public HomeAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
+    private CustomFileObserver mCustomFileObserver;
     public static Handler mHandler;
     public static boolean mIsCtrlPress;
     public static boolean mIsShiftPress;
@@ -87,6 +82,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private long mPressTime;
     private Type mPressType;
     private String mPressPath;
+    private int mRenamePos;
+    private long mLastModified;
     private int mPressX;
     private int mPressY;
     private boolean mIsLongPress;
@@ -162,26 +159,34 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 return;
                             }
                         }
-                        for (int i = 1; i < mDatas.size(); i++) {
-                            if ((mDatas.get(i).getPath()).equals("")) {
-                                IconEntity icon = new IconEntity();
-                                icon.setName(showFile.getName());
-                                icon.setPath(showFile.getAbsolutePath());
-                                icon.setIsChecked(false);
-                                icon.setIsBlank(false);
-                                if (showFile.isDirectory()) {
-                                    icon.setIcon(MainActivity.this
-                                             .getResources().getDrawable(R.drawable.ic_directory));
-                                    icon.setType(Type.DIRECTORY);
-                                } else {
-                                    icon.setIcon(FileUtils.getFileIcon(
-                                                   showFile.getAbsolutePath(), MainActivity.this));
-                                    icon.setType(Type.FILE);
+                        IconEntity icon = new IconEntity();
+                        icon.setName(showFile.getName());
+                        icon.setPath(showFile.getAbsolutePath());
+                        icon.setIsChecked(false);
+                        icon.setIsBlank(false);
+                        icon.setLastModified(showFile.lastModified());
+                        if (showFile.isDirectory()) {
+                            icon.setIcon(MainActivity.this
+                                    .getResources().getDrawable(R.drawable.ic_directory));
+                            icon.setType(Type.DIRECTORY);
+                        } else {
+                            icon.setIcon(FileUtils.getFileIcon(
+                                    showFile.getAbsolutePath(), MainActivity.this));
+                            icon.setType(Type.FILE);
+                        }
+
+                        if (mRenamePos != -1 && mLastModified == showFile.lastModified()) {
+                            mDatas.set(mRenamePos, icon);
+                        } else {
+                            for (int i = 1; i < mDatas.size(); i++) {
+                                if (mDatas.get(i).getPath().equals("")) {
+                                    mDatas.set(i, icon);
+                                    break;
                                 }
-                                mDatas.set(i, icon);
-                                break;
                             }
                         }
+                        mRenamePos = -1;
+                        mLastModified = 0;
                         mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
@@ -263,36 +268,38 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         registerReceiver(mSdReceiver, intentFilter);
         mContentResolver = getContentResolver();
         mUri = Uri.parse("content://com.openthos.filemanager/recycle");
+        mCustomFileObserver = new CustomFileObserver(OtoConsts.DESKTOP_PATH);
+        mCustomFileObserver.startWatching();
     }
 
     private class CopyThread extends Thread {
-       private String mPath;
-       private boolean mIsCut;
+        private String mPath;
+        private boolean mIsCut;
 
-       public CopyThread(String path, boolean isCut) {
-          super();
-          mPath = path;
-          mIsCut = isCut;
-       }
+        public CopyThread(String path, boolean isCut) {
+            super();
+            mPath = path;
+            mIsCut = isCut;
+        }
 
-       @Override
-       public void run() {
-           super.run();
-           if (mIsCut) {
-               String[] srcCropPaths = mPath.split(Intent.EXTRA_CROP_FILE_HEADER);
-               for (int i = 1; i < srcCropPaths.length; i++) {
-                   DiskUtils.moveFile(srcCropPaths[i].replace(Intent.EXTRA_CROP_FILE_HEADER, ""),
-                                      OtoConsts.DESKTOP_PATH);
-               }
-           } else {
-               String[] srcCopyPaths = mPath.split(Intent.EXTRA_FILE_HEADER);
-               for (int i = 1; i < srcCopyPaths.length; i++) {
-                   DiskUtils.copyFile(srcCopyPaths[i].replace(Intent.EXTRA_FILE_HEADER, ""),
-                                      OtoConsts.DESKTOP_PATH);
-               }
-           }
-       }
-   }
+        @Override
+        public void run() {
+            super.run();
+            if (mIsCut) {
+                String[] srcCropPaths = mPath.split(Intent.EXTRA_CROP_FILE_HEADER);
+                for (int i = 1; i < srcCropPaths.length; i++) {
+                    DiskUtils.moveFile(srcCropPaths[i].replace(Intent.EXTRA_CROP_FILE_HEADER, ""),
+                            OtoConsts.DESKTOP_PATH);
+                }
+            } else {
+                String[] srcCopyPaths = mPath.split(Intent.EXTRA_FILE_HEADER);
+                for (int i = 1; i < srcCopyPaths.length; i++) {
+                    DiskUtils.copyFile(srcCopyPaths[i].replace(Intent.EXTRA_FILE_HEADER, ""),
+                            OtoConsts.DESKTOP_PATH);
+                }
+            }
+        }
+    }
 
     private void createNewFileOrFolder(Type type, String suffix) {
         for (int i = 1; i < mDatas.size(); i++) {
@@ -317,6 +324,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         icon.setPath(file.getAbsolutePath());
                         icon.setIsChecked(false);
                         icon.setIsBlank(false);
+                        icon.setLastModified(file.lastModified());
                         if (type == Type.FILE) {
                             icon.setIcon(FileUtils.getFileIcon(file.getAbsolutePath(), this));
                             icon.setType(Type.FILE);
@@ -403,6 +411,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 icon.setPath(files[i].getAbsolutePath());
                 icon.setIsChecked(false);
                 icon.setIsBlank(false);
+                icon.setLastModified(files[i].lastModified());
                 if (userDatas.size() < (mSumNum - mDatas.size())) {
                     userDatas.add(icon);
                 }
@@ -412,7 +421,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
             @Override
             public int compare(IconEntity object, IconEntity anotherObject) {
-                String anotherObjectName =  anotherObject.getName();
+                String anotherObjectName = anotherObject.getName();
                 String objectName = object.getName();
                 return objectName.compareTo(anotherObjectName);
             }
@@ -431,7 +440,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private int getNum() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        getHeightNum (dm);
+        getHeightNum(dm);
         int widthPixels = dm.widthPixels;
         int widthNum = widthPixels / getResources().getDimensionPixelSize(R.dimen.icon_size);
         return widthNum * mHeightNum;
@@ -573,7 +582,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mIsCtrlPress = event.isCtrlPressed();
         mIsShiftPress = event.isShiftPressed();
         if (!mAdapter.isRename) {
-           return keyDealing(keyCode, event);
+            return keyDealing(keyCode, event);
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -582,8 +591,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         if (event.isCtrlPressed() && !mAdapter.isRename) {
             if (keyCode == KeyEvent.KEYCODE_A) {
                 mAdapter.setSelectedCurrent(-1);
-                for (int i = 0; i< mDatas.size(); i++) {
-                    if (mDatas.get(i).isBlank() == false){
+                for (int i = 0; i < mDatas.size(); i++) {
+                    if (mDatas.get(i).isBlank() == false) {
                         IconEntity icon = mDatas.get(i);
                         icon.setIsChecked(true);
                         mAdapter.getSelectedPosList().add(icon);
@@ -818,7 +827,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         private class MoveToRecycleThread extends Thread {
 
             public MoveToRecycleThread() {
-               super();
+                super();
             }
 
             @Override
@@ -832,7 +841,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
                     MainActivity.mHandler.sendMessage(deleteRefreshFile);
                 }
-           }
+            }
         }
     }
 
@@ -853,7 +862,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         private class DirectDeleteThread extends Thread {
 
             public DirectDeleteThread() {
-               super();
+                super();
             }
 
             @Override
@@ -907,15 +916,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         String mPath;
 
         public DecompressThread(String path) {
-           super();
-           mPath = path;
+            super();
+            mPath = path;
         }
 
         @Override
         public void run() {
             super.run();
             String[] fileList = DiskUtils.decompress(mPath);
-            for (int i = 0; i < fileList.length; i++ ) {
+            for (int i = 0; i < fileList.length; i++) {
                 Message showFile = new Message();
                 showFile.obj = OtoConsts.DESKTOP_PATH + "/" + fileList[i];
                 showFile.what = OtoConsts.SHOW_FILE;
@@ -924,12 +933,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
     }
 
-    private String dataToString () {
+    private String dataToString() {
         StringBuffer sb = new StringBuffer();
         sb.append("[");
         boolean first = true;
         for (IconEntity icon : mDatas) {
-            if (!first){
+            if (!first) {
                 sb.append(",");
             } else {
                 first = false;
@@ -940,6 +949,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             sb.append(icon.getName());
             sb.append("\",\"path\":\"");
             sb.append(icon.getPath());
+            sb.append("\",\"lastModified\":\"");
+            sb.append(icon.getLastModified());
             sb.append("\"}");
         }
         sb.append("]");
@@ -957,7 +968,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 continue;
             }
             IconEntity icon = new IconEntity();
-            switch (type){
+            switch (type) {
                 case COMPUTER:
                     icon.setIsBlank(false);
                     icon.setIcon(getResources().getDrawable(R.drawable.ic_app_computer));
@@ -982,6 +993,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             icon.setIsChecked(false);
             icon.setPath(obj.getString("path"));
             icon.setType(type);
+            icon.setLastModified(obj.getLong("lastModified"));
             list.add(icon);
         }
         return list;
@@ -997,23 +1009,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public void onDestroy() {
         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
         unregisterReceiver(mSdReceiver);
+        if (mCustomFileObserver != null) {
+            mCustomFileObserver.stopWatching();
+            mCustomFileObserver = null;
+        }
         super.onDestroy();
     }
 
-    private class SdReceiver extends BroadcastReceiver{
+    private class SdReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String path = intent.getStringExtra(Intent.EXTRA_DESKTOP_PATH_TAG);
             switch (intent.getAction()) {
-                case Intent.ACTION_DESKTOP_SHOW_FILE:
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.SHOW_FILE, path));
-                    break;
-                case Intent.ACTION_DESKTOP_DELETE_FILE:
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.DELETE_REFRESH, path));
-                    break;
                 //case Intent.ACTION_DESKTOP_FOCUSED_STATE:
                 //    Settings.Secure.putString(MainActivity.this.getContentResolver(),
                 //                              Settings.Secure.DEFAULT_INPUT_METHOD,
@@ -1056,6 +1064,45 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             mTop = top;
             mRight = right;
             mBottom = bottom;
+        }
+    }
+
+    class CustomFileObserver extends FileObserver {
+        public CustomFileObserver(String path) {
+            super(path);
+        }
+
+        @Override
+        public void onEvent(int event, String path) {
+            final int action = event & FileObserver.ALL_EVENTS;
+            if (path != null) {
+                path = OtoConsts.DESKTOP_PATH + "/" + path;
+            }
+            switch (action) {
+                case FileObserver.CREATE:
+                case FileObserver.MOVED_TO:
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.SHOW_FILE, path));
+                    break;
+                case FileObserver.MOVED_FROM:
+                    for (int i = 1; i < mDatas.size(); i++) {
+                        if ((mDatas.get(i).getPath()).equals(path)) {
+                            mRenamePos = i;
+                            mLastModified = mDatas.get(i).getLastModified();
+                            break;
+                        }
+                    }
+                case FileObserver.DELETE:
+                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                            OtoConsts.DELETE_REFRESH, path));
+                    break;
+                case FileObserver.MODIFY:
+                    break;
+                case FileObserver.ATTRIB:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -1117,9 +1164,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
         @Override
         public void run() {
-                MenuDialog dialog = new MenuDialog(MainActivity.this, mPressType, mPressPath);
-                dialog.showDialog(mPressX, mPressY);
-                mIsLongPress = true;
+            MenuDialog dialog = new MenuDialog(MainActivity.this, mPressType, mPressPath);
+            dialog.showDialog(mPressX, mPressY);
+            mIsLongPress = true;
         }
     }
 

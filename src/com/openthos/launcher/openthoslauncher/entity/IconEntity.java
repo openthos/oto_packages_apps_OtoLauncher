@@ -15,6 +15,7 @@ public class IconEntity {
     private boolean mIsBlank;
     private Type mType;
     private View mView;
+    private long mLastModified;
 
     public IconEntity() {
     }
@@ -81,5 +82,13 @@ public class IconEntity {
 
     public void setView(View view) {
         mView = view;
+    }
+
+    public long getLastModified() {
+        return mLastModified;
+    }
+
+    public void setLastModified(long lastModified) {
+        mLastModified = lastModified;
     }
 }
