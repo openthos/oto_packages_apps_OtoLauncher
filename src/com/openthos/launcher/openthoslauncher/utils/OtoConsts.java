@@ -101,6 +101,8 @@ public class OtoConsts {
     public static final int FILE_NAME_ILLEGAL = 2;
     public static final int FILE_NAME_WARNING = 3;
 
+    public static final int LIMIT_FILES_NUM = 5;
+    public static final int LIMIT_FILES_HEIGHT = 280;
 
     /**
         public static final String CTRL_ISPRESSED_INFO = "isCtrl";

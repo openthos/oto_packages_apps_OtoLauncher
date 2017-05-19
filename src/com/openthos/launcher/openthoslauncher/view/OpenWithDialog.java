@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.R;
 import com.openthos.launcher.openthoslauncher.utils.FileUtils;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,6 +69,12 @@ public class OpenWithDialog extends BaseDialog implements AdapterView.OnItemClic
             mListView.setAdapter(mResolveAdapter);
             mListView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.GONE);
+            if (mResolveList.size() > OtoConsts.LIMIT_FILES_NUM) {
+                ViewGroup.LayoutParams params = mListView.getLayoutParams();
+                params.height = OtoConsts.LIMIT_FILES_HEIGHT;
+                mListView.setLayoutParams(params);
+            }
+            mResolveAdapter.notifyDataSetChanged();
         } else {
             mListView.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);

@@ -295,6 +295,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     && (System.currentTimeMillis() - mLastClickTime)
                                                                   < OtoConsts.DOUBLE_CLICK_TIME
                                     && getLastClickPos() == getAdapterPosition()) {
+                                ((MainActivity) mRecycleClick).removeCallbacks();
                                 OperateUtils.enter(item.getContext(),
                                                  mDatas.get(getAdapterPosition()).getPath(),
                                                  mDatas.get(getAdapterPosition()).getType());

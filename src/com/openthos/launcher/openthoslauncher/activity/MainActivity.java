@@ -485,7 +485,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (!mIsLongPress) {
-                            mHandler.removeCallbacks(mLongPressRunnable);
+                            removeCallbacks();
                         }
                         if ((mIsLongPress || mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
@@ -532,7 +532,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         if (mPressTime == 0 || mIsMove
                             || event.getEventTime() - mPressTime < OtoConsts.DOUBLE_CLICK_TIME) {
-                            mHandler.removeCallbacks(mLongPressRunnable);
+                            removeCallbacks();
                         }
                         mPressTime = 0;
                         mIsMove = false;
@@ -1178,5 +1178,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mPressY = y;
         mIsLongPress = false;
         mHandler.postDelayed(mLongPressRunnable, OtoConsts.DOUBLE_CLICK_TIME);
+    }
+
+    public void removeCallbacks() {
+        mHandler.removeCallbacks(mLongPressRunnable);
     }
 }
