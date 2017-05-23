@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -302,40 +304,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void createNewFileOrFolder(Type type, String suffix) {
-        for (int i = 1; i < mDatas.size(); i++) {
-            if ((mDatas.get(i).getPath()).equals("")) {
-                File root = new File(OtoConsts.DESKTOP_PATH);
-                for (int j = 1; ; j++) {
-                    File file = null;
-                    if (type == Type.FILE) {
-                        file = new File(root, getResources()
-                                                        .getString(R.string.new_file) + j + suffix);
-                    } else if (type == Type.DIRECTORY){
-                        file = new File(root, getResources().getString(R.string.new_folder) + j);
-                    }
-                    if (!file.exists()) {
-                        if (type == Type.FILE) {
-                            copyBaseFile(file, suffix);
-                        } else if (type == Type.DIRECTORY) {
-                            file.mkdir();
-                        }
-                        IconEntity icon = new IconEntity();
-                        icon.setName(file.getName());
-                        icon.setPath(file.getAbsolutePath());
-                        icon.setIsChecked(false);
-                        icon.setIsBlank(false);
-                        icon.setLastModified(file.lastModified());
-                        if (type == Type.FILE) {
-                            icon.setIcon(FileUtils.getFileIcon(file.getAbsolutePath(), this));
-                            icon.setType(Type.FILE);
-                        } else if (type == Type.DIRECTORY) {
-                            icon.setIcon(getResources().getDrawable(R.drawable.ic_directory));
-                            icon.setType(Type.DIRECTORY);
-                        }
-                        mDatas.set(i, icon);
-                        return;
-                    }
+        File root = new File(OtoConsts.DESKTOP_PATH);
+        for (int j = 1; ; j++) {
+            File file = null;
+            if (type == Type.FILE) {
+                file = new File(root, getResources()
+                                                .getString(R.string.new_file) + j + suffix);
+            } else if (type == Type.DIRECTORY){
+                file = new File(root, getResources().getString(R.string.new_folder) + j);
+            }
+            if (!file.exists()) {
+                if (type == Type.FILE) {
+                    copyBaseFile(file, suffix);
+                } else if (type == Type.DIRECTORY) {
+                    file.mkdir();
                 }
+                return;
             }
         }
     }
@@ -1076,32 +1060,50 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         public void onEvent(int event, String path) {
             final int action = event & FileObserver.ALL_EVENTS;
             if (path != null) {
-                path = OtoConsts.DESKTOP_PATH + "/" + path;
-            }
-            switch (action) {
-                case FileObserver.CREATE:
-                case FileObserver.MOVED_TO:
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.SHOW_FILE, path));
-                    break;
-                case FileObserver.MOVED_FROM:
-                    for (int i = 1; i < mDatas.size(); i++) {
-                        if ((mDatas.get(i).getPath()).equals(path)) {
-                            mRenamePos = i;
-                            mLastModified = mDatas.get(i).getLastModified();
-                            break;
+                final String filePath = OtoConsts.DESKTOP_PATH + "/" + path;
+                switch (action) {
+                    case FileObserver.CREATE:
+                    case FileObserver.MOVED_TO:
+                        if (FileUtils.isApk(filePath)) {
+                            new Timer().schedule(new TimerTask(){
+                                long fileLength = -1;
+                                File file = new File(filePath);
+                                @Override
+                                public void run(){
+                                    if (file.length() > fileLength) {
+                                        fileLength = file.length();
+                                     } else {
+                                         MainActivity.mHandler.sendMessage(
+                                                      Message.obtain(MainActivity.mHandler,
+                                                                OtoConsts.SHOW_FILE,filePath));
+                                         cancel();
+                                     }
+                                }
+                            }, 0, OtoConsts.DELAY_REFRESH_TIME);
+                        } else {
+                            MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                                    OtoConsts.SHOW_FILE, filePath));
                         }
-                    }
-                case FileObserver.DELETE:
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.DELETE_REFRESH, path));
-                    break;
-                case FileObserver.MODIFY:
-                    break;
-                case FileObserver.ATTRIB:
-                    break;
-                default:
-                    break;
+                        break;
+                    case FileObserver.MOVED_FROM:
+                        for (int i = 1; i < mDatas.size(); i++) {
+                            if ((mDatas.get(i).getPath()).equals(filePath)) {
+                                mRenamePos = i;
+                                mLastModified = mDatas.get(i).getLastModified();
+                                break;
+                            }
+                        }
+                    case FileObserver.DELETE:
+                        MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                                OtoConsts.DELETE_REFRESH, filePath));
+                        break;
+                    case FileObserver.MODIFY:
+                        break;
+                    case FileObserver.ATTRIB:
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

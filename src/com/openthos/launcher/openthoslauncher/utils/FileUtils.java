@@ -142,6 +142,14 @@ public class FileUtils {
         }
     }
 
+    public static boolean isApk(String path){
+        if (!path.contains(".")) {
+            return false;
+        } else {
+            return path.toLowerCase().endsWith(SUFFIX_APK);
+        }
+    }
+
     /**
      * getFileIcon: Get the Icon from the file name.
      *

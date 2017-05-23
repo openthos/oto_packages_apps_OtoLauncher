@@ -47,6 +47,8 @@ public class OtoConsts {
     public static final int COPY_INFO = 0x00000020;
     public static final int CLEAN_CLIPBOARD = 0x00000021;
 
+    public static final int DELAY_REFRESH_TIME = 200;
+
     public static final int SKIP_LINES = 10;
     public static final int INTERCEPT_ONKEYDOWN = 99;
 
