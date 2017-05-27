@@ -120,7 +120,10 @@ public class MenuDialog extends BaseDialog {
                 continue;
             }
             String endPath = path.toLowerCase();
-            if ((s[i].equals(context.getResources().getString(R.string.decompression))
+            if (type == Type.MORE) {
+                mv = View.inflate(context, R.layout.item_menu, null);
+                isInitListener = true;
+            } else if ((s[i].equals(context.getResources().getString(R.string.decompression))
                         && !(endPath.endsWith(OtoConsts.SUFFIX_TAR)
                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_GZIP)
