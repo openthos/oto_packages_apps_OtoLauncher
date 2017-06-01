@@ -212,11 +212,12 @@ public class MenuDialog extends BaseDialog {
                 OperateUtils.enter(getContext(), path,type);
             } else if (text.equals(all_menu[OtoConsts.INDEX_ABOUT_COMPUTER])) {
                 //about_computer
-                PackageManager packageManager = getContext().getPackageManager();
-                Intent about = packageManager.getLaunchIntentForPackage(
-                                                             OtoConsts.SETTINGS_PACKAGE);
-                about.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(about);
+                Intent wallpaper =  new Intent();
+                ComponentName compWallpaper = new ComponentName(OtoConsts.SETTINGS_PACKAGE,
+                                                              OtoConsts.DEVICES_INFO);
+                wallpaper.setComponent(compWallpaper);
+                wallpaper.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(wallpaper);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
                 /*Message compress = new Message();

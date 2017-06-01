@@ -15,6 +15,7 @@ public class OtoConsts {
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
     public static final String WALLPAPER_PICKER = "com.android.settings.WallpaperPicker";
+    public static final String DEVICES_INFO = "com.android.settings.DeviceInfoSettings";
     public static final String DESKTOP_DATA = "com.android.launcher3.DesktopData";
     public static final String DESKTOP_INPUT =
                   "com.android.launcher3/com.openthos.launcher.openthoslauncher.activity.InputIME";
