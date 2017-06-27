@@ -1781,7 +1781,7 @@ public class Workspace extends SmoothPagedView
         super.onAttachedToWindow();
         mWindowToken = getWindowToken();
         computeScroll();
-        mDragController.setWindowToken(mWindowToken);
+        //mDragController.setWindowToken(mWindowToken);
     }
 
     protected void onDetachedFromWindow() {
