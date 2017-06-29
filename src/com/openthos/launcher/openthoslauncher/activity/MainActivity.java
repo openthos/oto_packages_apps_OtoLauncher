@@ -130,12 +130,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.DELETE_REFRESH:
-                        inner:
                         for (int i = 0; i < mDatas.size(); i++) {
                             if ((mDatas.get(i).getPath()).equals(msg.obj)) {
                                 mAdapter.getSelectedPosList().remove(mDatas.get(i));
                                 mDatas.set(i, mBlankIcon);
-                                break inner;
+                                break;
                             }
                         }
                         mAdapter.notifyDataSetChanged();
@@ -261,12 +260,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         };
         mSdReceiver = new SdReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_DESKTOP_SHOW_FILE);
-        intentFilter.addAction(Intent.ACTION_DESKTOP_DELETE_FILE);
-        intentFilter.addAction(Intent.ACTION_DESKTOP_FOCUSED_STATE);
-        intentFilter.addAction(Intent.ACTION_DESKTOP_UNFOCUSED_STATE);
-        intentFilter.addAction(Intent.ACTION_DESKTOP_INTERCEPT);
-        intentFilter.addAction(Intent.ACTION_DESKTOP_COMMIT_TEXT);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_SHOW_FILE);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_DELETE_FILE);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_FOCUSED_STATE);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_UNFOCUSED_STATE);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_INTERCEPT);
+        intentFilter.addAction(OtoConsts.ACTION_DESKTOP_COMMIT_TEXT);
         registerReceiver(mSdReceiver, intentFilter);
         mContentResolver = getContentResolver();
         mUri = Uri.parse("content://com.openthos.filemanager/recycle");
@@ -288,15 +287,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         public void run() {
             super.run();
             if (mIsCut) {
-                String[] srcCropPaths = mPath.split(Intent.EXTRA_CROP_FILE_HEADER);
+                String[] srcCropPaths = mPath.split(OtoConsts.EXTRA_CROP_FILE_HEADER);
                 for (int i = 1; i < srcCropPaths.length; i++) {
-                    DiskUtils.moveFile(srcCropPaths[i].replace(Intent.EXTRA_CROP_FILE_HEADER, ""),
+                    DiskUtils.moveFile(srcCropPaths[i].replace(OtoConsts.EXTRA_CROP_FILE_HEADER, ""),
                             OtoConsts.DESKTOP_PATH);
                 }
             } else {
-                String[] srcCopyPaths = mPath.split(Intent.EXTRA_FILE_HEADER);
+                String[] srcCopyPaths = mPath.split(OtoConsts.EXTRA_FILE_HEADER);
                 for (int i = 1; i < srcCopyPaths.length; i++) {
-                    DiskUtils.copyFile(srcCopyPaths[i].replace(Intent.EXTRA_FILE_HEADER, ""),
+                    DiskUtils.copyFile(srcCopyPaths[i].replace(OtoConsts.EXTRA_FILE_HEADER, ""),
                             OtoConsts.DESKTOP_PATH);
                 }
             }
@@ -614,14 +613,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 if (sourcePath == null) {
                     sourcePath = "";
                 }
-                if(!(sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)
-                                   || sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))){
+                if (!(sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER)
+                                   || sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER))) {
                    return true;
                 }
                 Message paste = new Message();
-                if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
+                if (sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
-                } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
+                } else if (sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER)) {
                     paste.what = OtoConsts.CROP_PASTE;
                 }
                 paste.obj = sourcePath;
@@ -758,15 +757,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 if (type == Type.DIRECTORY || type == Type.FILE) {
                     switch (copyType) {
                         case OtoConsts.COPY_PASTE:
-                            buff.append(Intent.EXTRA_FILE_HEADER
+                            buff.append(OtoConsts.EXTRA_FILE_HEADER
                                     + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                         case OtoConsts.CROP_PASTE:
-                            buff.append(Intent.EXTRA_CROP_FILE_HEADER
+                            buff.append(OtoConsts.EXTRA_CROP_FILE_HEADER
                                     + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                         case OtoConsts.DELETE:
-                            buff.append(Intent.EXTRA_DELETE_FILE_HEADER
+                            buff.append(OtoConsts.EXTRA_DELETE_FILE_HEADER
                                     + mAdapter.getSelectedPosList().get(i).getPath());
                             break;
                     }
@@ -817,7 +816,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             @Override
             public void run() {
                 super.run();
-                String[] split = mPath.split(Intent.EXTRA_DELETE_FILE_HEADER);
+                String[] split = mPath.split(OtoConsts.EXTRA_DELETE_FILE_HEADER);
                 for (int i = 1; i < split.length; i++) {
                     DiskUtils.moveFile(split[i], OtoConsts.RECYCLE_PATH);
                     Message deleteRefreshFile = new Message();
@@ -852,7 +851,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             @Override
             public void run() {
                 super.run();
-                String[] split = mPath.split(Intent.EXTRA_DELETE_FILE_HEADER);
+                String[] split = mPath.split(OtoConsts.EXTRA_DELETE_FILE_HEADER);
                 for (int i = 1; i < split.length; i++) {
                     DiskUtils.delete(new File(split[i]));
                     Message deleteRefreshFile = new Message();
@@ -1004,14 +1003,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String path = intent.getStringExtra(Intent.EXTRA_DESKTOP_PATH_TAG);
+            String path = intent.getStringExtra(OtoConsts.EXTRA_DESKTOP_PATH_TAG);
             switch (intent.getAction()) {
                 //case Intent.ACTION_DESKTOP_FOCUSED_STATE:
                 //    Settings.Secure.putString(MainActivity.this.getContentResolver(),
                 //                              Settings.Secure.DEFAULT_INPUT_METHOD,
                 //                              OtoConsts.DESKTOP_INPUT);
                 //    break;
-                case Intent.ACTION_DESKTOP_INTERCEPT:
+                case OtoConsts.ACTION_DESKTOP_INTERCEPT:
                     mIsCtrlPress = intent.getBooleanExtra(OtoConsts.CTRL_ISPRESSED_INFO, false);
                     mIsShiftPress = intent.getBooleanExtra(OtoConsts.SHIFT_ISPRESSED_INFO, false);
                     Bundle bundle = intent.getParcelableExtra(OtoConsts.BUNDLE_KEYEVENT);
@@ -1020,12 +1019,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                               (KeyEvent) bundle.getParcelable(OtoConsts.KEY_EVENT));
                     }
                     break;
-                case Intent.ACTION_DESKTOP_COMMIT_TEXT:
-                    mCommitText = intent.getStringExtra(Intent.EXTRA_DESKTOP_RESULTTEXT);
+                case OtoConsts.ACTION_DESKTOP_COMMIT_TEXT:
+                    mCommitText = intent.getStringExtra(OtoConsts.EXTRA_DESKTOP_RESULTTEXT);
                     if (mAdapter.isRename) {
                         mAdapter.notifyText(mCommitText);
                     }
-                case Intent.ACTION_DESKTOP_UNFOCUSED_STATE:
+                case OtoConsts.ACTION_DESKTOP_UNFOCUSED_STATE:
                     mIsCtrlPress = false;
                     mIsShiftPress = false;
                     break;

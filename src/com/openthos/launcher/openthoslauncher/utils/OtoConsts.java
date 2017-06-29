@@ -107,19 +107,40 @@ public class OtoConsts {
     public static final int LIMIT_FILES_NUM = 5;
     public static final int LIMIT_FILES_HEIGHT = 280;
 
-    /**
-        public static final String CTRL_ISPRESSED_INFO = "isCtrl";
-        public static final String SHIFT_ISPRESSED_INFO = "isShift";
-        public static final String KEY_CODE = "Keycode";
-        public static final String KEY_EVENT = "Keyevent";
-        public static final String KEY_ACTION_DOWN = "Onkeydown";
-        public static final String BUNDLE_KEYEVENT = "Bundle";
-    */
+    public static final String CTRL_ISPRESSED_INFO = "isCtrl";
+    public static final String SHIFT_ISPRESSED_INFO = "isShift";
+    public static final String KEY_CODE = "Keycode";
+    public static final String KEY_EVENT = "Keyevent";
+    public static final String KEY_ACTION_DOWN = "Onkeydown";
+    public static final String BUNDLE_KEYEVENT = "Bundle";
+    public static final String EXTRA_DESKTOP_BUNDLE = "Bundle";
+    public static final String EXTRA_DESKTOP_KEYCODE = "Keycode";
+    public static final String EXTRA_DESKTOP_KEYEVENT = "Keyevent";
+    public static final String EXTRA_DESKTOP_ONKEYDOWN = "Onkeydown";
+    public static final String EXTRA_DESKTOP_RESULTTEXT = "Resulttext";
+    public static final String EXTRA_DESKTOP_ISCTRLPRESS = "isCtrl";
+    public static final String EXTRA_DESKTOP_ISSHIFTPRESS = "isShift";
+    public static final String EXTRA_FILE_HEADER = "OtoFile:///";
+    public static final String EXTRA_CROP_FILE_HEADER = "OtoCropFile:///";
+    public static final String EXTRA_DELETE_FILE_HEADER = "OtoDeleteFile:///";
+    public static final String EXTRA_DESKTOP_PATH_TAG = "path";
+    public static final String ACTION_DESKTOP_DELETE_FILE
+            = "android.intent.action.DESKTOP_DELETE_FILE";
+    public static final String ACTION_DESKTOP_FOCUSED_STATE
+            = "android.intent.action.DESKTOP_FOCUSED_STATE";
+    public static final String ACTION_DESKTOP_UNFOCUSED_STATE
+            = "android.intent.action.DESKTOP_UNFOCUSED_STATE";
+    public static final String ACTION_DESKTOP_COMMIT_TEXT
+            = "android.intent.action.DESKTOP_COMMIT_TEXT";
+    public static final String ACTION_DESKTOP_SHOW_FILE = "android.intent.action.DESKTOP_SHOW_FILE";
+    public static final String ACTION_DESKTOP_INTERCEPT = "android.intent.action.DESKTOP_INTERCEPT";
+    public static final String ACTION_APPSTORE_SEAFILE = "android.intent.action.APPSTORE_SEAFILE";
+    public static final String ACTION_OPEN_APPLICATION = "android.intent.action.OPEN_APPLICATION";
 
-    public static final String CTRL_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISCTRLPRESS;
-    public static final String SHIFT_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISSHIFTPRESS;
-    public static final String KEY_CODE = Intent.EXTRA_DESKTOP_KEYCODE;
-    public static final String KEY_EVENT = Intent.EXTRA_DESKTOP_KEYEVENT;
-    public static final String KEY_ACTION_DOWN = Intent.EXTRA_DESKTOP_ONKEYDOWN;
-    public static final String BUNDLE_KEYEVENT = Intent.EXTRA_DESKTOP_BUNDLE;
+    //public static final String CTRL_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISCTRLPRESS;
+    //public static final String SHIFT_ISPRESSED_INFO = Intent.EXTRA_DESKTOP_ISSHIFTPRESS;
+    //public static final String KEY_CODE = Intent.EXTRA_DESKTOP_KEYCODE;
+    //public static final String KEY_EVENT = Intent.EXTRA_DESKTOP_KEYEVENT;
+    //public static final String KEY_ACTION_DOWN = Intent.EXTRA_DESKTOP_ONKEYDOWN;
+    //public static final String BUNDLE_KEYEVENT = Intent.EXTRA_DESKTOP_BUNDLE;
 }

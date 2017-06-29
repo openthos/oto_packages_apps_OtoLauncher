@@ -92,19 +92,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         mIndex = mHolder.tv.getSelectionStart();
         mEdit = mHolder.tv.getText();
         switch (commitText) {
-            case Intent.EXTRA_DESKTOP_ENTER:
+            case RenameUtils.ENTER:
                 mIsRenameRefresh = true;
                 mHolder.tv.setFocusable(false);
                 mHolder.tv.clearFocus();
                 mHolder = null;
                 isRename = false;
                 break;
-            case Intent.EXTRA_DESKTOP_BACK:
+            case RenameUtils.DELETE:
                 if (mIndex > 0) {
                     mEdit.delete(mIndex - 1, mIndex);
                 }
                 break;
-            case RenameUtils.DELETE_CHAR:
+            case RenameUtils.BACKSPACE:
                 if (mIndex < mEdit.length()) {
                     mEdit.delete(mIndex, mIndex + 1);
                 }
@@ -375,7 +375,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     type = Type.MORE;
                     path = "";
                     for (int i = 0; i < selectedPositions.size(); i++) {
-                        path = path + Intent.EXTRA_DELETE_FILE_HEADER
+                        path = path + OtoConsts.EXTRA_DELETE_FILE_HEADER
                                                               + selectedPositions.get(i).getPath();
                     }
                     break;
@@ -406,7 +406,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public static void openAppBroadcast(Context context) {
         Intent openAppIntent = new Intent();
-        openAppIntent.setAction(Intent.ACTION_OPEN_APPLICATION);
+        openAppIntent.setAction(OtoConsts.ACTION_OPEN_APPLICATION);
         context.sendBroadcast(openAppIntent);
     }
 

@@ -32,7 +32,7 @@ import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
 public class OperateUtils {
     public static void openAppBroadcast(Context context) {
         Intent openAppIntent = new Intent();
-        openAppIntent.setAction(Intent.ACTION_OPEN_APPLICATION);
+        openAppIntent.setAction(OtoConsts.ACTION_OPEN_APPLICATION);
         context.sendBroadcast(openAppIntent);
     }
 
@@ -45,12 +45,12 @@ public class OperateUtils {
                 try {
                     Intent intent = packageManager.getLaunchIntentForPackage(
                                              OtoConsts.OTO_FILEMANAGER_PACKAGE);
-                    intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
+                    intent.putExtra(OtoConsts.EXTRA_DESKTOP_PATH_TAG, path);
                     context.startActivity(intent);
                 } catch (NullPointerException e) {
                     Intent intent = packageManager.getLaunchIntentForPackage(
                                                  OtoConsts.FILEMANAGER_PACKAGE);
-                    intent.putExtra(Intent.EXTRA_DESKTOP_PATH_TAG, path);
+                    intent.putExtra(OtoConsts.EXTRA_DESKTOP_PATH_TAG, path);
                     context.startActivity(intent);
                 }
                 break;
@@ -69,8 +69,8 @@ public class OperateUtils {
                     openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     openFile.setAction(Intent.ACTION_VIEW);
                     openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
-                    openFile.putExtra(ApplicationInfo.PACKAGENAME_TAG,
-                                          ApplicationInfo.APPNAME_OTO_LAUNCHER);
+                    openFile.putExtra("packages",
+                                          "com.android.launcher3");
                     context.startActivity(openFile);
                 } else {
                     OpenWithDialog openWithDialog = new OpenWithDialog(

@@ -27,7 +27,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.os.TraceCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.InputDeviceCompat;
@@ -403,11 +402,11 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         this(context, null);
     }
 
-    public RecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public RecyclerView(Context context,  AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public RecyclerView(Context context,  AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setFocusableInTouchMode(true);
         final int version = Build.VERSION.SDK_INT;
@@ -5550,7 +5549,6 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         ChildHelper mChildHelper;
         RecyclerView mRecyclerView;
 
-        @Nullable
         SmoothScroller mSmoothScroller;
 
         private boolean mRequestedSimpleAnimations = false;
@@ -6956,7 +6954,6 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          * @param state     Transient state of RecyclerView
          * @return The chosen view to be focused
          */
-        @Nullable
         public View onFocusSearchFailed(View focused, int direction, Recycler recycler,
                 State state) {
             return null;
@@ -8582,7 +8579,6 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
          * @return The LayoutManager to which this SmoothScroller is attached. Will return
          * <code>null</code> after the SmoothScroller is stopped.
          */
-        @Nullable
         public LayoutManager getLayoutManager() {
             return mLayoutManager;
         }

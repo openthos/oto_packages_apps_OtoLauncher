@@ -137,8 +137,8 @@ public class MenuDialog extends BaseDialog {
                           || endPath.endsWith(OtoConsts.SUFFIX_RAR)
                           || endPath.endsWith(OtoConsts.SUFFIX_7Z)))
                 || (s[i].equals(context.getResources().getString(R.string.paste))
-                        && !((sourcePath.startsWith(Intent.EXTRA_FILE_HEADER))
-                               || (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER))))) {
+                        && !((sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER))
+                               || (sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER))))) {
                 mv = View.inflate(context, R.layout.item_menu_unable, null);
             } else {
                 mv = View.inflate(context, R.layout.item_menu, null);
@@ -224,8 +224,8 @@ public class MenuDialog extends BaseDialog {
                 compress.obj = path;
                 compress.what = OtoConsts.COMPRESS;
                 MainActivity.mHandler.sendMessage(compress);*/
-                path = path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
-                    path : (Intent.EXTRA_DELETE_FILE_HEADER + path);
+                path = path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                        path : (OtoConsts.EXTRA_DELETE_FILE_HEADER + path);
                 Intent intent = new Intent(OtoConsts.COMPRESS_FILES);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(OtoConsts.COMPRESS_PATH_TAG, path);
@@ -243,22 +243,22 @@ public class MenuDialog extends BaseDialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                    .setText(path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
-                        path.replace(Intent.EXTRA_DELETE_FILE_HEADER, Intent.EXTRA_CROP_FILE_HEADER)
-                            : Intent.EXTRA_CROP_FILE_HEADER + path);
+                    .setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                        path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_CROP_FILE_HEADER)
+                            : OtoConsts.EXTRA_CROP_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
                 ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                    .setText(path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
-                        path.replace(Intent.EXTRA_DELETE_FILE_HEADER, Intent.EXTRA_FILE_HEADER)
-                            : Intent.EXTRA_FILE_HEADER + path);
+                    .setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                        path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_FILE_HEADER)
+                            : OtoConsts.EXTRA_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
                 Message paste = new Message();
-                if (sourcePath.startsWith(Intent.EXTRA_FILE_HEADER)) {
+                if (sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER)) {
                     paste.what = OtoConsts.COPY_PASTE;
                     //paste.obj = sourcePath.replace(Intent.EXTRA_FILE_HEADER, "");
-                } else if (sourcePath.startsWith(Intent.EXTRA_CROP_FILE_HEADER)) {
+                } else if (sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER)) {
                     paste.what = OtoConsts.CROP_PASTE;
                     //paste.obj = sourcePath.replace(Intent.EXTRA_CROP_FILE_HEADER, "");
                 }
@@ -293,8 +293,8 @@ public class MenuDialog extends BaseDialog {
             } else if (text.equals(all_menu[OtoConsts.INDEX_DELETE])) {
                 //delete
                 Message deleteFile = new Message();
-                deleteFile.obj = path.contains(Intent.EXTRA_DELETE_FILE_HEADER) ?
-                                     path : Intent.EXTRA_DELETE_FILE_HEADER + path;
+                deleteFile.obj = path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                                     path : OtoConsts.EXTRA_DELETE_FILE_HEADER + path;
                 deleteFile.what = OtoConsts.DELETE;
                 MainActivity.mHandler.sendMessage(deleteFile);
             } else if (text.equals(all_menu[OtoConsts.INDEX_RENAME])) {

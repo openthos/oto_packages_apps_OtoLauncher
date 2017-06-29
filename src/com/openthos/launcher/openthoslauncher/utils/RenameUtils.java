@@ -2,13 +2,16 @@ package com.openthos.launcher.openthoslauncher.utils;
 
 import android.content.Intent;
 import android.view.KeyEvent;
+import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 public class RenameUtils {
-    public static final String DELETE_CHAR = "delete_char";
-    public static final String HOME = "home";
-    public static final String END = "end";
-    public static final String LEFT = "left";
-    public static final String RIGHT = "right";
+    public static final String BACKSPACE = "Backspace";
+    public static final String ENTER = "Enter";
+    public static final String DELETE = "Delete";
+    public static final String HOME = "Home";
+    public static final String END = "End";
+    public static final String LEFT = "Left";
+    public static final String RIGHT = "Right";
 
     public static String switchKeyCodeToString(KeyEvent event, int keyCode) {
         int keyChar = 0;
@@ -93,11 +96,11 @@ public class RenameUtils {
             keyChar = -1;
         }
         if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-            return Intent.EXTRA_DESKTOP_ENTER;
+            return ENTER;
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            return Intent.EXTRA_DESKTOP_BACK;
+            return DELETE;
         } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
-            return DELETE_CHAR;
+            return BACKSPACE;
         } else if (keyCode == KeyEvent.KEYCODE_MOVE_HOME) {
             return HOME;
         } else if (keyCode == KeyEvent.KEYCODE_MOVE_END) {

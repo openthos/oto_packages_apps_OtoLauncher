@@ -60,10 +60,6 @@ LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := supporta:lib/support-annotations-22.2.1-
                                         support4:lib/support-v4-22.2.1.aar \
 include $(CLEAR_VARS)
 
-LOCAL_AAPT_FLAG := \
-                   --auto-add-overlay \
-                   --extra-package android.support.v4 \
-                   --extra-package com.android.launcher3
 
 LOCAL_MANIFEST_FILE := $(LOCAL_PATH)/AndroidManifest.xml
 
