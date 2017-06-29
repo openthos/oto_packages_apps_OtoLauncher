@@ -50,11 +50,13 @@ public class DiskUtils {
                 Process pro = runtime.exec(new String[]{command, arg, file.getAbsolutePath()});
                 in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
                 String line;
+                MainActivity.mHandler.removeMessages(OtoConsts.COPY_INFO_HIDE);
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.DELETE_INFO_SHOW);
                 while ((line = in.readLine()) != null) {
                 }
-                MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+                MainActivity.mHandler.sendEmptyMessageDelayed(OtoConsts.COPY_INFO_HIDE, 1000);
             } catch (IOException e) {
+                MainActivity.mHandler.sendEmptyMessageDelayed(OtoConsts.COPY_INFO_HIDE, 1000);
                 e.printStackTrace();
             } finally {
                 if (in != null) {
@@ -132,6 +134,7 @@ public class DiskUtils {
                     destFile.getAbsolutePath()});
             in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
             String line;
+            MainActivity.mHandler.removeMessages(OtoConsts.COPY_INFO_HIDE);
             MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_SHOW);
             int i = 0;
             while ((line = in.readLine()) != null) {
@@ -143,25 +146,12 @@ public class DiskUtils {
                     i--;
                 }
             }
-            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
-            if (command.contains("cp")) {
-                if (destFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.SHOW_FILE, destFile.getAbsolutePath()));
-                }
-            } else if (command.contains("mv")) {
-                if (destFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.SHOW_FILE, destFile.getAbsolutePath()));
-                }
-                if (sourceFile.getAbsolutePath().contains(OtoConsts.DESKTOP_PATH)) {
-                    MainActivity.mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
-                            OtoConsts.DELETE_REFRESH, sourceFile.getAbsolutePath()));
-                }
+            MainActivity.mHandler.sendEmptyMessageDelayed(OtoConsts.COPY_INFO_HIDE, 1000);
+            if (command.contains("mv")) {
                 MainActivity.mHandler.sendEmptyMessage(OtoConsts.CLEAN_CLIPBOARD);
             }
         } catch (IOException e) {
-            MainActivity.mHandler.sendEmptyMessage(OtoConsts.COPY_INFO_HIDE);
+            MainActivity.mHandler.sendEmptyMessageDelayed(OtoConsts.COPY_INFO_HIDE, 1000);
         } finally {
             if (in != null) {
                 try {

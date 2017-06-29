@@ -119,6 +119,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         }
         init();
         mHandler = new Handler() {
+            private long mPreTime = 0;
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -137,18 +138,22 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                 break;
                             }
                         }
-                        mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+                        if (System.currentTimeMillis() - mPreTime >= 1000) {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
+                            mPreTime = System.currentTimeMillis();
+                        } else {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessageDelayed(Message.obtain(mHandler,
+                                    OtoConsts.ONLY_REFRESH), 1000);
+                        }
                         break;
                     case OtoConsts.NEWFOLDER:
                         createNewFileOrFolder(Type.DIRECTORY, null);
-                        mAdapter.notifyDataSetChanged();
-                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.NEWFILE:
                         createNewFileOrFolder(Type.FILE, (String) msg.obj);
-                        mAdapter.notifyDataSetChanged();
-                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.SHOW_FILE:
                         File showFile = new File((String) msg.obj);
@@ -180,7 +185,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mDatas.set(mRenamePos, icon);
                         } else {
                             for (int i = 1; i < mDatas.size(); i++) {
-                                if (mDatas.get(i).getPath().equals("")) {
+                                if (mDatas.get(i) == mBlankIcon) {
                                     mDatas.set(i, icon);
                                     break;
                                 }
@@ -188,8 +193,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         mRenamePos = -1;
                         mLastModified = 0;
-                        mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+                        if (System.currentTimeMillis() - mPreTime >= 1000) {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
+                            mPreTime = System.currentTimeMillis();
+                        } else {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessageDelayed(Message.obtain(mHandler,
+                                    OtoConsts.ONLY_REFRESH), 1000);
+                        }
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
@@ -201,14 +214,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         PropertyDialog propertyDialog = new PropertyDialog(MainActivity.this,
                                                                           (String) msg.obj);
                         propertyDialog.showDialog();
-                        break;
-                    case OtoConsts.COMPRESS:
-                        /**CompressDialog compressDialog = new CompressDialog(MainActivity.this,
-                                                                          (String) msg.obj);
-                        compressDialog.showDialog();**/
-                        break;
-                    case OtoConsts.DECOMPRESS:
-                        //showDialogForDecompress((String) msg.obj);
                         break;
                     case OtoConsts.DELETE:
                         showDialogForMoveToRecycle((String) msg.obj);
@@ -254,6 +259,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.CLEAN_CLIPBOARD:
                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                                                                                .setText("");
+                        break;
+                    case OtoConsts.ONLY_REFRESH:
+                        mAdapter.notifyDataSetChanged();
                         break;
                 }
             }

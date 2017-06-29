@@ -220,10 +220,6 @@ public class MenuDialog extends BaseDialog {
                 getContext().startActivity(wallpaper);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COMPRESS])) {
                 //compress
-                /*Message compress = new Message();
-                compress.obj = path;
-                compress.what = OtoConsts.COMPRESS;
-                MainActivity.mHandler.sendMessage(compress);*/
                 path = path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
                         path : (OtoConsts.EXTRA_DELETE_FILE_HEADER + path);
                 Intent intent = new Intent(OtoConsts.COMPRESS_FILES);
@@ -232,10 +228,6 @@ public class MenuDialog extends BaseDialog {
                 context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_DECOMPRESSION])) {
                 //decompression
-                /*Message decompress = new Message();
-                decompress.obj = path;
-                decompress.what = OtoConsts.DECOMPRESS;
-                MainActivity.mHandler.sendMessage(decompress);*/
                 Intent intent = new Intent(OtoConsts.DECOMPRESS_FILE);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(OtoConsts.COMPRESS_PATH_TAG, path);
