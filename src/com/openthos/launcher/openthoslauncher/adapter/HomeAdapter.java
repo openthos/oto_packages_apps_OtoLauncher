@@ -228,10 +228,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
             if (getAdapterPosition() != -1) {
                 ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
-                    mDatas.get(getAdapterPosition()).getType(),
-                    mDatas.get(getAdapterPosition()).getPath(),
-                    (int) event.getRawX(), (int) event.getRawY());
+                        mDatas.get(getAdapterPosition()).getType(),
+                        mDatas.get(getAdapterPosition()).getPath(),
+                        (int) event.getRawX(), (int) event.getRawY());
                 if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                    ((MainActivity) mRecycleClick).removeCallbacks();
                     if (selectedPositions != null) {
                         if (mDatas.get(getAdapterPosition()).isBlank()) {
                             setSelectedCurrent(-1);

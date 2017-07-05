@@ -457,6 +457,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         setPressInfo(event.getEventTime(), Type.BLANK, "",
                                      (int) event.getRawX(), (int) event.getRawY());
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
+                            removeCallbacks();
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                         }

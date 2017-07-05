@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -44,6 +45,8 @@ public class MenuDialog extends BaseDialog {
     private Type type;
     private String path;
     private int dialogHeight;
+    private int dialogWidth = 144;
+    private int itemHeight;
     private String sourcePath = "";
 
     public MenuDialog(Context context) {
@@ -112,6 +115,16 @@ public class MenuDialog extends BaseDialog {
         if (sourcePath == null) {
             sourcePath = "";
         }
+        View tempView = View.inflate(context, R.layout.item_menu, null);
+        TextView tempTv = (TextView) tempView.findViewById(R.id.text);
+        for (int i = 0; i < s.length; i++) {
+           tempTv.setText(s[i]);
+           tempView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+           if (tempView.getMeasuredWidth() > dialogWidth) {
+                dialogWidth = tempView.getMeasuredWidth();
+           }
+        }
+        itemHeight = tempView.getMeasuredHeight();
         for (int i = 0; i < s.length; i++) {
             View mv;
             boolean isInitListener = false;
@@ -152,14 +165,8 @@ public class MenuDialog extends BaseDialog {
                 tv.setOnClickListener(clickListener);
             }
             ll.addView(mv);
-            if (i == 0) {
-               int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-               int height = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-               mv.measure(width,height);
-               mvWidth = mv.getMeasuredWidth();
-               mvHeight = mv.getMeasuredHeight();
-            }
-            dialogHeight += mvHeight;
+            tv.getLayoutParams().width = dialogWidth;
+            dialogHeight += itemHeight;
         }
     }
 
