@@ -284,6 +284,7 @@
     <add-resource type="string" name="file_name_warning" />
     <add-resource type="string" name="confirm_limit" />
     <add-resource type="string" name="dialog_count" />
+    <add-resource type="string" name="progress_dialog_setting_wallpaper" />
 
     <string name="app_name">桌面</string>
     <!-- 桌面基本图标 -->
@@ -360,4 +361,5 @@
     <string name="file_name_warning">提示：\n请避免文件名含有以下字符：@ # $ ^ &amp; * ( ) [ ]\n\n确认使用此文件名？</string>
     <string name="confirm_limit">你确定要修改该文件的权限吗？\n由于系统的保护，可能会修改失败！</string>
     <string name="dialog_count">计算中……</string>
+    <string name="progress_dialog_setting_wallpaper" msgid="2031391201442335889">"正在设置壁纸..."</string>
 </resources>

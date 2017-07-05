@@ -183,7 +183,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     a.getSavedImages().writeImage(thumb, imageBytes);
                 }
             };
-            a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
+            //a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
+            a.setWallpaper(mUri);
         }
         @Override
         public boolean isSelectable() {

@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -37,6 +39,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -70,12 +73,14 @@ public class WallpaperCropActivity extends Activity {
      */
     public static final int MAX_BMAP_IN_INTENT = 750000;
     private static final float WALLPAPER_SCREENS_SPAN = 2f;
+    private static final int BUFFER_SIZE = 128 * 1024;
 
     protected static Point sDefaultWallpaperSize;
 
     protected CropView mCropView;
     protected Uri mUri;
     protected View mSetWallpaperButton;
+    private ProgressDialog mWallpaperProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +114,8 @@ public class WallpaperCropActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         boolean finishActivityWhenDone = true;
-                        cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
+                        //cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
+                        setWallpaper(imageUri);
                     }
                 });
         mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
@@ -640,8 +646,9 @@ public class WallpaperCropActivity extends Activity {
                 }
 
                 // See how much we're reducing the size of the image
-                int scaleDownSampleSize = Math.max(1, Math.min(roundedTrueCrop.width() / mOutWidth,
-                        roundedTrueCrop.height() / mOutHeight));
+                int scaleDownSampleSize = 1;
+                //int scaleDownSampleSize = Math.max(1, Math.min(roundedTrueCrop.width() / mOutWidth,
+                //        roundedTrueCrop.height() / mOutHeight));
                 // Attempt to open a region decoder
                 BitmapRegionDecoder decoder = null;
                 InputStream is = null;
@@ -894,5 +901,83 @@ public class WallpaperCropActivity extends Activity {
         return (outputFormat.equals("png") || outputFormat.equals("gif"))
                 ? "png" // We don't support gif compression.
                 : "jpg";
+    }
+
+    public void setWallpaper(final Uri uri) {
+        mWallpaperProgress = new ProgressDialog(WallpaperCropActivity.this);
+        mWallpaperProgress.setIndeterminate(true);
+        mWallpaperProgress.setMessage(WallpaperCropActivity.this.getResources()
+                .getText(R.string.progress_dialog_setting_wallpaper));
+        mWallpaperProgress.setCancelable(false);
+        mWallpaperProgress.show();
+        new Thread(){
+            public void run() {
+                WallpaperManager wm = WallpaperManager.getInstance(WallpaperCropActivity.this);
+                Drawable oldWallpaper = wm.getDrawable();
+                InputStream inputstream = null;
+                try {
+                    inputstream = new BufferedInputStream(
+                            WallpaperCropActivity.this.getContentResolver().openInputStream(uri));
+                    if (inputstream != null) {
+                        if (!inputstream.markSupported()) {
+                            inputstream = new BufferedInputStream(inputstream, BUFFER_SIZE);
+                        }
+                        inputstream.mark(BUFFER_SIZE);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeStream(
+                                new BufferedInputStream(inputstream), null, options);
+                        int maxWidth = wm.getDesiredMinimumWidth();
+                        int maxHeight = wm.getDesiredMinimumHeight();
+                        maxWidth *= 1.25;
+                        maxHeight *= 1.25;
+                        int bmWidth = options.outWidth;
+                        int bmHeight = options.outHeight;
+
+                        int scale = 1;
+                        while (bmWidth > maxWidth || bmHeight > maxHeight) {
+                            scale <<= 1;
+                            bmWidth >>= 1;
+                            bmHeight >>= 1;
+                        }
+                        options.inJustDecodeBounds = false;
+                        options.inSampleSize = scale;
+                        try {
+                            inputstream.reset();
+                        } catch (IOException e) {
+                            inputstream.close();
+                            inputstream = new BufferedInputStream(WallpaperCropActivity.this
+                                    .getContentResolver().openInputStream(uri));
+                        }
+                        Bitmap scaledWallpaper = BitmapFactory.decodeStream(inputstream,
+                                null, options);
+                        if (scaledWallpaper != null) {
+                            wm.setBitmap(scaledWallpaper);
+                        } else {
+                            Log.e(LOGTAG, "Unable to set new wallpaper, decodeStream return null.");
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.e(LOGTAG, "Unable to set new wallpaper");
+                } finally {
+                    if (inputstream != null) {
+                        try {
+                            inputstream.close();
+                        } catch (IOException e) {
+                        }
+                    }
+                }
+                WallpaperCropActivity.this.runOnUiThread(
+                    new Runnable(){
+                        public void run(){
+                            if (mWallpaperProgress.isShowing()) {
+                                mWallpaperProgress.dismiss();
+                            }
+                            WallpaperCropActivity.this.finish();
+                        }
+                    }
+                );
+            }
+        }.start();
     }
 }

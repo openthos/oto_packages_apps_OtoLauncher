@@ -46,8 +46,13 @@ LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := OtoLauncher
 #LOCAL_CERTIFICATE := shared
 LOCAL_CERTIFICATE := platform
-LOCAL_OVERRIDES_PACKAGES := Launcher3
-
+LOCAL_OVERRIDES_PACKAGES := Launcher3 \
+                            LiveWallpapers \
+                            Galaxy4 \
+                            HoloSpiralWallpaper \
+                            VisualizationWallpapers \
+                            PhaseBeam \
+                            LiveWallpapersPicker
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
