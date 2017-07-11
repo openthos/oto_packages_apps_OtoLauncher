@@ -44,9 +44,9 @@ public class MenuDialog extends BaseDialog {
     private Context context;
     private Type type;
     private String path;
-    private int dialogHeight;
+    private int dialogHeight = 0;
     private int dialogWidth = 144;
-    private int itemHeight;
+    private int itemHeight = 0;
     private String sourcePath = "";
 
     public MenuDialog(Context context) {
@@ -102,11 +102,8 @@ public class MenuDialog extends BaseDialog {
                 break;
         }
 
-        dialogHeight = 0;
-        int mvHeight = 0;
-        int mvWidth = 0;
-        ClipboardManager cm = (ClipboardManager) context.getSystemService(
-                                                              Context.CLIPBOARD_SERVICE);
+        ClipboardManager cm
+                = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         try {
             sourcePath = (String) cm.getText();
         } catch (ClassCastException e) {
@@ -127,7 +124,6 @@ public class MenuDialog extends BaseDialog {
         itemHeight = tempView.getMeasuredHeight();
         for (int i = 0; i < s.length; i++) {
             View mv;
-            boolean isInitListener = false;
             if (s[i].equals(context.getResources().getString(R.string.open_with))
                                                                        && type == Type.DIRECTORY) {
                 continue;
@@ -135,7 +131,6 @@ public class MenuDialog extends BaseDialog {
             String endPath = path.toLowerCase();
             if (type == Type.MORE) {
                 mv = View.inflate(context, R.layout.item_menu, null);
-                isInitListener = true;
             } else if ((s[i].equals(context.getResources().getString(R.string.decompression))
                         && !(endPath.endsWith(OtoConsts.SUFFIX_TAR)
                          || endPath.endsWith(OtoConsts.SUFFIX_TAR_BZIP2)
@@ -152,20 +147,18 @@ public class MenuDialog extends BaseDialog {
                 || (s[i].equals(context.getResources().getString(R.string.paste))
                         && !((sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER))
                                || (sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER))))) {
-                mv = View.inflate(context, R.layout.item_menu_unable, null);
+                continue;
+                //mv = View.inflate(context, R.layout.item_menu_unable, null);
             } else {
                 mv = View.inflate(context, R.layout.item_menu, null);
-                isInitListener = true;
             }
             TextView tv = (TextView) mv.findViewById(R.id.text);
             tv.setText(s[i]);
             tv.setTag(s[i]);
-            if (isInitListener) {
-                tv.setOnHoverListener(hoverListener);
-                tv.setOnClickListener(clickListener);
-            }
-            ll.addView(mv);
+            tv.setOnHoverListener(hoverListener);
+            tv.setOnClickListener(clickListener);
             tv.getLayoutParams().width = dialogWidth;
+            ll.addView(mv);
             dialogHeight += itemHeight;
         }
     }

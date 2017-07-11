@@ -535,7 +535,7 @@ s -->
     <string name="about_computer">About Computer</string>
     <string name="open_way">Open Way</string>
     <string name="compress">Compress</string>
-    <string name="decompression">Decompression</string>
+    <string name="decompression">Decompress</string>
     <string name="crop">Crop</string>
     <string name="copy">Copy</string>
     <string name="delete">Delete</string>

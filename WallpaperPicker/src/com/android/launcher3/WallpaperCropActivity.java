@@ -837,34 +837,6 @@ public class WallpaperCropActivity extends Activity {
             editor.remove(WALLPAPER_HEIGHT_KEY);
         }
         editor.commit();
-
-        suggestWallpaperDimension(getResources(),
-                sp, getWindowManager(), WallpaperManager.getInstance(this), true);
-    }
-
-    static public void suggestWallpaperDimension(Resources res,
-            final SharedPreferences sharedPrefs,
-            WindowManager windowManager,
-            final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
-        final Point defaultWallpaperSize = getDefaultWallpaperSize(res, windowManager);
-        // If we have saved a wallpaper width/height, use that instead
-
-        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, -1);
-        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, -1);
-
-        if (savedWidth == -1 || savedHeight == -1) {
-            if (!fallBackToDefaults) {
-                return;
-            } else {
-                savedWidth = defaultWallpaperSize.x;
-                savedHeight = defaultWallpaperSize.y;
-            }
-        }
-
-        if (savedWidth != wallpaperManager.getDesiredMinimumWidth() ||
-                savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
-            wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
-        }
     }
 
     protected static RectF getMaxCropRect(
@@ -929,19 +901,14 @@ public class WallpaperCropActivity extends Activity {
                                 new BufferedInputStream(inputstream), null, options);
                         int maxWidth = wm.getDesiredMinimumWidth();
                         int maxHeight = wm.getDesiredMinimumHeight();
-                        maxWidth *= 1.25;
-                        maxHeight *= 1.25;
                         int bmWidth = options.outWidth;
                         int bmHeight = options.outHeight;
-
                         int scale = 1;
                         while (bmWidth > maxWidth || bmHeight > maxHeight) {
                             scale <<= 1;
                             bmWidth >>= 1;
                             bmHeight >>= 1;
                         }
-                        options.inJustDecodeBounds = false;
-                        options.inSampleSize = scale;
                         try {
                             inputstream.reset();
                         } catch (IOException e) {
@@ -949,8 +916,20 @@ public class WallpaperCropActivity extends Activity {
                             inputstream = new BufferedInputStream(WallpaperCropActivity.this
                                     .getContentResolver().openInputStream(uri));
                         }
-                        Bitmap scaledWallpaper = BitmapFactory.decodeStream(inputstream,
-                                null, options);
+                        Bitmap scaledWallpaper = null;
+                        if (bmWidth == maxWidth && bmHeight == maxHeight) {
+                            options.inJustDecodeBounds = false;
+                            options.inSampleSize = scale;
+                            scaledWallpaper = BitmapFactory.decodeStream(inputstream, null, options);
+                        } else {
+                            bmWidth = options.outWidth;
+                            bmHeight = options.outHeight;
+                            Bitmap temp = BitmapFactory.decodeStream(inputstream);
+                            Matrix matrix = new Matrix();
+                            matrix.postScale((float) maxWidth / bmWidth, (float) maxHeight / bmHeight);
+                            scaledWallpaper
+                                    = Bitmap.createBitmap(temp, 0, 0, bmWidth, bmHeight, matrix ,true);
+                        }
                         if (scaledWallpaper != null) {
                             wm.setBitmap(scaledWallpaper);
                         } else {
