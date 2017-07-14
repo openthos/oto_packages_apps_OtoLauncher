@@ -184,7 +184,7 @@
 
     <!-- dialog property -->
     <dimen name="dialog_property_padding">10px</dimen>
-    <dimen name="dialog_property_width">380dp</dimen>
+    <dimen name="dialog_property_width">420dp</dimen>
     <dimen name="dialog_property_title_height">32dp</dimen>
     <dimen name="dialog_property_title_icon_size">20dp</dimen>
     <dimen name="dialog_property_title_close_size">36dp</dimen>

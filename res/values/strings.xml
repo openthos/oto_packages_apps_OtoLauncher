@@ -549,12 +549,12 @@ s -->
     <string name="dialog_delete_no">No</string>
     <!-- About Dialog property -->
     <string name="dialog_property_title">Propertys</string>
-    <string name="dialog_property_file_type">Type of file:</string>
+    <string name="dialog_property_file_type">File type:</string>
     <string name="dialog_property_open_way">Description:</string>
     <string name="dialog_property_location">Location:</string>
     <string name="dialog_property_size">Size:</string>
     <string name="dialog_property_space_usage">Size on deis:</string>
-    <string name="dialog_property_creation_time">Created:</string>
+    <string name="dialog_property_creation_time">Changed:</string>
     <string name="dialog_property_modification_time">Modified:</string>
     <string name="dialog_property_access_time">Accessed:</string>
     <string name="dialog_property_limits_of_authority">Limits of authority:</string>

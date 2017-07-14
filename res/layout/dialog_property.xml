@@ -25,12 +25,14 @@
             android:layout_gravity="center_vertical"
             android:text="@string/dialog_property_title"
             android:textColor="@color/black"
+            android:maxEms="20"
+            android:singleLine="true"
             android:textSize="@dimen/dialog_property_font_size" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="3" />
 
         <ImageView
             android:id="@+id/title_close"
@@ -56,7 +58,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_file_type"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -65,7 +67,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -81,7 +83,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_open_way"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -90,7 +92,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -119,7 +121,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_location"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -129,7 +131,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
+                android:maxLines="2"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -145,7 +148,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_size"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -155,7 +158,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -165,13 +168,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/dialog_property_padding1x"
-            android:paddingTop="@dimen/dialog_property_padding1x">
+            android:paddingTop="@dimen/dialog_property_padding1x"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_space_usage"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -181,7 +185,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -210,7 +214,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_creation_time"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -220,7 +224,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -236,7 +240,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_modification_time"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -246,7 +250,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -262,7 +266,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_access_time"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -272,7 +276,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
         </LinearLayout>
@@ -311,7 +315,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_user"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -319,7 +323,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -381,7 +385,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_group"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -389,7 +393,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -447,7 +451,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:text="@string/dialog_property_other"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dialog_property_font_size" />
@@ -455,7 +459,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:orientation="horizontal">
 
                 <CheckBox
