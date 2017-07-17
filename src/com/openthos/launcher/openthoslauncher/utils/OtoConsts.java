@@ -108,6 +108,11 @@ public class OtoConsts {
     public static final int LIMIT_FILES_NUM = 5;
     public static final int LIMIT_FILES_HEIGHT = 280;
 
+    public static final String SUFFIX_TXT = ".txt";
+    public static final String SUFFIX_DOC = ".doc";
+    public static final String SUFFIX_XLS = ".xls";
+    public static final String SUFFIX_PPT = ".ppt";
+
     public static final String CTRL_ISPRESSED_INFO = "isCtrl";
     public static final String SHIFT_ISPRESSED_INFO = "isShift";
     public static final String KEY_CODE = "Keycode";

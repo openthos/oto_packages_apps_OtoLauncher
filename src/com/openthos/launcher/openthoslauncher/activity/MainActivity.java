@@ -51,6 +51,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileOutputStream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,10 +98,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOtoContentView(R.layout.activity_main);
-        if (!new File("/data/create/biao.xls").exists()) {
-            OperateUtils.exec(new String[]{"tar", "xvf", "/system/create.tar.gz", "-C", "/data"});
-            OperateUtils.exec(new String[]{"su", "-c", "chmod -R 777 /data/create"});
-        }
         mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
         mDatas = new ArrayList<>();
         mSumNum = getNum();
@@ -332,18 +331,33 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     private void copyBaseFile(File file, String end) {
-        if (getResources().getString(R.string.launcher_txt).equals(end)) {
-            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/ben.txt",
-                                           file.getAbsolutePath()});
-        } else if (getResources().getString(R.string.launcher_doc).equals(end)) {
-            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/wen.doc",
-                                           file.getAbsolutePath()});
-        } else if (getResources().getString(R.string.launcher_xls).equals(end)) {
-            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/biao.xls",
-                                           file.getAbsolutePath()});
-        } else {
-            OperateUtils.exec(new String[]{"cp", "-i", "/data/create/yan.ppt",
-                                           file.getAbsolutePath()});
+        try {
+            InputStream inputStream = null;
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int count = 0;
+            switch(end) {
+                case OtoConsts.SUFFIX_TXT:
+                    inputStream = getAssets().open("t.txt");
+                    break;
+                case OtoConsts.SUFFIX_DOC:
+                    inputStream = getAssets().open("d.doc");
+                    break;
+                case OtoConsts.SUFFIX_XLS:
+                    inputStream = getAssets().open("x.xls");
+                    break;
+                case OtoConsts.SUFFIX_PPT:
+                    inputStream = getAssets().open("p.ppt");
+                    break;
+            }
+            while ((count = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.flush();
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
