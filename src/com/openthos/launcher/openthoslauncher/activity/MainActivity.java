@@ -967,6 +967,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         JSONArray array = new JSONArray(s);
         ArrayList<IconEntity> list = new ArrayList();
         for (int i = 0; i < array.length(); i++) {
+            if (list.size() == mSumNum) {
+                return list;
+            }
             JSONObject obj = array.getJSONObject(i);
             Type type = Type.valueOf(obj.getString("type"));
             if (type == Type.BLANK) {
