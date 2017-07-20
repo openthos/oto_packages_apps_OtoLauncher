@@ -1049,6 +1049,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     mCommitText = intent.getStringExtra(OtoConsts.EXTRA_DESKTOP_RESULTTEXT);
                     if (mAdapter.isRename) {
                         mAdapter.notifyText(mCommitText);
+                    } else if (RenameUtils.ENTER.equals(mCommitText)
+                            && mAdapter.getLastClickPos() != -1) {
+                         OperateUtils.enter(MainActivity.this,
+                                            mDatas.get(mAdapter.getLastClickPos()).getPath(),
+                                            mDatas.get(mAdapter.getLastClickPos()).getType());
                     }
                 case OtoConsts.ACTION_DESKTOP_UNFOCUSED_STATE:
                     mIsCtrlPress = false;

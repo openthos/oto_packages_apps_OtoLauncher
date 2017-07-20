@@ -85,7 +85,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 mHolder.tv.setSelection(0);
             } else if (commitText.equals(RenameUtils.RIGHT)) {
                 mHolder.tv.setSelection(mHolder.tv.getText().length());
-            } else {
+            } else if (!(commitText.equals(RenameUtils.ENTER)
+                       || commitText.equals(RenameUtils.HOME)
+                       || commitText.equals(RenameUtils.END))) {
                 mHolder.tv.setText(null);
             }
         }
@@ -437,7 +439,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         String path = icon.getPath();
         String newName = String.valueOf(v.getText());
         for (IconEntity currentIcon : mDatas) {
-            if (icon != currentIcon) {
+            if ((currentIcon.getType() == Type.FILE || currentIcon.getType() == Type.DIRECTORY)
+                    && icon != currentIcon) {
                 if (currentIcon.getName().equals(newName)) {
                     DialogInterface.OnClickListener click = new DialogInterface.OnClickListener() {
                         @Override
