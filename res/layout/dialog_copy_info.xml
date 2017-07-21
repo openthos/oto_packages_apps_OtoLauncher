@@ -25,9 +25,9 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:lines="2"
-            android:ellipsize="end"
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:ellipsize="middle"
             android:padding="10dp"/>
     </LinearLayout>
 </FrameLayout>

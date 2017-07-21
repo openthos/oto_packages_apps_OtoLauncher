@@ -42,8 +42,6 @@ public class OtoConsts {
     public static final int NEWFILE = 0x00000014;
     public static final int COPY_INFO_SHOW = 0x00000015;
     public static final int DELETE_INFO_SHOW = 0x00000016;
-    public static final int COMPRESS_INFO_SHOW = 0x00000017;
-    public static final int DECOMPRESS_INFO_SHOW = 0x00000018;
     public static final int COPY_INFO_HIDE = 0x00000019;
     public static final int COPY_INFO = 0x00000020;
     public static final int CLEAN_CLIPBOARD = 0x00000021;

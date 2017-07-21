@@ -239,16 +239,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
                                                                 .getString(R.string.copy_info));
                         break;
-                    case OtoConsts.COMPRESS_INFO_SHOW:
-                        mCopyInfoDialog.showDialog(R.raw.compress);
-                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
-                                                                .getString(R.string.copy_info));
-                        break;
-                    case OtoConsts.DECOMPRESS_INFO_SHOW:
-                        mCopyInfoDialog.showDialog(R.raw.decompress);
-                        mCopyInfoDialog.changeTitle(MainActivity.this.getResources()
-                                                                .getString(R.string.copy_info));
-                        break;
                     case OtoConsts.COPY_INFO:
                         mCopyInfoDialog.changeMsg((String) msg.obj);
                         break;
@@ -882,59 +872,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
                     MainActivity.mHandler.sendMessage(deleteRefreshFile);
                 }
-            }
-        }
-    }
-
-    private void showDialogForDecompress(final String path) {
-        String[] files = DiskUtils.list(path);
-        for (String s : files) {
-            for (IconEntity icon : mDatas) {
-                if (icon.getName().equals(s)) {
-                    AlertDialog dialog = new AlertDialog.Builder(this)
-                         .setMessage(String.format(getResources().getString(
-                                                            R.string.dialog_decompress_text), s))
-                         .setPositiveButton(getResources().getString(R.string.dialog_delete_yes),
-                             new android.content.DialogInterface.OnClickListener() {
-                                 @Override
-                                 public void onClick(DialogInterface dialog, int which) {
-                                     new DecompressThread(path).start();
-                                 }
-                             })
-                         .setNegativeButton(getResources().getString(R.string.dialog_delete_no),
-                             new android.content.DialogInterface.OnClickListener() {
-                                 @Override
-                                 public void onClick(DialogInterface dialog, int which) {
-                                     dialog.cancel();
-                                 }
-                             }).create();
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    dialog.setOnKeyListener(new OperateUtils.BaseKeyEvent());
-                    dialog.show();
-                    return;
-                }
-            }
-        }
-        new DecompressThread(path).start();
-    }
-
-    private class DecompressThread extends Thread {
-        String mPath;
-
-        public DecompressThread(String path) {
-            super();
-            mPath = path;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            String[] fileList = DiskUtils.decompress(mPath);
-            for (int i = 0; i < fileList.length; i++) {
-                Message showFile = new Message();
-                showFile.obj = OtoConsts.DESKTOP_PATH + "/" + fileList[i];
-                showFile.what = OtoConsts.SHOW_FILE;
-                MainActivity.mHandler.sendMessage(showFile);
             }
         }
     }
