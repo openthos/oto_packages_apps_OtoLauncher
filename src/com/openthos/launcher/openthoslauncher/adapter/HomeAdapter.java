@@ -136,8 +136,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     @Override
     public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        HomeViewHolder holder = new HomeViewHolder(LayoutInflater.from(parent.getContext())
-                                       .inflate(R.layout.item_icon, parent, false), mRecycleClick);
+        View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_icon, parent, false);
+        HomeViewHolder holder = new HomeViewHolder(view, mRecycleClick);
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        if (view.getMeasuredHeight() != ((MainActivity) mRecycleClick).getItemHeight()) {
+            ((MainActivity) mRecycleClick).setItemHeight(view.getMeasuredHeight());
+        }
         return holder;
     }
 

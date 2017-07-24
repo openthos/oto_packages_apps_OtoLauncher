@@ -83,6 +83,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private static ContentResolver mContentResolver;
     private static Uri mUri;
     public static boolean mIsMove;
+    private int mItemHeight;
 
     private long mPressTime;
     private Type mPressType;
@@ -1005,12 +1006,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     }
 
     class IconParams {
-        public int mLeft;
-        public int mRight;
-        public int mTop;
-        public int mBottom;
+        public float mLeft;
+        public float mRight;
+        public float mTop;
+        public float mBottom;
 
-        public IconParams(int left, int top, int right, int bottom) {
+        public IconParams(float left, float top, float right, float bottom) {
             mLeft = left;
             mTop = top;
             mRight = right;
@@ -1078,20 +1079,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private ArrayList<IconParams> getParams() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int iconHeight = dm.heightPixels / mHeightNum;
-        int spaceH = (int) ((iconHeight
-                - getResources().getDimensionPixelSize(R.dimen.icon_size)) / 2 + 0.5);
-        int spaceW = (int) ((getResources().getDimensionPixelSize(R.dimen.icon_size)
-                - getResources().getDimensionPixelSize(R.dimen.icon_shadow_size)) / 2 + 0.5);
-        int height = getResources().getDimensionPixelSize(R.dimen.icon_size);
-        int width = getResources().getDimensionPixelSize(R.dimen.icon_shadow_size);
-        int left, right, top, bottom;
+        float iconHeight = dm.heightPixels / mHeightNum;
+        float spaceH = (iconHeight - mItemHeight)/ 2;
+        float spaceW = (getResources().getDimensionPixelSize(R.dimen.icon_size)
+                - getResources().getDimensionPixelSize(R.dimen.icon_shadow_size)) / 2;
+        float height = mItemHeight;
+        float width = getResources().getDimensionPixelSize(R.dimen.icon_shadow_size);
+        float left, right, top, bottom;
         ArrayList<IconParams> list = new ArrayList<>();
         for (int i = 0; i < mDatas.size(); i++) {
             left = spaceW + (i / mHeightNum) * (2 * spaceW + width);
             right = spaceW + width + (i / mHeightNum) * (2 * spaceW + width);
-            top = spaceH + (i % mHeightNum) * (2 * spaceH + height);
-            bottom = spaceH + height + (i % mHeightNum) * (2 * spaceH + height);
+            top = spaceH + (i % mHeightNum) * iconHeight;
+            bottom = spaceH + height + (i % mHeightNum) * iconHeight;
             list.add(new IconParams(left, top, right, bottom));
         }
         return list;
@@ -1151,5 +1151,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     public void removeCallbacks() {
         mHandler.removeCallbacks(mLongPressRunnable);
+    }
+
+    public int getItemHeight() {
+        return mItemHeight;
+    }
+
+    public void setItemHeight(int height) {
+        mItemHeight = height;
+        mPosList = getParams();
     }
 }

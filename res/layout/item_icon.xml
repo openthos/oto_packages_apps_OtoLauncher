@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="@dimen/icon_size"
-    android:layout_height="@dimen/icon_size"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/item"
         android:layout_width="@dimen/icon_shadow_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_height="wrap_content"
         android:background="@drawable/icon_selector"
         android:layout_centerInParent="true">
 
@@ -27,7 +27,7 @@
             <EditText
                 android:id="@+id/texts"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:shadowColor="#ff000000"
                 android:shadowRadius="10"
                 android:shadowDx="0"
@@ -42,7 +42,7 @@
                 android:nextFocusLeft="@id/texts"
                 android:nextFocusRight="@id/texts"
                 android:nextFocusDown="@id/texts"
-                android:maxLines="3"
+                android:lines="2"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/icon_font_size" />
 
