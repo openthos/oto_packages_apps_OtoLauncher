@@ -188,7 +188,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         CheckBox checkBox;
         CheckBox nullnull;
         private RecycleCallBack mClick;
-        private boolean mIsSelected = false;
+        private boolean mIsContains = false;
 
         public HomeViewHolder(View view, RecycleCallBack click) {
             super(view);
@@ -234,24 +234,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 isRename = false;
             }
             if (getAdapterPosition() != -1) {
-                ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
-                        mDatas.get(getAdapterPosition()).getType(),
-                        mDatas.get(getAdapterPosition()).getPath(),
-                        (int) event.getRawX(), (int) event.getRawY());
                 if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                    ((MainActivity) mRecycleClick).removeCallbacks();
-                    if (selectedPositions != null) {
-                        if (mDatas.get(getAdapterPosition()).isBlank()) {
-                            setSelectedCurrent(-1);
-                            showDialog(event, LESS);
-                        } else {
-                            if (selectedPositions.size() > 1) {
-                                showMoreDialog(event);
-                            } else {
-                                showLessDialog(event);
-                            }
-                        }
-                    }
+                    checkSelectedIcons();
+                    showDialog((int) event.getRawX(), (int) event.getRawY());
                 } else if (!mDatas.get(getAdapterPosition()).isBlank()) {
                     isClicked = true;
                     if (MainActivity.mIsShiftPress) {
@@ -270,14 +255,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 }
                                 for (int j = 0; j < selectedPositions.size(); j++) {
                                     if (selectedPositions.get(j) == mDatas.get(i)) {
-                                        mIsSelected = true;
+                                        mIsContains = true;
                                         break;
                                     }
                                 }
-                                if (!mIsSelected) {
+                                if (!mIsContains) {
                                     selectedPositions.add(mDatas.get(i));
                                     mDatas.get(i).setIsChecked(true);
-                                    mIsSelected = false;
+                                    mIsContains = false;
                                 }
                             }
                         }
@@ -287,16 +272,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             for (int i = 0; i < selectedPositions.size(); i++) {
                                 if (mDatas.indexOf(selectedPositions.get(i))
                                                                          == getAdapterPosition()) {
-                                    mIsSelected = true;
+                                    mIsContains = true;
                                     selectedPositions.get(i).setIsChecked(false);
                                     selectedPositions.remove(i);
                                     break;
                                 }
                             }
-                            if (!mIsSelected) {
+                            if (!mIsContains) {
                                 selectedPositions.add(mDatas.get(getAdapterPosition()));
                                 mDatas.get(getAdapterPosition()).setIsChecked(true);
-                                mIsSelected = false;
+                                mIsContains = false;
                             }
                         } else {
                             if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
@@ -308,13 +293,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                  mDatas.get(getAdapterPosition()).getPath(),
                                                  mDatas.get(getAdapterPosition()).getType());
                             } else {
-                                setSelectedCurrent(getAdapterPosition());
+                                checkSelectedIcons();
+                                ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
+                                        (int) event.getRawX(), (int) event.getRawY());
                             }
                         }
                         mLastClickTime = System.currentTimeMillis();
                     }
                 } else {
                     if (!MainActivity.mIsCtrlPress && !MainActivity.mIsShiftPress) {
+                        checkSelectedIcons();
+                        ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
+                                (int) event.getRawX(), (int) event.getRawY());
                         isClicked = false;
                         ((MainActivity) mRecycleClick).setIsSelected(false);
                         ((MainActivity) mRecycleClick).setLocation(event.getRawX(), event.getRawY());
@@ -325,72 +315,60 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         }
 
-        private void showLessDialog(MotionEvent event) {
-            setSelectedCurrent(getAdapterPosition());
-            showDialog(event, LESS);
-            notifyDataSetChanged();
-        }
-
-        private void showMoreDialog(MotionEvent event) {
-            boolean isSelected = false;
-            for (int i = 0; i < selectedPositions.size(); i++) {
-                if (selectedPositions.get(i) == mDatas.get(getAdapterPosition())) {
-                    isSelected = true;
-                    break;
-                }
-            }
-            if (isSelected) {
-                Type type = mDatas.get(getAdapterPosition()).getType();
-                if (type == Type.COMPUTER || type == Type.RECYCLE) {
-                    setSelectedCurrent(getAdapterPosition());
-                    showDialog(event, LESS);
-                } else {
-                    IconEntity computerTemp = null;
-                    IconEntity recycleTemp = null;
-                    for (IconEntity icon : selectedPositions) {
-                        if (icon.getType() == Type.COMPUTER) {
-                            icon.setIsChecked(false);
-                            computerTemp = icon;
-                        } else if (icon.getType() == Type.RECYCLE) {
-                            icon.setIsChecked(false);
-                            recycleTemp = icon;
-                        }
-                    }
-                    if (computerTemp != null) {
-                        selectedPositions.remove(computerTemp);
-                    }
-                    if (recycleTemp != null) {
-                        selectedPositions.remove(recycleTemp);
-                    }
-                    showDialog(event, MORE);
-                }
+        public void checkSelectedIcons() {
+            if (mDatas.get(getAdapterPosition()).isBlank()) {
+                setSelectedCurrent(-1);
             } else {
-                showLessDialog(event);
-                return;
+                if (selectedPositions.contains(mDatas.get(getAdapterPosition()))) {
+                    IconEntity currentIcon = mDatas.get(getAdapterPosition());
+                    Type type = mDatas.get(getAdapterPosition()).getType();
+                    if (currentIcon.getType() == Type.COMPUTER
+                            || currentIcon.getType() == Type.RECYCLE) {
+                        setSelectedCurrent(getAdapterPosition());
+                    } else {
+                        IconEntity computerTemp = null;
+                        IconEntity recycleTemp = null;
+                        for (IconEntity icon : selectedPositions) {
+                            if (icon.getType() == Type.COMPUTER) {
+                                icon.setIsChecked(false);
+                                computerTemp = icon;
+                            } else if (icon.getType() == Type.RECYCLE) {
+                                icon.setIsChecked(false);
+                                recycleTemp = icon;
+                            }
+                        }
+                        if (computerTemp != null) {
+                            selectedPositions.remove(computerTemp);
+                        }
+                        if (recycleTemp != null) {
+                            selectedPositions.remove(recycleTemp);
+                        }
+                        selectedPositions.remove(currentIcon);
+                        selectedPositions.add(currentIcon);
+                    }
+                } else {
+                    setSelectedCurrent(getAdapterPosition());
+                }
             }
             notifyDataSetChanged();
         }
+    }
 
-        private void showDialog(MotionEvent event, int selectedNum) {
-            Type type = null;
-            String path = null;
-            switch (selectedNum) {
-                case LESS:
-                    type = mDatas.get(getAdapterPosition()).getType();
-                    path = mDatas.get(getAdapterPosition()).getPath();
-                    break;
-                case MORE:
-                    type = Type.MORE;
-                    path = "";
-                    for (int i = 0; i < selectedPositions.size(); i++) {
-                        path = path + OtoConsts.EXTRA_DELETE_FILE_HEADER
-                                                              + selectedPositions.get(i).getPath();
-                    }
-                    break;
+    public void showDialog(int x, int y) {
+        Type type = Type.BLANK;
+        String path = "";
+        if (selectedPositions.size() == 1) {
+            type = mDatas.get(getLastClickPos()).getType();
+            path = mDatas.get(getLastClickPos()).getPath();
+        } else if (selectedPositions.size() > 1) {
+            type = Type.MORE;
+            for (int i = 0; i < selectedPositions.size(); i++) {
+                path = path + OtoConsts.EXTRA_DELETE_FILE_HEADER
+                        + selectedPositions.get(i).getPath();
             }
-            MenuDialog dialog = new MenuDialog((MainActivity) mRecycleClick, type, path);
-            dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
         }
+        MenuDialog dialog = new MenuDialog((MainActivity) mRecycleClick, type, path);
+        dialog.showDialog(x, y);
     }
 
     public void setSelectedCurrent(int current) {

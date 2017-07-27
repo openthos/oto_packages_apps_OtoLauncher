@@ -87,7 +87,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private long mPressTime;
     private Type mPressType;
-    private String mPressPath;
     private int mRenamePos;
     private long mLastModified;
     private int mPressX;
@@ -459,7 +458,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if (mIsCtrlPress || mIsShiftPress) {
                             break;
                         }
-                        setPressInfo(event.getEventTime(), Type.BLANK, "",
+                        setPressInfo(event.getEventTime(), Type.BLANK,
                                      (int) event.getRawX(), (int) event.getRawY());
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                             removeCallbacks();
@@ -527,9 +526,12 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mFrameSelectView.invalidate();
                             mTempList.clear();
                         }
-                        if (mPressTime == 0 || mIsMove
-                            || event.getEventTime() - mPressTime < OtoConsts.DOUBLE_CLICK_TIME) {
+                        if (mPressTime == 0 || mIsMove || !mIsLongPress) {
                             removeCallbacks();
+                        }
+                        if (mAdapter.isClicked && !mIsShiftPress && !mIsCtrlPress
+                                && !mIsMove && !mIsLongPress) {
+                            mAdapter.setSelectedCurrent(mAdapter.getLastClickPos());
                         }
                         mPressTime = 0;
                         mIsMove = false;
@@ -1133,20 +1135,27 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
         @Override
         public void run() {
-            MenuDialog dialog = new MenuDialog(MainActivity.this, mPressType, mPressPath);
-            dialog.showDialog(mPressX, mPressY);
+            if (mPressType == Type.BLANK) {
+                MenuDialog dialog = new MenuDialog(MainActivity.this, mPressType, "");
+                dialog.showDialog(mPressX, mPressY);
+            } else {
+                mAdapter.showDialog(mPressX, mPressY);
+            }
             mIsLongPress = true;
         }
     }
 
-    public void setPressInfo(long time, Type type, String path, int x, int y) {
+    public void setPressInfo(long time, Type type, int x, int y) {
         mPressTime = time;
         mPressType = type;
-        mPressPath = path;
         mPressX = x;
         mPressY = y;
         mIsLongPress = false;
         mHandler.postDelayed(mLongPressRunnable, OtoConsts.DOUBLE_CLICK_TIME);
+    }
+
+    public void setPressInfo(long time, int x, int y) {
+        setPressInfo(time, null, x, y);
     }
 
     public void removeCallbacks() {
