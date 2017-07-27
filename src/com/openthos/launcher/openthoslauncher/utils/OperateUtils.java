@@ -69,14 +69,11 @@ public class OperateUtils {
                     openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     openFile.setAction(Intent.ACTION_VIEW);
                     openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
-                    openFile.putExtra("packages",
-                                          "com.android.launcher3");
+                    openFile.putExtra("package", "com.android.launcher3");
                     context.startActivity(openFile);
                 } else {
-                    OpenWithDialog openWithDialog = new OpenWithDialog(
-                                                   context, path);
-                    openWithDialog.requestWindowFeature(
-                                                    Window.FEATURE_NO_TITLE);
+                    OpenWithDialog openWithDialog = new OpenWithDialog(context, path);
+                    openWithDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     openWithDialog.showDialog();
                 }
                 break;
