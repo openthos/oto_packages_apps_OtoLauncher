@@ -98,6 +98,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOtoContentView(R.layout.activity_main);
+        initOtherEnvironment();
         mSp = getSharedPreferences(OtoConsts.DESKTOP_DATA, Context.MODE_PRIVATE);
         mDatas = new ArrayList<>();
         mSumNum = getNum();
@@ -1169,5 +1170,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     public void setItemHeight(int height) {
         mItemHeight = height;
         mPosList = getParams();
+    }
+
+    //Ensure factory test is removed, such as after a update system
+    private void initOtherEnvironment() {
+        try {
+            Runtime.getRuntime().exec(
+                    new String[]{"su","-c", "rm -r /system/app/OtoTestInFactory"});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
