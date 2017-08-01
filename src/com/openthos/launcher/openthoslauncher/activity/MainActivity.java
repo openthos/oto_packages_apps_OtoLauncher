@@ -127,7 +127,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.SORT:
                         mDatas.clear();
                         initDesktop();
-                        mAdapter.notifyDataSetChanged();
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.DELETE_REFRESH:
@@ -139,15 +138,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             }
                         }
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
-                        if (System.currentTimeMillis() - mPreTime >= 1000) {
-                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
-                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
-                            mPreTime = System.currentTimeMillis();
-                        } else {
-                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
-                            mHandler.sendMessageDelayed(Message.obtain(mHandler,
-                                    OtoConsts.ONLY_REFRESH), 1000);
-                        }
                         break;
                     case OtoConsts.NEWFOLDER:
                         createNewFileOrFolder(Type.DIRECTORY, null);
@@ -194,15 +184,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mRenamePos = -1;
                         mLastModified = 0;
                         mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
-                        if (System.currentTimeMillis() - mPreTime >= 1000) {
-                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
-                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
-                            mPreTime = System.currentTimeMillis();
-                        } else {
-                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
-                            mHandler.sendMessageDelayed(Message.obtain(mHandler,
-                                    OtoConsts.ONLY_REFRESH), 1000);
-                        }
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
@@ -220,6 +201,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case OtoConsts.SAVEDATA:
                         mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+                        if (System.currentTimeMillis() - mPreTime >= 1000) {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
+                            mPreTime = System.currentTimeMillis();
+                        } else {
+                            mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
+                            mHandler.sendMessageDelayed(Message.obtain(mHandler,
+                                    OtoConsts.ONLY_REFRESH), 1000);
+                        }
+
                         break;
                     case OtoConsts.DELETE_DIRECT:
                         showDialogForDirectDelete((String) msg.obj);
@@ -365,7 +356,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         initDesktop();
     }
 
-    private void initDesktop() {
+    private synchronized void initDesktop() {
         //default icon
         String[] defaultNames = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcons = getResources().obtainTypedArray(R.array.default_icon);
