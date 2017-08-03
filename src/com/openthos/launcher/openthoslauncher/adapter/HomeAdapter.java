@@ -66,72 +66,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private static final int LESS = 0;
     private static final int MORE = 1;
 
-    private int mIndex;
     private Editable mEdit;
     private HomeViewHolder mHolder;
-    public boolean mIsRenameFirst;
     private boolean mIsRenameRefresh = false;
 
     public HomeAdapter(List<IconEntity> datas, RecycleCallBack click) {
         mDatas = datas;
         mRecycleClick = click;
         selectedPositions = new ArrayList<>();
-    }
-
-    public void notifyText(String commitText) {
-        if (mIsRenameFirst) {
-            mHolder.tv.requestFocus();
-            if (commitText.equals(RenameUtils.LEFT)) {
-                mHolder.tv.setSelection(0);
-            } else if (commitText.equals(RenameUtils.RIGHT)) {
-                mHolder.tv.setSelection(mHolder.tv.getText().length());
-            } else if (!(commitText.equals(RenameUtils.ENTER)
-                       || commitText.equals(RenameUtils.HOME)
-                       || commitText.equals(RenameUtils.END))) {
-                mHolder.tv.setText(null);
-            }
-        }
-        mIndex = mHolder.tv.getSelectionStart();
-        mEdit = mHolder.tv.getText();
-        switch (commitText) {
-            case RenameUtils.ENTER:
-                mIsRenameRefresh = true;
-                mHolder.tv.setFocusable(false);
-                mHolder.tv.clearFocus();
-                mHolder = null;
-                isRename = false;
-                break;
-            case RenameUtils.DELETE:
-                if (mIndex > 0) {
-                    mEdit.delete(mIndex - 1, mIndex);
-                }
-                break;
-            case RenameUtils.BACKSPACE:
-                if (mIndex < mEdit.length()) {
-                    mEdit.delete(mIndex, mIndex + 1);
-                }
-                break;
-            case RenameUtils.HOME:
-                mHolder.tv.setSelection(0);
-                break;
-            case RenameUtils.END:
-                mHolder.tv.setSelection(mEdit.length());
-                break;
-            case RenameUtils.LEFT:
-                if ((mIndex -1) >= 0) {
-                    mHolder.tv.setSelection(mIndex - 1);
-                }
-                break;
-            case RenameUtils.RIGHT:
-                if ((mIndex + 1) <= mEdit.length()) {
-                    mHolder.tv.setSelection(mIndex + 1);
-                }
-                break;
-            default:
-                mEdit.insert(mIndex, commitText);
-                break;
-        }
-        mIsRenameFirst = false;
     }
 
     @Override
@@ -170,11 +112,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         } else {
             holder.iv.setImageDrawable(new ColorDrawable(0));
         }
-        if (isRename == true && position == mRenamePos) {
+        if (isRename == true && position == mRenamePos && !holder.tv.hasFocus()) {
             holder.tv.setFocusable(true);
             holder.tv.setFocusableInTouchMode(true);
             holder.tv.requestFocus();
             mHolder = holder;
+            holder.tv.selectAll();
+            if (mDatas.get(position).getType() == Type.FILE) {
+                int index = holder.tv.getText().toString().lastIndexOf(".");
+                if (index > 0) {
+                    holder.tv.setSelection(0, index);
+                }
+            }
         } else {
             holder.tv.setFocusable(false);
             holder.tv.clearFocus();
@@ -205,7 +154,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         isClicked = true;
-                        mIsRenameFirst = false;
                         if (!isRename || getLastClickPos() != getAdapterPosition()) {
                             ctrlProcess(v,event);
                         }
@@ -550,5 +498,99 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             return -1;
         }
         return mDatas.indexOf(selectedPositions.get(selectedPositions.size() - 1));
+    }
+
+    public void notifyText(String commitText) {
+        mEdit = mHolder.tv.getText();
+        int start = mHolder.tv.getSelectionStart();
+        int end = mHolder.tv.getSelectionEnd();
+        if (start < 0) {
+            start = 0;
+        }
+        if (end < 0) {
+            end = 0;
+        }
+        if (end < start) {
+            start = start + end;
+            end = start - end;
+            start = start - end;
+        }
+        switch (commitText) {
+            case RenameUtils.ENTER:
+                mIsRenameRefresh = true;
+                mHolder.tv.setFocusable(false);
+                mHolder.tv.clearFocus();
+                mHolder = null;
+                isRename = false;
+                break;
+            case RenameUtils.BACKSPACE:
+                if (start != end) {
+                    mEdit.delete(start, end);
+                } else if (start > 0) {
+                    mEdit.delete(start - 1, start);
+                }
+                break;
+            case RenameUtils.DELETE:
+                if (start != end) {
+                    mEdit.delete(start, end);
+                } else if (start < mEdit.length()) {
+                    mEdit.delete(start, start + 1);
+                }
+                break;
+            case RenameUtils.HOME:
+                mHolder.tv.setSelection(0);
+                break;
+            case RenameUtils.END:
+                mHolder.tv.setSelection(mEdit.length());
+                break;
+            case RenameUtils.LEFT:
+                if (start != end) {
+                    mHolder.tv.setSelection(start);
+                } else if (start > 0) {
+                    mHolder.tv.setSelection(start - 1);
+                }
+                break;
+            case RenameUtils.RIGHT:
+                if (start != end) {
+                    mHolder.tv.setSelection(end);
+                } else if (start < mEdit.length()) {
+                        mHolder.tv.setSelection(start + 1);
+                }
+                break;
+            default:
+                if (MainActivity.mIsCtrlPress) {
+                    switch (commitText.toLowerCase()) {
+                        case "a":
+                            mHolder.tv.selectAll();
+                            break;
+                        case "c":
+                            commitText = mEdit.toString().substring(start, end);
+                            if (!TextUtils.isEmpty(commitText)) {
+                                MainActivity.mClipboardManager.setText(commitText);
+                            }
+                            break;
+                        case "x":
+                            mHolder.tv.setSelection(end);
+                            commitText = mEdit.toString().substring(start, end);
+                            if (!TextUtils.isEmpty(commitText)) {
+                                MainActivity.mClipboardManager.setText(commitText);
+                                mEdit.delete(start, end);
+                            }
+                            break;
+                        case "v":
+                            mHolder.tv.setSelection(end);
+                            CharSequence charSequence = MainActivity.mClipboardManager.getText();
+                            if (charSequence != null) {
+                                mEdit.replace(start, end,
+                                    charSequence.toString().replaceAll("\r|\n|\r\n", ""));
+                            }
+                            break;
+                    }
+                } else {
+                    mHolder.tv.setSelection(end);
+                    mEdit.replace(start, end, commitText);
+                }
+                break;
+        }
     }
 }

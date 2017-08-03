@@ -60,6 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends Launcher implements RecycleCallBack {
+    public static ClipboardManager mClipboardManager;
     private RecyclerView mRecyclerView;
     public List<IconEntity> mDatas;
     public HomeAdapter mAdapter;
@@ -187,7 +188,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
-                        mAdapter.mIsRenameFirst = true;
                         mAdapter.mRenamePos = mAdapter.getLastClickPos();
                         mAdapter.notifyDataSetChanged();
                         break;
@@ -238,8 +238,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mCopyInfoDialog.cancel();
                         break;
                     case OtoConsts.CLEAN_CLIPBOARD:
-                        ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                                                                               .setText("");
+                        mClipboardManager.setText("");
                         break;
                     case OtoConsts.ONLY_REFRESH:
                         mAdapter.notifyDataSetChanged();
@@ -601,23 +600,16 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             } else if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null) {
                 String cropPath = getSelectedPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
-                    ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                            .setText(cropPath);
+                    mClipboardManager.setText(cropPath);
                 }
             } else if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null) {
                 String copyPath = getSelectedPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
-                    ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
-                            .setText(copyPath);
+                    mClipboardManager.setText(copyPath);
                 }
             } else if (keyCode == KeyEvent.KEYCODE_V) {
                 String sourcePath = "";
-                try {
-                    sourcePath = (String)
-                         ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getText();
-                } catch (ClassCastException e) {
-                    sourcePath = "";
-                }
+                sourcePath = mClipboardManager.getText().toString().replaceAll("\r|\n|\r\n", "");
                 if (sourcePath == null) {
                     sourcePath = "";
                 }
@@ -1171,5 +1163,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mClipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
     }
 }

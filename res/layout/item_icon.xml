@@ -37,7 +37,6 @@
                 android:layout_marginTop="@dimen/icon_diver_size"
                 android:gravity="center"
                 android:background="@null"
-                android:selectAllOnFocus="true"
                 android:nextFocusUp="@id/texts"
                 android:nextFocusLeft="@id/texts"
                 android:nextFocusRight="@id/texts"

@@ -5,9 +5,9 @@ import android.view.KeyEvent;
 import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
 
 public class RenameUtils {
-    public static final String BACKSPACE = "Backspace";
-    public static final String ENTER = "Enter";
     public static final String DELETE = "Delete";
+    public static final String ENTER = "Enter";
+    public static final String BACKSPACE = "Backspace";
     public static final String HOME = "Home";
     public static final String END = "End";
     public static final String LEFT = "Left";
@@ -98,9 +98,9 @@ public class RenameUtils {
         if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
             return ENTER;
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            return DELETE;
-        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
             return BACKSPACE;
+        } else if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+            return DELETE;
         } else if (keyCode == KeyEvent.KEYCODE_MOVE_HOME) {
             return HOME;
         } else if (keyCode == KeyEvent.KEYCODE_MOVE_END) {

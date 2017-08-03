@@ -24,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.text.ClipboardManager;
 
 import com.android.launcher3.R;
 import com.android.launcher3.LauncherWallpaperPickerActivity;
@@ -102,13 +101,8 @@ public class MenuDialog extends BaseDialog {
                 break;
         }
 
-        ClipboardManager cm
-                = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        try {
-            sourcePath = (String) cm.getText();
-        } catch (ClassCastException e) {
-            sourcePath = "";
-        }
+        sourcePath = MainActivity.mClipboardManager.
+                     getText().toString().replaceAll("\r|\n|\r\n", "");
         if (sourcePath == null) {
             sourcePath = "";
         }
@@ -234,16 +228,14 @@ public class MenuDialog extends BaseDialog {
                 context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
-                ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                    .setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
-                        path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_CROP_FILE_HEADER)
-                            : OtoConsts.EXTRA_CROP_FILE_HEADER + path);
+                MainActivity.mClipboardManager.setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                    path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_CROP_FILE_HEADER)
+                        : OtoConsts.EXTRA_CROP_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_COPY])) {
                 //copy
-                ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE))
-                    .setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
-                        path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_FILE_HEADER)
-                            : OtoConsts.EXTRA_FILE_HEADER + path);
+                MainActivity.mClipboardManager.setText(path.contains(OtoConsts.EXTRA_DELETE_FILE_HEADER) ?
+                    path.replace(OtoConsts.EXTRA_DELETE_FILE_HEADER, OtoConsts.EXTRA_FILE_HEADER)
+                        : OtoConsts.EXTRA_FILE_HEADER + path);
             } else if (text.equals(all_menu[OtoConsts.INDEX_PASTE])) {
                 //paste
                 Message paste = new Message();
