@@ -45,13 +45,10 @@ public class OperateUtils {
                 try {
                     Intent intent = packageManager.getLaunchIntentForPackage(
                                              OtoConsts.OTO_FILEMANAGER_PACKAGE);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                     intent.putExtra(OtoConsts.EXTRA_DESKTOP_PATH_TAG, path);
                     context.startActivity(intent);
                 } catch (NullPointerException e) {
-                    Intent intent = packageManager.getLaunchIntentForPackage(
-                                                 OtoConsts.FILEMANAGER_PACKAGE);
-                    intent.putExtra(OtoConsts.EXTRA_DESKTOP_PATH_TAG, path);
-                    context.startActivity(intent);
                 }
                 break;
             case FILE:
