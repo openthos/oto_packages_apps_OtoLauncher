@@ -609,9 +609,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             } else if (keyCode == KeyEvent.KEYCODE_V) {
                 String sourcePath = "";
-                sourcePath = mClipboardManager.getText().toString().replaceAll("\r|\n|\r\n", "");
-                if (sourcePath == null) {
+                CharSequence charSequence = mClipboardManager.getText();
+                if (charSequence == null) {
                     sourcePath = "";
+                } else {
+                    sourcePath = charSequence.toString().replaceAll("\r|\n|\r\n", "");
                 }
                 if (!(sourcePath.startsWith(OtoConsts.EXTRA_FILE_HEADER)
                                    || sourcePath.startsWith(OtoConsts.EXTRA_CROP_FILE_HEADER))) {

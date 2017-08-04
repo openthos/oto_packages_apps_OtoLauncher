@@ -101,10 +101,11 @@ public class MenuDialog extends BaseDialog {
                 break;
         }
 
-        sourcePath = MainActivity.mClipboardManager.
-                     getText().toString().replaceAll("\r|\n|\r\n", "");
-        if (sourcePath == null) {
+        CharSequence charSequence = MainActivity.mClipboardManager.getText();
+        if (charSequence == null) {
             sourcePath = "";
+        } else {
+            sourcePath = charSequence.toString().replaceAll("\r|\n|\r\n", "");
         }
         View tempView = View.inflate(context, R.layout.item_menu, null);
         TextView tempTv = (TextView) tempView.findViewById(R.id.text);
