@@ -1161,7 +1161,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private void initOtherEnvironment() {
         try {
             Runtime.getRuntime().exec(
-                    new String[]{"su","-c", "rm -r /system/app/OtoTestInFactory"});
+                    new String[]{"su","-c", "pm disable com.openthos.factorytest"
+                           + "&& rm -r /system/app/OtoTestInFactory"});
         } catch (IOException e) {
             e.printStackTrace();
         }
