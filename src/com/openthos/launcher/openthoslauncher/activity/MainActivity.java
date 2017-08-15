@@ -94,6 +94,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private int mPressY;
     private boolean mIsLongPress;
     private LongPressRunnable mLongPressRunnable = new LongPressRunnable();
+    public boolean mRefreshWithoutHot = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +127,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case OtoConsts.SORT:
-                        mDatas.clear();
-                        initDesktop();
-                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
+                        if (!mRefreshWithoutHot){
+                            removeCallbacks();
+                            mRefreshWithoutHot = true;
+                            mDatas.clear();
+                            initDesktop();
+                            mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
+                            mAdapter.notifyDataSetChanged();
+                            mRefreshWithoutHot = false;
+                        }
                         break;
                     case OtoConsts.DELETE_REFRESH:
                         for (int i = 0; i < mDatas.size(); i++) {
@@ -355,7 +362,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         initDesktop();
     }
 
-    private synchronized void initDesktop() {
+    private void initDesktop() {
         //default icon
         String[] defaultNames = getResources().getStringArray(R.array.default_icon_name);
         TypedArray defaultIcons = getResources().obtainTypedArray(R.array.default_icon);
@@ -446,6 +453,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        mRefreshWithoutHot = true;
                         if (mIsCtrlPress || mIsShiftPress) {
                             break;
                         }
@@ -491,7 +499,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             for (int i = 0; i < mPosList.size(); i++) {
                                 if (frameSelectionJudge(
                                                  mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
-                                    if (!mDatas.get(i).isBlank()){
+                                    if (!mDatas.get(i).isBlank()) {
                                         mTempList.add(mDatas.get(i));
                                         mDatas.get(i).setIsChecked(true);
                                         mDatas.get(i).getView().setSelected(true);
@@ -511,6 +519,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        mRefreshWithoutHot = false;
                         if (!mIsSelected && !mAdapter.isClicked
                                         && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
@@ -597,17 +606,19 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     deleteFile.what = OtoConsts.DELETE;
                     mHandler.sendMessage(deleteFile);
                 }
-            } else if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null) {
+            } else if (keyCode == KeyEvent.KEYCODE_X && mAdapter.getSelectedPosList() != null
+                    && event.getRepeatCount() == 0) {
                 String cropPath = getSelectedPath(OtoConsts.CROP_PASTE);
                 if (cropPath != null) {
                     mClipboardManager.setText(cropPath);
                 }
-            } else if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null) {
+            } else if (keyCode == KeyEvent.KEYCODE_C && mAdapter.getSelectedPosList() != null
+                    && event.getRepeatCount() == 0) {
                 String copyPath = getSelectedPath(OtoConsts.COPY_PASTE);
                 if (copyPath != null) {
                     mClipboardManager.setText(copyPath);
                 }
-            } else if (keyCode == KeyEvent.KEYCODE_V) {
+            } else if (keyCode == KeyEvent.KEYCODE_V && event.getRepeatCount() == 0) {
                 String sourcePath = "";
                 CharSequence charSequence = mClipboardManager.getText();
                 if (charSequence == null) {
@@ -643,7 +654,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 mHandler.sendMessage(deleteFile);
             }
             return true;
-        } else if (keyCode == KeyEvent.KEYCODE_F5) {
+        } else if (keyCode == KeyEvent.KEYCODE_F5 && event.getRepeatCount() == 0) {
             mHandler.sendEmptyMessage(OtoConsts.SORT);
         } else if (keyCode == KeyEvent.KEYCODE_F2 && mAdapter.getLastClickPos() != -1) {
             mAdapter.setSelectedCurrent(mAdapter.getLastClickPos());
@@ -728,7 +739,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
             }
         } else if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
-                        && mAdapter.getLastClickPos() != -1 && !mAdapter.isRename) {
+                && mAdapter.getLastClickPos() != -1 && !mAdapter.isRename
+                && event.getRepeatCount() == 0) {
             OperateUtils.enter(this, mDatas.get(mAdapter.getLastClickPos()).getPath(),
                                      mDatas.get(mAdapter.getLastClickPos()).getType());
         } else {

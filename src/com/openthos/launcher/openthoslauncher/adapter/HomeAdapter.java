@@ -177,6 +177,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         private void ctrlProcess(View v, MotionEvent event) {
             ((MainActivity) mRecycleClick).setIsSelected(true);
+            ((MainActivity) mRecycleClick).mRefreshWithoutHot = true;
             if (isRename) {
                 mIsRenameRefresh = false;
                 isRename = false;
@@ -329,6 +330,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         }
         selectedPositions.clear();
+        if (current != -1 && mDatas.get(current).getView() == null){
+            return;
+        }
         if (current >= 0 && current < mDatas.size()){
             mDatas.get(current).getView().setSelected(true);
             mDatas.get(current).setIsChecked(true);
