@@ -62,12 +62,8 @@ public class OperateUtils {
                 resolveInfoList = manager.queryIntentActivities(intent,
                                                                  PackageManager.MATCH_DEFAULT_ONLY);
                 if (resolveInfoList.size() > 0) {
-                    Intent openFile = new Intent();
-                    openFile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    openFile.setAction(Intent.ACTION_VIEW);
-                    openFile.setDataAndType(Uri.fromFile(new File(path)), fileType);
-                    openFile.putExtra("package", "com.android.launcher3");
-                    context.startActivity(openFile);
+                    intent.putExtra("package", "com.android.launcher3");
+                    context.startActivity(intent);
                 } else {
                     OpenWithDialog openWithDialog = new OpenWithDialog(context, path);
                     openWithDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
