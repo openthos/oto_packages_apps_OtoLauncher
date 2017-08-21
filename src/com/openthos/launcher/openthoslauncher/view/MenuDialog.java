@@ -225,7 +225,11 @@ public class MenuDialog extends BaseDialog {
                 //decompression
                 Intent intent = new Intent(OtoConsts.DECOMPRESS_FILE);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(OtoConsts.COMPRESS_PATH_TAG, path);
+                intent.setDataAndType(Uri.fromFile(new File(path)),
+                        FileUtils.getMIMEType(new File(path)));
+                ComponentName cn = new ComponentName(
+                        "com.openthos.compress", "com.openthos.compress.DecompressActivity");
+                intent.setComponent(cn);
                 context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {
                 //crop
