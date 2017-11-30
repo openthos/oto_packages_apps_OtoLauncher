@@ -123,35 +123,6 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.LauncherExtension"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:theme="@style/Theme"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.MONKEY"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.launcher3.ToggleWeightWatcher"
-            android:label="@string/toggle_weight_watcher"
-            android:enabled="@bool/debug_memory_enabled"
-            android:icon="@mipmap/ic_launcher_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.android.launcher3.LauncherWallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperPicker"
             android:label="@string/pick_wallpaper"
@@ -177,83 +148,6 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
-
-        <!-- Debugging tools -->
-        <activity
-            android:name="com.android.launcher3.MemoryDumpActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:label="@string/debug_memory_activity"
-            android:enabled="@bool/debug_memory_enabled"
-            android:excludeFromRecents="true"
-            android:icon="@mipmap/ic_launcher_home"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service android:name="com.android.launcher3.MemoryTracker"
-            android:enabled="@bool/debug_memory_enabled"
-            >
-        </service>
-
-        <receiver
-            android:name="com.android.launcher3.WallpaperChangedReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.WALLPAPER_CHANGED" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Intent received used to install shortcuts from other applications -->
-        <receiver
-            android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
-            <intent-filter>
-                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Intent received used to uninstall shortcuts from other applications -->
-        <receiver
-            android:name="com.android.launcher3.UninstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.UNINSTALL_SHORTCUT">
-            <intent-filter>
-                <action android:name="com.android.launcher.action.UNINSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Intent received used to initialize a restored widget -->
-        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
-            </intent-filter>
-        </receiver>
-
-        <!-- New user initialization; set up initial wallpaper -->
-        <receiver
-            android:name="com.android.launcher3.UserInitializeReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.USER_INITIALIZE" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.android.launcher3.PackageChangedReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <data android:scheme="package"></data>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.android.launcher3.StartupReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
