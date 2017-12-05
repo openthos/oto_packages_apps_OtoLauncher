@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <app name="com.microsoft.office.powerpoint">
-        <font name="/system/fonts/Simhei.ttf">/data/data/com.microsoft.office.powerpoint/files/data/fonts</font>
-    </app>
-</resources>
