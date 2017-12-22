@@ -153,10 +153,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        isClicked = true;
                         if (!isRename || getLastClickPos() != getAdapterPosition()) {
                             ctrlProcess(v,event);
                         }
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (!((MainActivity) mRecycleClick).isLongMenuShow()) {
+                            ((MainActivity) mRecycleClick).removeCallbacks();
+                            ((MainActivity) mRecycleClick).mRefreshWithoutHot = false;
+                        }
+                        isClicked = false;
                     }
                     return false;
                 }
@@ -171,15 +176,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 ctrlProcess(v, event);
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (!((MainActivity) mRecycleClick).isLongMenuShow()) {
+                    ((MainActivity) mRecycleClick).removeCallbacks();
+                    ((MainActivity) mRecycleClick).mRefreshWithoutHot = false;
+                    if (isClicked && !MainActivity.mIsShiftPress && !MainActivity.mIsCtrlPress) {
+                        setSelectedCurrent(getAdapterPosition());
+                    }
+                    isClicked = false;
+                }
             }
             return true;
         }
 
         private void ctrlProcess(View v, MotionEvent event) {
-            ((MainActivity) mRecycleClick).setIsSelected(true);
             ((MainActivity) mRecycleClick).mRefreshWithoutHot = true;
             if (isRename) {
-                mIsRenameRefresh = false;
+                mIsRenameRefresh = true;
+                mHolder.tv.setFocusable(false);
+                mHolder.tv.clearFocus();
+                mHolder = null;
                 isRename = false;
             }
             if (getAdapterPosition() != -1) {
@@ -211,6 +227,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 if (!mIsContains) {
                                     selectedPositions.add(mDatas.get(i));
                                     mDatas.get(i).setIsChecked(true);
+                                    mDatas.get(i).getView().setSelected(true);
                                     mIsContains = false;
                                 }
                             }
@@ -223,6 +240,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                                                          == getAdapterPosition()) {
                                     mIsContains = true;
                                     selectedPositions.get(i).setIsChecked(false);
+                                    selectedPositions.get(i).getView().setSelected(false);
                                     selectedPositions.remove(i);
                                     break;
                                 }
@@ -230,8 +248,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             if (!mIsContains) {
                                 selectedPositions.add(mDatas.get(getAdapterPosition()));
                                 mDatas.get(getAdapterPosition()).setIsChecked(true);
+                                mDatas.get(getAdapterPosition()).getView().setSelected(true);
                                 mIsContains = false;
                             }
+                            mIsContains = false;
                         } else {
                             if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY
                                     && (System.currentTimeMillis() - mLastClickTime)
@@ -255,12 +275,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         ((MainActivity) mRecycleClick).setPressInfo(event.getEventTime(),
                                 (int) event.getRawX(), (int) event.getRawY());
                         isClicked = false;
-                        ((MainActivity) mRecycleClick).setIsSelected(false);
                         ((MainActivity) mRecycleClick).setLocation(event.getRawX(), event.getRawY());
                         setSelectedCurrent(-1);
                     }
                 }
-                notifyDataSetChanged();
             }
         }
 
@@ -280,9 +298,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         for (IconEntity icon : selectedPositions) {
                             if (icon.getType() == Type.COMPUTER) {
                                 icon.setIsChecked(false);
+                                icon.getView().setSelected(false);
                                 computerTemp = icon;
                             } else if (icon.getType() == Type.RECYCLE) {
                                 icon.setIsChecked(false);
+                                icon.getView().setSelected(false);
                                 recycleTemp = icon;
                             }
                         }
@@ -299,7 +319,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     setSelectedCurrent(getAdapterPosition());
                 }
             }
-            notifyDataSetChanged();
         }
     }
 

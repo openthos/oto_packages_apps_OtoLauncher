@@ -78,7 +78,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
     private String mCommitText;
     private FrameSelectView mFrameSelectView;
     private float mDownX, mDownY, mMoveX, mMoveY;
-    private boolean mIsSelected;
     private ArrayList<IconParams> mPosList;
     private ArrayList<IconEntity> mTempList;
     private static ContentResolver mContentResolver;
@@ -185,13 +184,14 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             for (int i = 1; i < mDatas.size(); i++) {
                                 if (mDatas.get(i) == mBlankIcon) {
                                     mDatas.set(i, icon);
+                                    mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                                                                      OtoConsts.SAVEDATA, i));
                                     break;
                                 }
                             }
                         }
                         mRenamePos = -1;
                         mLastModified = 0;
-                        mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
                         break;
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
@@ -210,7 +210,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mSp.edit().putString(OtoConsts.DESKTOP_DATA, dataToString()).commit();
                         if (System.currentTimeMillis() - mPreTime >= 1000) {
                             mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
-                            mHandler.sendMessage(Message.obtain(mHandler, OtoConsts.ONLY_REFRESH));
+                            mHandler.sendMessage(Message.obtain(mHandler,
+                                       OtoConsts.ONLY_REFRESH, msg.obj));
                             mPreTime = System.currentTimeMillis();
                         } else {
                             mHandler.removeMessages(OtoConsts.ONLY_REFRESH);
@@ -248,7 +249,11 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         mClipboardManager.setText("");
                         break;
                     case OtoConsts.ONLY_REFRESH:
-                        mAdapter.notifyDataSetChanged();
+                        if (msg.obj instanceof Integer) {
+                            mAdapter.notifyItemChanged((int) msg.obj);
+                        } else {
+                            mAdapter.notifyDataSetChanged();
+                        }
                         break;
                 }
             }
@@ -446,6 +451,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(mHeightNum,
                                        StaggeredGridLayoutManager.HORIZONTAL));
+        mRecyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         mAdapter = new HomeAdapter(mDatas, this);
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -459,21 +465,18 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         }
                         setPressInfo(event.getEventTime(), Type.BLANK,
                                      (int) event.getRawX(), (int) event.getRawY());
+                        if (mAdapter.getLastClickPos() != -1) {
+                            mAdapter.setSelectedCurrent(-1);
+                            if (mAdapter.isRename) {
+                                mAdapter.isRename = false;
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        }
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
                             removeCallbacks();
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
-                        }
-                        if (!mAdapter.isClicked && mAdapter.getLastClickPos() != -1) {
-                            mDatas.get(mAdapter.getLastClickPos()).setIsChecked(false);
-                            mAdapter.setSelectedCurrent(-1);
-                            if (mAdapter.isRename) {
-                                mAdapter.isRename = false;
-                            }
-                            mAdapter.notifyDataSetChanged();
-                        }
-                        if (!mIsSelected && !mAdapter.isClicked
-                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
+                        } else {
                             mDownX = event.getRawX();
                             mDownY = event.getRawY();
                         }
@@ -485,8 +488,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if ((mIsLongPress || mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
                         }
-                        if (!mIsSelected && !mAdapter.isClicked
-                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
+                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mIsMove = true;
                             mMoveX = event.getRawX();
                             mMoveY = event.getRawY();
@@ -520,25 +522,18 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case MotionEvent.ACTION_UP:
                         mRefreshWithoutHot = false;
-                        if (!mIsSelected && !mAdapter.isClicked
-                                        && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
+                        if (mIsMove) {
                             mFrameSelectView.setPositionCoordinate(-1, -1, -1, -1);
                             mFrameSelectView.invalidate();
                             mTempList.clear();
                         }
-                        if (mPressTime == 0 || mIsMove || !mIsLongPress) {
+                        if (mIsMove || !mIsLongPress) {
                             removeCallbacks();
-                        }
-                        if (mAdapter.isClicked && !mIsShiftPress && !mIsCtrlPress
-                                && !mIsMove && !mIsLongPress) {
-                            mAdapter.setSelectedCurrent(mAdapter.getLastClickPos());
                         }
                         mPressTime = 0;
                         mIsMove = false;
-                        mIsSelected = false;
                         break;
                 }
-                mAdapter.isClicked = false;
                 return false;
             }
         });
@@ -594,10 +589,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     if (mDatas.get(i).isBlank() == false) {
                         IconEntity icon = mDatas.get(i);
                         icon.setIsChecked(true);
+                        icon.getView().setSelected(true);
                         mAdapter.getSelectedPosList().add(icon);
                     }
                 }
-                mAdapter.notifyDataSetChanged();
             } else if (keyCode == KeyEvent.KEYCODE_D && mAdapter.getSelectedPosList() != null) {
                 String deletePath = getSelectedPath(OtoConsts.DELETE);
                 if (deletePath != null) {
@@ -833,10 +828,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 String[] split = mPath.split(OtoConsts.EXTRA_DELETE_FILE_HEADER);
                 for (int i = 1; i < split.length; i++) {
                     DiskUtils.moveFile(split[i], OtoConsts.RECYCLE_PATH);
-                    Message deleteRefreshFile = new Message();
-                    deleteRefreshFile.obj = split[i];
-                    deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
-                    MainActivity.mHandler.sendMessage(deleteRefreshFile);
                 }
             }
         }
@@ -868,10 +859,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 String[] split = mPath.split(OtoConsts.EXTRA_DELETE_FILE_HEADER);
                 for (int i = 1; i < split.length; i++) {
                     DiskUtils.delete(new File(split[i]));
-                    Message deleteRefreshFile = new Message();
-                    deleteRefreshFile.obj = split[i];
-                    deleteRefreshFile.what = OtoConsts.DELETE_REFRESH;
-                    MainActivity.mHandler.sendMessage(deleteRefreshFile);
                 }
             }
         }
@@ -999,10 +986,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     break;
             }
         }
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        mIsSelected = isSelected;
     }
 
     class IconParams {
@@ -1150,6 +1133,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mPressY = y;
         mIsLongPress = false;
         mHandler.postDelayed(mLongPressRunnable, OtoConsts.DOUBLE_CLICK_TIME);
+    }
+
+    public boolean isLongMenuShow () {
+        return mIsLongPress;
     }
 
     public void setPressInfo(long time, int x, int y) {
