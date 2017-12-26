@@ -9,7 +9,6 @@ import com.openthos.launcher.openthoslauncher.entity.Type;
 public class IconEntity {
     private String mName;
     private String mPath;
-    private boolean mIsChecked;
     private Drawable mIcon;
     private int mIconRes;
     private boolean mIsBlank;
@@ -34,14 +33,6 @@ public class IconEntity {
 
     public void setPath(String path) {
         mPath = path;
-    }
-
-    public boolean isChecked() {
-        return mIsChecked;
-    }
-
-    public void setIsChecked(boolean isChecked) {
-        mIsChecked = isChecked;
     }
 
     public Drawable getIcon() {

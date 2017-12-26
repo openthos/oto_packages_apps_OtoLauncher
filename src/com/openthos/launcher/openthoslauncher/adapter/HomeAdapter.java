@@ -68,7 +68,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private Editable mEdit;
     private HomeViewHolder mHolder;
-    private boolean mIsRenameRefresh = false;
 
     public HomeAdapter(List<IconEntity> datas, RecycleCallBack click) {
         mDatas = datas;
@@ -96,11 +95,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
         holder.tv.setText(mDatas.get(position).getName());
-        if (mDatas.get(position).isChecked()) {
-            holder.item.setSelected(true);
-        } else {
-            holder.item.setSelected(false);
-        }
         mDatas.get(position).setView(holder.item);
         if (mDatas.get(position).isBlank()) {
             holder.nullnull.setChecked(true);
@@ -192,7 +186,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         private void ctrlProcess(View v, MotionEvent event) {
             ((MainActivity) mRecycleClick).mRefreshWithoutHot = true;
             if (isRename) {
-                mIsRenameRefresh = true;
                 mHolder.tv.setFocusable(false);
                 mHolder.tv.clearFocus();
                 mHolder = null;
@@ -226,7 +219,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 }
                                 if (!mIsContains) {
                                     selectedPositions.add(mDatas.get(i));
-                                    mDatas.get(i).setIsChecked(true);
                                     mDatas.get(i).getView().setSelected(true);
                                     mIsContains = false;
                                 }
@@ -239,7 +231,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 if (mDatas.indexOf(selectedPositions.get(i))
                                                                          == getAdapterPosition()) {
                                     mIsContains = true;
-                                    selectedPositions.get(i).setIsChecked(false);
                                     selectedPositions.get(i).getView().setSelected(false);
                                     selectedPositions.remove(i);
                                     break;
@@ -247,7 +238,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             }
                             if (!mIsContains) {
                                 selectedPositions.add(mDatas.get(getAdapterPosition()));
-                                mDatas.get(getAdapterPosition()).setIsChecked(true);
                                 mDatas.get(getAdapterPosition()).getView().setSelected(true);
                                 mIsContains = false;
                             }
@@ -297,11 +287,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         IconEntity recycleTemp = null;
                         for (IconEntity icon : selectedPositions) {
                             if (icon.getType() == Type.COMPUTER) {
-                                icon.setIsChecked(false);
                                 icon.getView().setSelected(false);
                                 computerTemp = icon;
                             } else if (icon.getType() == Type.RECYCLE) {
-                                icon.setIsChecked(false);
                                 icon.getView().setSelected(false);
                                 recycleTemp = icon;
                             }
@@ -342,10 +330,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void setSelectedCurrent(int current) {
         if (mDatas != null && mDatas.size() > 0) {
             for (IconEntity icon : selectedPositions) {
-                if (icon.isChecked()) {
-                    icon.getView().setSelected(false);
-                    icon.setIsChecked(false);
-                }
+                icon.getView().setSelected(false);
             }
         }
         selectedPositions.clear();
@@ -354,7 +339,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         if (current >= 0 && current < mDatas.size()){
             mDatas.get(current).getView().setSelected(true);
-            mDatas.get(current).setIsChecked(true);
             selectedPositions.add(mDatas.get(current));
         } else {
             mShiftPos = -1;
@@ -377,7 +361,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER)
                         && v.hasFocus() && event.getAction() == KeyEvent.ACTION_DOWN) {
-                mIsRenameRefresh =true;
                 v.setFocusable(false);
                 v.clearFocus();
                 mHolder = null;
@@ -485,10 +468,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         mDatas.set(position, icon);
         MainActivity.mHandler.sendEmptyMessage(OtoConsts.SAVEDATA);
-        if (mIsRenameRefresh) {
-            notifyItemChanged(mRenamePos);
-            mIsRenameRefresh = false;
-        }
         return true;
     }
 
@@ -540,7 +519,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         }
         switch (commitText) {
             case RenameUtils.ENTER:
-                mIsRenameRefresh = true;
                 mHolder.tv.setFocusable(false);
                 mHolder.tv.clearFocus();
                 mHolder = null;

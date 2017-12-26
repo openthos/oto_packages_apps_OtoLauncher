@@ -104,7 +104,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         mDatas = new ArrayList<>();
         mSumNum = getNum();
         mBlankIcon.setName("");
-        mBlankIcon.setIsChecked(false);
         mBlankIcon.setIcon(null);
         mBlankIcon.setIsBlank(true);
         mBlankIcon.setPath("");
@@ -165,7 +164,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         IconEntity icon = new IconEntity();
                         icon.setName(showFile.getName());
                         icon.setPath(showFile.getAbsolutePath());
-                        icon.setIsChecked(false);
                         icon.setIsBlank(false);
                         icon.setLastModified(showFile.lastModified());
                         if (showFile.isDirectory()) {
@@ -196,7 +194,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     case OtoConsts.RENAME:
                         mAdapter.isRename = true;
                         mAdapter.mRenamePos = mAdapter.getLastClickPos();
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.notifyItemChanged(mAdapter.mRenamePos);
                         break;
                     case OtoConsts.PROPERTY:
                         PropertyDialog propertyDialog = new PropertyDialog(MainActivity.this,
@@ -381,7 +379,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
             IconEntity icon = new IconEntity();
             icon.setName(defaultNames[i]);
             icon.setPath(defaultPaths[i]);
-            icon.setIsChecked(false);
             icon.setIsBlank(false);
             icon.setIcon(getResources().getDrawable(
                                            defaultIcons.getResourceId(i, R.mipmap.ic_launcher)));
@@ -407,7 +404,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 }
                 icon.setName(files[i].getName());
                 icon.setPath(files[i].getAbsolutePath());
-                icon.setIsChecked(false);
                 icon.setIsBlank(false);
                 icon.setLastModified(files[i].lastModified());
                 if (userDatas.size() < (mSumNum - mDatas.size())) {
@@ -488,7 +484,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         if ((mIsLongPress || mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
                         }
-                        if (event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
+                        if (!mAdapter.isClicked
+                                && event.getButtonState() != MotionEvent.BUTTON_SECONDARY) {
                             mIsMove = true;
                             mMoveX = event.getRawX();
                             mMoveY = event.getRawY();
@@ -503,12 +500,10 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                  mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
                                     if (!mDatas.get(i).isBlank()) {
                                         mTempList.add(mDatas.get(i));
-                                        mDatas.get(i).setIsChecked(true);
                                         mDatas.get(i).getView().setSelected(true);
                                     }
                                 } else {
                                     if (!mDatas.get(i).isBlank()){
-                                        mDatas.get(i).setIsChecked(false);
                                         mDatas.get(i).getView().setSelected(false);
                                     }
                                 }
@@ -588,7 +583,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 for (int i = 0; i < mDatas.size(); i++) {
                     if (mDatas.get(i).isBlank() == false) {
                         IconEntity icon = mDatas.get(i);
-                        icon.setIsChecked(true);
                         icon.getView().setSelected(true);
                         mAdapter.getSelectedPosList().add(icon);
                     }
@@ -752,7 +746,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         for (int i = 0; i < mDatas.size(); i++) {
             if (!mDatas.get(i).isBlank()) {
                 mAdapter.setSelectedCurrent(i);
-                mAdapter.notifyDataSetChanged();
                 break;
             }
         }
@@ -924,7 +917,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                     icon.setName(obj.getString("name"));
                     break;
             }
-            icon.setIsChecked(false);
             icon.setPath(obj.getString("path"));
             icon.setType(type);
             icon.setLastModified(obj.getLong("lastModified"));
