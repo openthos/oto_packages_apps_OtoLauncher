@@ -1150,13 +1150,6 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     //Ensure factory test is removed, such as after a update system
     private void initOtherEnvironment() {
-        try {
-            Runtime.getRuntime().exec(
-                    new String[]{"su","-c", "pm disable com.openthos.factorytest"
-                           + "&& rm -r /system/app/OtoTestInFactory"});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         mClipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
     }
 }
