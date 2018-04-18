@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.activity;
+package org.openthos.launcher.activity;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -26,20 +26,20 @@ import android.view.WindowManager;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
-import com.openthos.launcher.openthoslauncher.adapter.ItemCallBack;
-import com.openthos.launcher.openthoslauncher.adapter.RecycleCallBack;
-import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.IconEntity;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
-import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
-import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.RenameUtils;
-import com.openthos.launcher.openthoslauncher.view.FrameSelectView;
-import com.openthos.launcher.openthoslauncher.view.CopyInfoDialog;
-import com.openthos.launcher.openthoslauncher.view.PropertyDialog;
-import com.openthos.launcher.openthoslauncher.view.MenuDialog;
+import org.openthos.launcher.adapter.HomeAdapter;
+import org.openthos.launcher.adapter.ItemCallBack;
+import org.openthos.launcher.adapter.RecycleCallBack;
+import org.openthos.launcher.entity.Type;
+import org.openthos.launcher.entity.IconEntity;
+import org.openthos.launcher.utils.OtoConsts;
+import org.openthos.launcher.utils.DiskUtils;
+import org.openthos.launcher.utils.OperateUtils;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.RenameUtils;
+import org.openthos.launcher.view.FrameSelectView;
+import org.openthos.launcher.view.CopyInfoDialog;
+import org.openthos.launcher.view.PropertyDialog;
+import org.openthos.launcher.view.MenuDialog;
 
 import android.view.KeyEvent;
 import android.text.ClipboardManager;
@@ -266,7 +266,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         intentFilter.addAction(OtoConsts.ACTION_DESKTOP_COMMIT_TEXT);
         registerReceiver(mSdReceiver, intentFilter);
         mContentResolver = getContentResolver();
-        mUri = Uri.parse("content://com.openthos.filemanager/recycle");
+        mUri = Uri.parse("content://org.openthos.filemanager/recycle");
         mCustomFileObserver = new CustomFileObserver(OtoConsts.DESKTOP_PATH);
         mCustomFileObserver.startWatching();
     }

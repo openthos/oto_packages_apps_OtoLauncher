@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.utils;
+package org.openthos.launcher.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

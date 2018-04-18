@@ -1,8 +1,8 @@
-package com.openthos.launcher.openthoslauncher.utils;
+package org.openthos.launcher.utils;
 
 import android.content.Intent;
 import android.view.KeyEvent;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import org.openthos.launcher.utils.OtoConsts;
 
 public class RenameUtils {
     public static final String DELETE = "Delete";

@@ -90,7 +90,7 @@
         android:supportsRtl="true" >
 
         <activity
-            android:name="com.openthos.launcher.openthoslauncher.activity.MainActivity"
+            android:name="org.openthos.launcher.activity.MainActivity"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"

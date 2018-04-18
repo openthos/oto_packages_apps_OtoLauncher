@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,8 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.OtoConsts;
 
 import java.io.File;
 import java.util.ArrayList;

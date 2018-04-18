@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.adapter;
+package org.openthos.launcher.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;

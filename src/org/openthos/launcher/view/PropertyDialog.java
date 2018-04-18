@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,10 +17,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import org.openthos.launcher.utils.DiskUtils;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.OperateUtils;
+import org.openthos.launcher.utils.OtoConsts;
 
 import java.io.BufferedReader;
 import java.io.File;

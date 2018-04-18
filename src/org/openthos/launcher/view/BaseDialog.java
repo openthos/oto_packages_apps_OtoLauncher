@@ -1,10 +1,10 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.view.KeyEvent;
 
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
+import org.openthos.launcher.activity.MainActivity;
 
 /**
  * Created by wang on 17-3-9.

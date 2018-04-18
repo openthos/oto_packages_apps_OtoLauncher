@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.entity;
+package org.openthos.launcher.entity;
 
 /**
  * Created by xu on 2016/8/12.

@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

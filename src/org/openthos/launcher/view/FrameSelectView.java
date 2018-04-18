@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

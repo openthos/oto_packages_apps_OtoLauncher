@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.utils;
+package org.openthos.launcher.utils;
 
 import android.os.Environment;
 import android.content.ContentResolver;
@@ -16,9 +16,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import com.openthos.launcher.openthoslauncher.entity.CompressFormatType;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
+import org.openthos.launcher.entity.CompressFormatType;
+import org.openthos.launcher.utils.OtoConsts;
+import org.openthos.launcher.activity.MainActivity;
 
 /**
  * Created by xu on 2016/8/22.

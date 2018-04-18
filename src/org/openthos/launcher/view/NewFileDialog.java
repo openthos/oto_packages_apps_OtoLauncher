@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,9 +12,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
-import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
+import org.openthos.launcher.activity.MainActivity;
+import org.openthos.launcher.utils.DiskUtils;
+import org.openthos.launcher.utils.OtoConsts;
 
 import java.io.File;
 import java.io.IOException;

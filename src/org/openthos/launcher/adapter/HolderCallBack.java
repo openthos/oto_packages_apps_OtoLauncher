@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.adapter;
+package org.openthos.launcher.adapter;
 
 /**
  * Created by xu on 2016/8/8.

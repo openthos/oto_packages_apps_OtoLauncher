@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.view;
+package org.openthos.launcher.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,13 +27,13 @@ import android.widget.Toast;
 
 import com.android.launcher3.R;
 import com.android.launcher3.LauncherWallpaperPickerActivity;
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
-import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
-import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
-import com.openthos.launcher.openthoslauncher.adapter.HomeAdapter;
+import org.openthos.launcher.activity.MainActivity;
+import org.openthos.launcher.entity.Type;
+import org.openthos.launcher.utils.DiskUtils;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.OtoConsts;
+import org.openthos.launcher.utils.OperateUtils;
+import org.openthos.launcher.adapter.HomeAdapter;
 
 import java.io.File;
 /**
@@ -228,7 +228,7 @@ public class MenuDialog extends BaseDialog {
                 intent.setDataAndType(Uri.fromFile(new File(path)),
                         FileUtils.getMIMEType(new File(path)));
                 ComponentName cn = new ComponentName(
-                        "com.openthos.compress", "com.openthos.compress.DecompressActivity");
+                        "org.openthos.compress", "org.openthos.compress.DecompressActivity");
                 intent.setComponent(cn);
                 context.startActivity(intent);
             } else if (text.equals(all_menu[OtoConsts.INDEX_CROP])) {

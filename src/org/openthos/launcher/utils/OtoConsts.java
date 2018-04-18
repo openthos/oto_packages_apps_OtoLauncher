@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.utils;
+package org.openthos.launcher.utils;
 
 import android.content.Intent;
 
@@ -11,19 +11,19 @@ public class OtoConsts {
     public static final float FIX_ALPHA = 0.9f;
     public static final int FIX_PADDING = 16;
     public static final String FILEMANAGER_PACKAGE = "com.cyanogenmod.filemanager";
-    public static final String OTO_FILEMANAGER_PACKAGE = "com.openthos.filemanager";
+    public static final String OTO_FILEMANAGER_PACKAGE = "org.openthos.filemanager";
     public static final String SETTINGS_PACKAGE = "com.android.settings";
     public static final String DISPLAY_SETTINGS = "com.android.settings.DisplaySettings";
-    public static final String WALLPAPER_PICKER = "com.openthos.filemanager.SetWallpaperActivity";
+    public static final String WALLPAPER_PICKER = "org.openthos.filemanager.SetWallpaperActivity";
     public static final String DEVICES_INFO = "com.android.settings.DeviceInfoSettings";
     public static final String DESKTOP_DATA = "com.android.launcher3.DesktopData";
     public static final String DESKTOP_INPUT =
-                  "com.android.launcher3/com.openthos.launcher.openthoslauncher.activity.InputIME";
+                  "com.android.launcher3/org.openthos.launcher.activity.InputIME";
     //public static final String WALLPAPER_SETTINGS = "com.android.settings.WallpaperTypeSettings";
     public static final String RECYCLE_PATH = DiskUtils.getRecycle().getAbsolutePath();
     public static final String DESKTOP_PATH = DiskUtils.getDesktop().getAbsolutePath();
-    public static final String COMPRESS_FILES = "com.openthos.compress.compress";
-    public static final String DECOMPRESS_FILE = "com.openthos.compress.decompress";
+    public static final String COMPRESS_FILES = "org.openthos.compress.compress";
+    public static final String DECOMPRESS_FILE = "org.openthos.compress.decompress";
     public static final String COMPRESS_PATH_TAG = "paths";
     //MainActivity Handler Message'what
     public static final int SAVEDATA = 0x00000001;

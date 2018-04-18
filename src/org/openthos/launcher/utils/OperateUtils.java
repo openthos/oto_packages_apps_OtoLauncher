@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.utils;
+package org.openthos.launcher.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
-import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
-import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
+import org.openthos.launcher.activity.MainActivity;
+import org.openthos.launcher.entity.Type;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.OtoConsts;
+import org.openthos.launcher.view.OpenWithDialog;
 /**
  * Created by Wang Zhixu on 2016/12/29.
  */

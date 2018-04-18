@@ -1,8 +1,8 @@
-package com.openthos.launcher.openthoslauncher.entity;
+package org.openthos.launcher.entity;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import com.openthos.launcher.openthoslauncher.entity.Type;
+import org.openthos.launcher.entity.Type;
 /**
  * Created by xu on 2017/01/22.
  */

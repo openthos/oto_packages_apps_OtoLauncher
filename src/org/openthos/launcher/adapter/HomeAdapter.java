@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.adapter;
+package org.openthos.launcher.adapter;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -31,16 +31,16 @@ import android.text.Editable;
 import android.text.TextUtils;
 
 import com.android.launcher3.R;
-import com.openthos.launcher.openthoslauncher.activity.MainActivity;
-import com.openthos.launcher.openthoslauncher.utils.OtoConsts;
-import com.openthos.launcher.openthoslauncher.utils.OperateUtils;
-import com.openthos.launcher.openthoslauncher.utils.DiskUtils;
-import com.openthos.launcher.openthoslauncher.utils.FileUtils;
-import com.openthos.launcher.openthoslauncher.utils.RenameUtils;
-import com.openthos.launcher.openthoslauncher.entity.Type;
-import com.openthos.launcher.openthoslauncher.entity.IconEntity;
-import com.openthos.launcher.openthoslauncher.view.MenuDialog;
-import com.openthos.launcher.openthoslauncher.view.OpenWithDialog;
+import org.openthos.launcher.activity.MainActivity;
+import org.openthos.launcher.utils.OtoConsts;
+import org.openthos.launcher.utils.OperateUtils;
+import org.openthos.launcher.utils.DiskUtils;
+import org.openthos.launcher.utils.FileUtils;
+import org.openthos.launcher.utils.RenameUtils;
+import org.openthos.launcher.entity.Type;
+import org.openthos.launcher.entity.IconEntity;
+import org.openthos.launcher.view.MenuDialog;
+import org.openthos.launcher.view.OpenWithDialog;
 
 import java.io.File;
 import java.util.HashMap;

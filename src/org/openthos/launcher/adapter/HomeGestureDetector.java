@@ -1,4 +1,4 @@
-package com.openthos.launcher.openthoslauncher.adapter;
+package org.openthos.launcher.adapter;
 
 import android.content.Context;
 import android.os.Handler;

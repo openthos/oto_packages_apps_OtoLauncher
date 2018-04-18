@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.openthos.launcher.openthoslauncher.view.FrameSelectView
+        <org.openthos.launcher.view.FrameSelectView
             android:id="@+id/frame_select_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
