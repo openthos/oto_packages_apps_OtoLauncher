@@ -126,7 +126,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 switch (msg.what) {
                     case OtoConsts.SORT:
                         if (!mRefreshWithoutHot){
-                            removeCallbacks();
+                            removeLongPressCallbacks();
                             mRefreshWithoutHot = true;
                             mDatas.clear();
                             initDesktop();
@@ -469,7 +469,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             }
                         }
                         if (event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                            removeCallbacks();
+                            removeLongPressCallbacks();
                             MenuDialog dialog = new MenuDialog(MainActivity.this, Type.BLANK, "");
                             dialog.showDialog((int) event.getRawX(), (int) event.getRawY());
                         } else {
@@ -479,7 +479,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (!mIsLongPress) {
-                            removeCallbacks();
+                            removeLongPressCallbacks();
                         }
                         if ((mIsLongPress || mIsCtrlPress || mIsShiftPress) && !mIsMove) {
                             break;
@@ -523,7 +523,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                             mTempList.clear();
                         }
                         if (mIsMove || !mIsLongPress) {
-                            removeCallbacks();
+                            removeLongPressCallbacks();
                         }
                         mPressTime = 0;
                         mIsMove = false;
@@ -1135,7 +1135,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
         setPressInfo(time, null, x, y);
     }
 
-    public void removeCallbacks() {
+    public void removeLongPressCallbacks() {
         mHandler.removeCallbacks(mLongPressRunnable);
     }
 

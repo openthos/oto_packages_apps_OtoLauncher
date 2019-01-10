@@ -152,7 +152,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
                         if (!((MainActivity) mRecycleClick).isLongMenuShow()) {
-                            ((MainActivity) mRecycleClick).removeCallbacks();
+                            ((MainActivity) mRecycleClick).removeLongPressCallbacks();
                             ((MainActivity) mRecycleClick).mRefreshWithoutHot = false;
                         }
                         isClicked = false;
@@ -172,7 +172,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 ctrlProcess(v, event);
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (!((MainActivity) mRecycleClick).isLongMenuShow()) {
-                    ((MainActivity) mRecycleClick).removeCallbacks();
+                    ((MainActivity) mRecycleClick).removeLongPressCallbacks();
                     ((MainActivity) mRecycleClick).mRefreshWithoutHot = false;
                     if (isClicked && !MainActivity.mIsShiftPress && !MainActivity.mIsCtrlPress) {
                         setSelectedCurrent(getAdapterPosition());
@@ -247,7 +247,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                     && (System.currentTimeMillis() - mLastClickTime)
                                                                   < OtoConsts.DOUBLE_CLICK_TIME
                                     && getLastClickPos() == getAdapterPosition()) {
-                                ((MainActivity) mRecycleClick).removeCallbacks();
+                                ((MainActivity) mRecycleClick).removeLongPressCallbacks();
                                 OperateUtils.enter(item.getContext(),
                                                  mDatas.get(getAdapterPosition()).getPath(),
                                                  mDatas.get(getAdapterPosition()).getType());
