@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,10 +56,14 @@ public class OperateUtils {
                 String fileType = FileUtils.getMIMEType(new File(path));
                 List<ResolveInfo> resolveInfoList = new ArrayList<>();
                 PackageManager manager = context.getPackageManager();
-                Intent intent = new Intent();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                if (android.os.Build.VERSION.SDK_INT >= 24) {
+                    intent.setDataAndType(FileProvider.getUriForFile(context,
+                            "org.openthos.support.fileprovider", new File(path)), fileType);
+                } else {
+                    intent.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                }
                 resolveInfoList = manager.queryIntentActivities(intent,
                                                                  PackageManager.MATCH_DEFAULT_ONLY);
                 if (resolveInfoList.size() > 0) {
