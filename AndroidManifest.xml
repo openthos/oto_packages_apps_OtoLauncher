@@ -19,8 +19,7 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.launcher3"
-    android:sharedUserId="android.uid.system">
+    package="com.android.launcher3">
     <uses-sdk android:targetSdkVersion="21" android:minSdkVersion="16"/>
 
     <permission
@@ -78,6 +77,13 @@
     <uses-permission android:name="android.permission.MANAGE_APP_TOKENS" />
     <uses-permission android:name="android.permission.SET_ORIENTATION" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.GET_APP_GRANTED_URI_PERMISSIONS" />
+    <uses-permission android:name="android.permission.REMOVE_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CACHE_CONTENT" />
+    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
+
     <application
         android:name="com.android.launcher3.LauncherApplication"
         android:allowBackup="@bool/enable_backup"
@@ -162,7 +168,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="org.openthos.support.fileprovider"
+            android:authorities="org.openthos.support.launcher.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data

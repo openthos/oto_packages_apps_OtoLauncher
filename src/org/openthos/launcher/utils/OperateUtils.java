@@ -58,15 +58,21 @@ public class OperateUtils {
                 PackageManager manager = context.getPackageManager();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri uri = null;
                 if (android.os.Build.VERSION.SDK_INT >= 24) {
-                    intent.setDataAndType(FileProvider.getUriForFile(context,
-                            "org.openthos.support.fileprovider", new File(path)), fileType);
+                    uri = FileProvider.getUriForFile(context,
+                            "org.openthos.support.launcher.fileprovider", new File(path));
                 } else {
-                    intent.setDataAndType(Uri.fromFile(new File(path)), fileType);
+                    uri = Uri.fromFile(new File(path));
                 }
+                intent.setDataAndType(uri, fileType);
                 resolveInfoList = manager.queryIntentActivities(intent,
-                                                                 PackageManager.MATCH_DEFAULT_ONLY);
+                        PackageManager.MATCH_DEFAULT_ONLY);
                 if (resolveInfoList.size() > 0) {
+                    if (android.os.Build.VERSION.SDK_INT >= 24) {
+	                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
                     intent.putExtra("package", "com.android.launcher3");
                     context.startActivity(intent);
                 } else {
