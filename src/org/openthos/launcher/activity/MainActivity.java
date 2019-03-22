@@ -54,6 +54,9 @@ import java.util.TimerTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1150,6 +1153,25 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     //Ensure factory test is removed, such as after a update system
     private void initOtherEnvironment() {
+        Process pro = null;
+        BufferedReader in = null;
+        try {
+            String line = "";
+            pro = Runtime.getRuntime().exec(new String[]{"su", "-c", "rm -r /data/rec_reset /data/setupwizard"});
+            in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            while ((line = in.readLine()) != null) {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         mClipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
     }
 }
