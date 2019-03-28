@@ -90,7 +90,7 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
     private long mPressTime;
     private Type mPressType;
-    private int mRenamePos;
+    private int mRenamePos = -1;
     private long mLastModified;
     private int mPressX;
     private int mPressY;
@@ -181,6 +181,8 @@ public class MainActivity extends Launcher implements RecycleCallBack {
 
                         if (mRenamePos != -1 && mLastModified == showFile.lastModified()) {
                             mDatas.set(mRenamePos, icon);
+                            mHandler.sendMessage(Message.obtain(MainActivity.mHandler,
+                                    OtoConsts.SAVEDATA, mRenamePos));
                         } else {
                             for (int i = 1; i < mDatas.size(); i++) {
                                 if (mDatas.get(i) == mBlankIcon) {
@@ -503,11 +505,15 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                                                  mPosList.get(i), mDownX, mDownY, mMoveX, mMoveY)) {
                                     if (!mDatas.get(i).isBlank()) {
                                         mTempList.add(mDatas.get(i));
-                                        mDatas.get(i).getView().setSelected(true);
+                                        if (mDatas.get(i).getView() != null) {
+                                            mDatas.get(i).getView().setSelected(true);
+                                        }
                                     }
                                 } else {
                                     if (!mDatas.get(i).isBlank()){
-                                        mDatas.get(i).getView().setSelected(false);
+                                        if (mDatas.get(i).getView() != null) {
+                                            mDatas.get(i).getView().setSelected(false);
+                                        }
                                     }
                                 }
                             }
@@ -586,7 +592,9 @@ public class MainActivity extends Launcher implements RecycleCallBack {
                 for (int i = 0; i < mDatas.size(); i++) {
                     if (mDatas.get(i).isBlank() == false) {
                         IconEntity icon = mDatas.get(i);
-                        icon.getView().setSelected(true);
+                        if (icon.getView() != null) {
+                            icon.getView().setSelected(true);
+                        }
                         mAdapter.getSelectedPosList().add(icon);
                     }
                 }

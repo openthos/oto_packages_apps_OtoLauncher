@@ -219,7 +219,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 }
                                 if (!mIsContains) {
                                     selectedPositions.add(mDatas.get(i));
-                                    mDatas.get(i).getView().setSelected(true);
+                                    if (mDatas.get(i).getView() != null) {
+                                        mDatas.get(i).getView().setSelected(true);
+                                    }
                                     mIsContains = false;
                                 }
                             }
@@ -231,14 +233,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                                 if (mDatas.indexOf(selectedPositions.get(i))
                                                                          == getAdapterPosition()) {
                                     mIsContains = true;
-                                    selectedPositions.get(i).getView().setSelected(false);
+                                    if (selectedPositions.get(i).getView() != null) {
+                                        selectedPositions.get(i).getView().setSelected(false);
+                                    }
                                     selectedPositions.remove(i);
                                     break;
                                 }
                             }
                             if (!mIsContains) {
                                 selectedPositions.add(mDatas.get(getAdapterPosition()));
-                                mDatas.get(getAdapterPosition()).getView().setSelected(true);
+                                if (mDatas.get(getAdapterPosition()).getView() != null) {
+                                    mDatas.get(getAdapterPosition()).getView().setSelected(true);
+                                }
                                 mIsContains = false;
                             }
                             mIsContains = false;
@@ -287,10 +293,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         IconEntity recycleTemp = null;
                         for (IconEntity icon : selectedPositions) {
                             if (icon.getType() == Type.COMPUTER) {
-                                icon.getView().setSelected(false);
+                                if (icon.getView() != null) {
+                                    icon.getView().setSelected(false);
+                                }
                                 computerTemp = icon;
                             } else if (icon.getType() == Type.RECYCLE) {
-                                icon.getView().setSelected(false);
+                                if (icon.getView() != null) {
+                                    icon.getView().setSelected(false);
+                                }
                                 recycleTemp = icon;
                             }
                         }
@@ -330,7 +340,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void setSelectedCurrent(int current) {
         if (mDatas != null && mDatas.size() > 0) {
             for (IconEntity icon : selectedPositions) {
-                icon.getView().setSelected(false);
+                if (icon.getView() != null) {
+                    icon.getView().setSelected(false);
+                }
             }
         }
         selectedPositions.clear();
