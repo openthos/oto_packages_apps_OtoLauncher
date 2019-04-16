@@ -157,7 +157,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         }
                         isClicked = false;
                     }
-                    return false;
+                    return true;
                 }
             });
             checkBox = (CheckBox) view.findViewById(R.id.check);
