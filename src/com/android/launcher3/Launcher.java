@@ -19,6 +19,7 @@ package com.android.launcher3;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,19 +43,6 @@ public class Launcher extends Activity {
     public FrameLayout viewContainer;
     private View mLauncherView;
 
-    public void setOtoContentView(int layoutResID) {
-        View view = LayoutInflater.from(this).inflate(layoutResID, null);
-        if (viewContainer == null) {
-            View v = View.inflate(this,R.layout.launcher,null);
-            viewContainer = (FrameLayout)v.findViewById(R.id.otocontent);
-        }
-        viewContainer.removeAllViews();
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.CENTER;
-        viewContainer.addView(view, layoutParams);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -71,6 +59,11 @@ public class Launcher extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = new Intent();
+        ComponentName cn = new ComponentName(
+                "org.openthos.filemanager", "org.openthos.launcher.activity.MainActivity");
+        intent.setComponent(cn);
+        startActivity(intent);
         mLauncherView.setBackground(null);
     }
 

@@ -22,11 +22,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
-
-LOCAL_STATIC_JAVA_LIBRARIES :=  supporta supports
-
-LOCAL_STATIC_JAVA_AAR_LIBRARIES := support4
-
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-v13
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src) \
     $(call all-java-files-under, WallpaperPicker/src) \
@@ -44,7 +40,6 @@ LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 LOCAL_SDK_VERSION := current
 
 LOCAL_PACKAGE_NAME := OtoLauncher
-#LOCAL_CERTIFICATE := shared
 LOCAL_CERTIFICATE := platform
 LOCAL_OVERRIDES_PACKAGES := Launcher3 \
                             LiveWallpapers \
@@ -57,20 +52,6 @@ LOCAL_OVERRIDES_PACKAGES := Launcher3 \
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 include $(BUILD_PACKAGE)
-
-include $(CLEAR_VARS)
-
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := supporta:lib/support-annotations-22.2.1-sources.jar \
-                                        supports:lib/internal_impl-22.2.1.jar \
-                                        support4:lib/support-v4-22.2.1.aar \
-include $(CLEAR_VARS)
-
-
-LOCAL_MANIFEST_FILE := $(LOCAL_PATH)/AndroidManifest.xml
-
-include $(BUILD_MULTI_PREBUILT)
-
-include $(call all-makefiles-under,$(LOCAL_PATH))
 
 #
 # Protocol Buffer Debug Utility in Java
